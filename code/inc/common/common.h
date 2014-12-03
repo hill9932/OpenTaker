@@ -97,5 +97,13 @@ struct ICallable
     virtual ~ICallable() {}
 };
 
+class CallTracer
+{
+public:
+    CallTracer(const tchar* _FUNCTION, int _LINE);
+    ~CallTracer();
+};
+
+#define TRACE_THIS_CALL()   CallTracer  IamNeverExist(__FUNCTION__, __LINE__);
 
 #endif

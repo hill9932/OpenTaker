@@ -6,7 +6,7 @@
 /**
  * @Function: return the sector size align value
  **/
-size_t GetAlignValue(size_t unaligned);
+size_t GetAlignedValue(size_t unaligned);
 
 int GetRandomNumber(int _begin, int _end);
 

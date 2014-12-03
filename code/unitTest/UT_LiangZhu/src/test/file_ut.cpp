@@ -269,12 +269,12 @@ void CHFileTestDirectSync::TestWriteAndRead(u_int64 _offset)
     else
         ASSERT_TRUE(bytesWritten == 0);
 
-    byte* buf = (byte*)AlignedAlloc(ONE_MB, SECTOR_ALIGNMENT);
+    AutoFree<byte> buf((byte*)AlignedAlloc(ONE_MB, SECTOR_ALIGNMENT), AlignedFreeFunc);
+
     int bytesRead = m_file.read_w(buf, ONE_MB, _offset);
     if (_offset % SECTOR_ALIGNMENT == 0)
     {
         ASSERT_TRUE(bytesRead == ONE_MB);
-
         ASSERT_TRUE(memcmp(m_buffer, buf, ONE_MB) == 0);
         ASSERT_TRUE(m_file.getPos() == ONE_MB + _offset);
     }
@@ -282,8 +282,6 @@ void CHFileTestDirectSync::TestWriteAndRead(u_int64 _offset)
     {
         ASSERT_TRUE(bytesRead == 0);
     }
-
-    AlignedFree(buf);
 }
 
 
@@ -295,4 +293,5 @@ TEST_F(CHFileTestDirectSync, WriteAndRead)
     TestWriteAndRead(0);        // test write and read at offset = 0
     TestWriteAndRead(1134);     // test write and read at offset = 1134
     TestWriteAndRead(4096);     // test write and read at offset = 4096
+    TestWriteAndRead(4567);     // test write and read at offset = 4567
 }

@@ -98,24 +98,28 @@ CStdString GetFileName(const tchar* _path)
 
 CStdString GetFileName(const CStdString& _path)
 {
-    size_t pos = -1;
+    int ending = _path.size() - 1;
+    while (ending >= 0 &&
+        (_path.GetAt(ending) == '/' ||
+        _path.GetAt(ending) == '\\'))
+        --ending;
 
+    int pos = -1;
     if ((pos = _path.ReverseFind('\\')) != (size_t)-1 ||
         (pos = _path.ReverseFind('/'))  != (size_t)-1)
     {
-        return _path.Mid(pos+1);
+        return ending >= pos ? _path.Mid(pos+1) : "";
     }
 
-    return _path;
+    return "";
 }
 
-/**
-* @功能：返回传入路径的目录部分
-**/
 CStdString GetFilePath(const CStdString& _path)
 {
-    size_t pos = _path.size() - 1;
-    while (_path.GetAt(pos) == '/' || _path.GetAt(pos) == '\\')
+    int pos = _path.size() - 1;
+    while (pos >= 0 && 
+          (_path.GetAt(pos) == '/' || 
+           _path.GetAt(pos) == '\\'))
         --pos;
 
     //
@@ -123,7 +127,7 @@ CStdString GetFilePath(const CStdString& _path)
     //
     if (pos != _path.size() - 1)
     {
-        return _path.Mid(0, pos+1);
+        return _path.Mid(0, MyMax(1, pos+1));
     }
 
     size_t prexPos = 0;
@@ -149,6 +153,21 @@ CStdString GetFilePath(const tchar* _path)
     return GetFilePath(CStdString(_path));
 }
 
+bool CreateFilePath(const tchar* _filePath)
+{
+    if (!_filePath) return false;
+    
+    CStdString  fileDir = GetFilePath(_filePath);
+    if (!CreateAllDir(fileDir))
+        return false;
+
+    int h = ::open(_filePath, O_RDWR | O_CREAT, 0644);
+    if (h == -1)
+        return false;
+
+    close(h);
+    return true;
+}
 
 bool CreateAllDir(const tchar* _path)
 {

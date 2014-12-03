@@ -8,13 +8,13 @@ Mutex::Mutex()
 
 Mutex::~Mutex ()
 {
-#ifndef WIN32
+#ifdef WIN32
+    DeleteCriticalSection(&mId);
+#else
     int  rc = pthread_mutex_destroy(&mId);
     (void)rc;
     assert( rc != EBUSY );  // currently locked 
     assert( rc == 0 );
-#else
-    DeleteCriticalSection(&mId);
 #endif
 }
 

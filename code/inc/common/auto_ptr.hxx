@@ -102,96 +102,75 @@ private:
 template <class T> class CAutoPtr
 {
 public:
-	CAutoPtr(T *_ptr = NULL) 
-		: m_raw_ptr(_ptr)
+    CAutoPtr(T *_ptr = NULL, _RELEASE_ _func = NULL)
+		: m_rawPtr(_ptr)
 	{
-		if (m_raw_ptr)
-			m_raw_ptr->addRef();
+        m_func = _func;
 	}
 
 	CAutoPtr(const CAutoPtr& _auto_ptr) 
-		: m_raw_ptr(_auto_ptr.m_raw_ptr)
+		: m_rawPtr(_auto_ptr.m_rawPtr)
 	{
-		if (m_raw_ptr)
-			m_raw_ptr->addRef();
 	}
 
 	~CAutoPtr() 
 	{
-		if (m_raw_ptr)
-			m_raw_ptr->releaseRef();
+        if (m_func && m_rawPtr)
+            m_func(m_rawPtr);
 	}
 
 	CAutoPtr& operator= (const CAutoPtr& _auto_ptr) 
 	{
-		return (*this = _auto_ptr.m_raw_ptr);
+		return (*this = _auto_ptr.m_rawPtr);
 	}
 
 	CAutoPtr& operator= (T* _ptr) 
 	{
-		if (m_raw_ptr == _ptr)
+		if (m_rawPtr == _ptr)
 			return *this;
 
-		if (_ptr)
-			_ptr->addRef();
-		if (m_raw_ptr)
-			m_raw_ptr->releaseRef();
-		m_raw_ptr = _ptr;
+		m_rawPtr = _ptr;
 		return *this;
 	}
 
 	operator void* () const 
 	{
-		return m_raw_ptr;
+		return m_rawPtr;
 	}
+
+    operator T* () const
+    {
+        return m_rawPtr;
+    }
 
 	T* operator-> () const 
 	{
-		assert(m_raw_ptr);
-		return m_raw_ptr;
+		assert(m_rawPtr);
+		return m_rawPtr;
 	}
 
 	T* get() const 
 	{
-		return m_raw_ptr;
-	}
-
-	T* paraIn() const 
-	{
-		return m_raw_ptr;
+		return m_rawPtr;
 	}
 
     T* release()
 	{
-	    T * pPtr = m_raw_ptr;
-	    m_raw_ptr = NULL;
+	    T * pPtr = m_rawPtr;
+	    m_rawPtr = NULL;
 
 		return pPtr;
 	}
 
-	T*& paraOut() 
+	T& operator* () const 
 	{
-		if (m_raw_ptr) 
-        {
-			m_raw_ptr->releaseRef();
-			m_raw_ptr = NULL;
-		}
-		return static_cast<T*&>(m_raw_ptr);
-	}
-
-	T*& paraInOut() 
-	{
-		return static_cast<T*&>(m_raw_ptr);
-	}
-
-	T& operator * () const 
-	{
-		assert(m_raw_ptr);
-		return *m_raw_ptr;
+		assert(m_rawPtr);
+		return *m_rawPtr;
 	}
 
 private:
-	T *m_raw_ptr;
+	T *m_rawPtr;
+    _RELEASE_   m_func;
 };
 
 
@@ -202,50 +181,50 @@ template<typename T>
 class CSharedPtr
 {
 public:
-    CSharedPtr() : m_raw_ptr(NULL)
+    CSharedPtr() : m_rawPtr(NULL)
     {
         m_count_ref = new CCountRef;
         m_count_ref->addRef();
     }
 
     CSharedPtr(T* _ptr)
-        : m_raw_ptr(_ptr)
+        : m_rawPtr(_ptr)
     {
         m_count_ref = new CCountRef;
         m_count_ref->addRef();
     }
 
     CSharedPtr(const CSharedPtr<T>& _share_ptr)
-        : m_raw_ptr(_share_ptr.m_raw_ptr), m_count_ref(_share_ptr.m_count_ref)
+        : m_rawPtr(_share_ptr.m_rawPtr), m_count_ref(_share_ptr.m_count_ref)
     {
         m_count_ref->addRef();
     }
 
     ~CSharedPtr()
     {
-        if(0 == m_count_ref->releaseRef() && m_raw_ptr)
-            delete m_raw_ptr;
+        if(0 == m_count_ref->releaseRef() && m_rawPtr)
+            delete m_rawPtr;
     }
 
     CSharedPtr<T>& operator= (const CSharedPtr<T>& _share_ptr)
     {
         if(this != &_share_ptr) 
         {
-            if(0 == m_count_ref->releaseRef() && m_raw_ptr)
-                delete m_raw_ptr;
-            m_raw_ptr = _share_ptr.m_raw_ptr;
+            if(0 == m_count_ref->releaseRef() && m_rawPtr)
+                delete m_rawPtr;
+            m_rawPtr = _share_ptr.m_rawPtr;
             m_count_ref = _share_ptr.m_count_ref;
             m_count_ref->addRef();
         }
         return *this;
     }
 
-    T* get() const { return m_raw_ptr; }
+    T* get() const { return m_rawPtr; }
     T& operator*() const { return *get(); }
     T* operator->() const { return get(); }
 
 private:
-    T* m_raw_ptr;
+    T* m_rawPtr;
     CCountRef* m_count_ref;
 };
 

@@ -1,11 +1,5 @@
 #include "lua_.h"
 
-// local mylib = require "mylib"
-int luaopen_mylib (lua_State *L) 
-{
-    return 1;
-}
-
 CLua::CLua()
 {
     m_luaState = luaL_newstate();
@@ -22,7 +16,8 @@ int CLua::doFile(LPCSTR _file_path)
     if (!m_luaState)   return -1;
 
     luaL_openlibs(m_luaState); //Load base libraries
-    if (luaL_loadfile(m_luaState, _file_path) || lua_pcall(m_luaState, 0, 0, 0))
+    if (luaL_loadfile(m_luaState, _file_path) || 
+        lua_pcall(m_luaState, 0, 0, 0))
     {
         error(lua_tostring(m_luaState, -1));
         lua_pop(m_luaState, 1);

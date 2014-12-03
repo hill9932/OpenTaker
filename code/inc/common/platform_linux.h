@@ -48,9 +48,9 @@ typedef void*               HMODULE;
 #define SD_BOTH                     SHUT_RDWR
 #define WSAEWOULDBLOCK              EINPROGRESS
 #define ERROR_IO_PENDING            EINPROGRESS
-#define INTERLOCKED_INCREMENT(ref)  __sync_add_and_fetch(ref, 1)    //__sync_fetch_and_add(ref, 1)    // GCC 4.1xx提供
+#define INTERLOCKED_INCREMENT(ref)  __sync_add_and_fetch(ref, 1)    //__sync_fetch_and_add(ref, 1)    // GCC 4.1xx
 #define INTERLOCKED_DECREMENT(ref)  __sync_add_and_fetch(ref, -1)   //__sync_fetch_and_add(ref, -1)
-#define INTERLOCKED_INCREMENT_N(ref, num)  __sync_add_and_fetch(ref,  num)    //__sync_fetch_and_add(ref, 1)    // GCC 4.1xx提供
+#define INTERLOCKED_INCREMENT_N(ref, num)  __sync_add_and_fetch(ref,  num)    //__sync_fetch_and_add(ref, 1)    // GCC 4.1xx
 #define INTERLOCKED_DECREMENT_N(ref, num)  __sync_add_and_fetch(ref, -num)   //__sync_fetch_and_add(ref, -1)
 #define INVALID_HANDLE_VALUE        -1
 #define INVALID_SOCKET              -1
@@ -58,11 +58,11 @@ typedef void*               HMODULE;
 #define INFINITE                    -1
 #define net_errno                   errno
 #define CRITICAL_SECTION            pthread_mutex_t
-#define TRUE                true
-#define FALSE               false
-#define AF_NETBIOS          17              // NetBios-style addresses
-#define DEFAULT_RIGHT       S_IRUSR|S_IWUSR|S_IXUSR | S_IRGRP|S_IWGRP|S_IXGRP | S_IROTH|S_IWOTH|S_IXOTH
-#define I64D                 "%lld"
+#define TRUE                        true
+#define FALSE                       false
+#define AF_NETBIOS                  17              // NetBios-style addresses
+#define DEFAULT_RIGHT               S_IRUSR|S_IWUSR|S_IXUSR | S_IRGRP|S_IWGRP|S_IXGRP | S_IROTH|S_IWOTH|S_IXOTH
+#define I64D                        "%lld"
 
 //
 // define ansi/unicode compatible functions
@@ -98,11 +98,10 @@ typedef void*               HMODULE;
 
 #endif
 
-typedef const tchar*        LPCTSTR;
 typedef tchar*              LPTSTR;
+typedef const tchar*        LPCTSTR;
 typedef struct iocb         OVERLAPPED;     // libaio provide
 
-struct VS_FIXEDFILEINFO {};
 #define Offset              u.c.offset
 
 #define SleepUS(tick)               usleep(tick)
@@ -115,19 +114,14 @@ struct VS_FIXEDFILEINFO {};
 #define GetNowTime(value)           gettimeofday(&value, NULL)
 #define AlignedAlloc(size, align)   aligned_alloc(align, size)
 #define AlignedFree(pointer)        free(pointer)
+#define AlignedAllocFunc            _aligned_malloc
+#define AlignedFreeFunc             _aligned_free
 
 #define stat_                       stat
 #define stricmp                     strcasecmp
 #define strnicmp                    strncasecmp
 #define atoi64                      atoll
 
-/***********************************************
- ** NetWork related **
- ***********************************************/
-
-enum MULTICAST_MODE_TYPE
-{
-};
 
 #endif
 #endif

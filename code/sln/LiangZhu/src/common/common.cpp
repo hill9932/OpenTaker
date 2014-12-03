@@ -74,5 +74,11 @@ CStdString GetLastSysErrorMessage(u_int32 _errCode, bool _herror)
     return errMsg;
 }
 
+CallTracer::CallTracer(const tchar* _FUNCTION, int _LINE)
+{
+    RM_LOG_TRACE_S("CALL TRACER ** " << _FUNCTION << ":" << _LINE);
+}
 
-
+CallTracer::~CallTracer()
+{
+}

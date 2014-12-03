@@ -143,5 +143,14 @@
     <ClInclude Include="..\..\inc\common\device.h">
       <Filter>header file</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\inc\common\auto_ptr.hxx">
+      <Filter>header file</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\common\file_pool_linux.hxx">
+      <Filter>header file</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\common\file_pool_win32.hxx">
+      <Filter>header file</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -331,9 +331,12 @@ if $(ConfigurationType) == Application (copy $(SolutionDir)..\tmp\$(ProjectName)
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\inc\common\auto_ptr.hxx" />
     <ClInclude Include="..\..\inc\common\common.h" />
     <ClInclude Include="..\..\inc\common\def.h" />
     <ClInclude Include="..\..\inc\common\device.h" />
+    <ClInclude Include="..\..\inc\common\file_pool_linux.hxx" />
+    <ClInclude Include="..\..\inc\common\file_pool_win32.hxx" />
     <ClInclude Include="..\..\inc\common\file_system.h" />
     <ClInclude Include="..\..\inc\common\fixsize_buffer.h" />
     <ClInclude Include="..\..\inc\common\log.h" />

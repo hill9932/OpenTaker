@@ -46,6 +46,8 @@ public:
 
     bool releaseRef() 
     { 
+        if (m_nRef <= 0) return false;
+
         INTERLOCKED_DECREMENT(&m_nRef);
         if (m_nRef == 0)    // TODO: ÓÐ»¥³â·çÏÕ
         {
@@ -63,7 +65,7 @@ public:
 
 protected:
     virtual ~CCountRef()  {}         // protect object from being deleted explicitly
-    void    onDestroy() { delete this; }
+    virtual void onDestroy() { delete this; }
 
 private:
     atomic_t    m_nRef;     
@@ -103,7 +105,11 @@ public:
 protected:
     ISingleton() {}
     virtual ~ISingleton() {};
-    virtual void onDestroy() { m_instance = NULL; }
+    virtual void onDestroy() 
+    { 
+        delete this;
+        m_instance = NULL; 
+    }
 
 private:
     static boost::mutex m_instMutex;

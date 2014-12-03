@@ -10,6 +10,12 @@
 #include "common.h"
 
 /**
+* @Function£ºGet the path of execute file in the disk.
+*  There will be a '/' in the end.
+**/
+CStdString GetAppDir();
+
+/**
  * @Function: Judge whether file exist
  **/
 bool IsFileExist(const tchar* _path);
@@ -33,12 +39,6 @@ CStdString GetFileName(const tchar* _path);
 CStdString GetFileName(const CStdString& _path);
 
 /**
- * @Function£ºGet the path of execute file in the disk.
- *  There will be a '/' in the end.
- **/
-CStdString GetAppDir();
-
-/**
  * @Function: Get the directory path of a file path
  *  There will be no '\' or '/' in the end
  **/
@@ -50,6 +50,11 @@ CStdString GetFilePath(const CStdString& _path);
  **/
 bool CreateAllDir(const tchar* _path);
 bool CreateAllDir(const CStdString& _path);
+
+/**
+ * @Function: Create the file in the path
+ **/
+bool CreateFilePath(const tchar* _filePath);
 
 /**
  * @Function: Delete the file or directory

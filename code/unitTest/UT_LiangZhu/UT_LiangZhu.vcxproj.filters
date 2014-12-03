@@ -33,6 +33,15 @@
     <ClCompile Include="src\test\file_system_ut.cpp">
       <Filter>unit_test\common</Filter>
     </ClCompile>
+    <ClCompile Include="src\test\math_ut.cpp">
+      <Filter>unit_test\common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\test\string_ut.cpp">
+      <Filter>unit_test\common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\test\system_ut.cpp">
+      <Filter>unit_test\common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\global.h">

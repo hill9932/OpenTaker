@@ -317,6 +317,9 @@ if $(ConfigurationType) == Application (copy $(SolutionDir)..\tmp\$(ProjectName)
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\test\file_system_ut.cpp" />
     <ClCompile Include="src\test\file_ut.cpp" />
+    <ClCompile Include="src\test\math_ut.cpp" />
+    <ClCompile Include="src\test\string_ut.cpp" />
+    <ClCompile Include="src\test\system_ut.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\global.h" />

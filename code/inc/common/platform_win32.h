@@ -14,12 +14,12 @@
 
 typedef __int64             int64;
 typedef unsigned __int64    u_int64;
-typedef HANDLE              handle_t;
-typedef int                 SOCKET_LEN;
 typedef u_int32             PID_T;
+typedef int                 SOCKET_LEN;
 typedef LARGE_INTEGER       TIME_INTERVAL;
 typedef HANDLE              process_t;
 typedef HANDLE              Aio_t;
+typedef HANDLE              handle_t;
 
 #ifndef __GNUC__
 #define EPOCHFILETIME (116444736000000000i64)
@@ -43,7 +43,7 @@ typedef HANDLE              Aio_t;
 // redefine these macros, since not all of the system define them 
 //
 #define net_errno                   WSAGetLastError()
-#define INTERLOCKED_INCREMENT(ref)  InterlockedIncrement(ref)   // 系统提供
+#define INTERLOCKED_INCREMENT(ref)  InterlockedIncrement(ref)   
 #define INTERLOCKED_DECREMENT(ref)  InterlockedDecrement(ref)
 #define INTERLOCKED_INCREMENT_N(ref, num)  \
 { \
@@ -71,6 +71,23 @@ typedef HANDLE              Aio_t;
 #define GetNowTime(value)           QueryPerformanceCounter(&value)
 #define AlignedAlloc(size, align)   _aligned_malloc(size, align)
 #define AlignedFree(pointer)        _aligned_free(pointer)
+#define AlignedAllocFunc            _aligned_malloc
+#define AlignedFreeFunc             _aligned_free
+
+
+//
+// these functions are not defined by windows
+//
+#define mkdir                       CreateDirectory
+#define atoi64                      _atoi64
+#define lseek64                     _lseeki64
+
+int     fcntl(int _fd, int _cmd, ... /* arg */);
+int     gettimeofday(struct timeval* _tp);
+int     gettimeofday(struct timeval* _tp, struct timezone *_tz);
+void    bzero(void* _src, size_t _size);
+void    bcopy(const void *_src, void *_dest, size_t _n);
+
 
 //
 // these sturctures are not defined by windows
@@ -124,20 +141,6 @@ struct iovec
 
     #define  stat_          stat        // struct
 #endif
-
-#define mkdir               CreateDirectory
-#define atoi64              _atoi64
-#define lseek64             _lseeki64
-
-//
-// these functions are not defined by windows
-//
-int  fcntl(int _fd, int _cmd, ... /* arg */ );
-int  gettimeofday(struct timeval* _tp);
-int  gettimeofday(struct timeval* _tp, struct timezone *_tz);
-void bzero(void* _src, size_t _size);
-void bcopy(const void *_src, void *_dest, size_t _n);
-
 
 #endif
 #endif

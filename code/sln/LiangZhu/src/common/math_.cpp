@@ -8,7 +8,7 @@ int GetRandomNumber(int _begin, int _end)
     return rand() % (_end - _begin) + _begin;
 }
 
-size_t GetAlignValue(size_t unaligned)
+size_t GetAlignedValue(size_t unaligned)
 {
     return((unaligned + SECTOR_ALIGNMENT - 1) & CHUNK_ALIGNMENT_MASK);
 }

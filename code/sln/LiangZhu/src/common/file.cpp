@@ -292,6 +292,7 @@ int CHFile::write_w(const byte* _data, int _dataLen, u_int64 _offset)
     if (_offset != -1)
     {
         LONG highOffset = _offset >> 32;
+        SetLastSysError(0); // clear the remain flag
         SetFilePointer(m_fileHandle, (LONG)_offset, &highOffset, FILE_BEGIN);
         if (GetLastSysError() != 0) 
             return 0;
