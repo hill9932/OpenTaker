@@ -23,9 +23,11 @@ tchar* StrTrim(tchar* _src);
 /**
  * @Function: Convert a command string into argv[]
  * @Param _cmd: Contain the execute command string, such as "cmd.exe param1"
+ * @Param _argv: User allocated array of pointer
+ * @Param _argc: the size of _argv
  * @Return the duplicated buffer, should be freed
  **/
-char* Str2Argv(const tchar* _cmd, tchar** _argv, int& _argc);
+tchar* Str2Argv(const tchar* _cmd, tchar** _argv, int& _argc);
 
 /**
  * @Function:¡¡Get the file path exclude the command line
@@ -34,9 +36,14 @@ CStdString GetFileName(const CStdString& _path);
 CStdString GetFileName(const tchar* _path);
 
 /**
+ * @Function: Return the value of hexidecimal char
+ **/
+int GetXValue(char _x);
+
+/**
 * @Function: translate the "0x1234EF" to string
 **/
-void Bin2Str(const byte* _p, char* _to, size_t _len);
+void Bin2Str(const byte* _p, char* _to, size_t _len, bool _upperCase);
 
 /**
  * @Function: translate the "0xFF" to number

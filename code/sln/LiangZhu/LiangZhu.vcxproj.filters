@@ -92,9 +92,6 @@
     <ClInclude Include="..\..\inc\common\numa_.h">
       <Filter>header file</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\inc\common\object_buffer.h">
-      <Filter>header file</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\inc\common\platform.h">
       <Filter>header file</Filter>
     </ClInclude>
@@ -150,6 +147,9 @@
       <Filter>header file</Filter>
     </ClInclude>
     <ClInclude Include="..\..\inc\common\file_pool_win32.hxx">
+      <Filter>header file</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\common\object_buffer.hxx">
       <Filter>header file</Filter>
     </ClInclude>
   </ItemGroup>

@@ -12,12 +12,15 @@ int StrSplit(const CStdString& _src, const tchar* _delim, vector<CStdString>& _v
     std::size_t found = _src.find_first_of(_delim, pos);
     while (found != std::string::npos)
     {
-        _vec.push_back(_src.substr(pos, found - pos));
+        if (found != pos)
+            _vec.push_back(_src.substr(pos, found - pos));
+
         pos = found + 1;
         found = _src.find_first_of(_delim, pos);
     }
 
-    _vec.push_back(_src.substr(pos));
+    if (pos != _src.size())
+        _vec.push_back(_src.substr(pos));
     return _vec.size();
 }
 
@@ -32,12 +35,15 @@ int StrSplit_s(const CStdString& _src, const tchar* _delim, vector<CStdString>& 
     std::size_t found = _src.find(_delim, pos);
     while (found != std::string::npos)
     {
-        _vec.push_back(_src.substr(pos, found - pos));
-        pos = found + 1;
+        if (found != pos)
+            _vec.push_back(_src.substr(pos, found - pos));
+
+        pos = found + strlen_t(_delim);
         found = _src.find(_delim, pos);
     }
 
-    _vec.push_back(_src.substr(pos));
+    if (pos != _src.size())
+        _vec.push_back(_src.substr(pos));
     return _vec.size();
 }
 
@@ -55,7 +61,7 @@ tchar* StrTrim(tchar* _src)
     return _src;
 }
 
-char* Str2Argv(const tchar* _cmd, tchar** _argv, int& _argc)
+tchar* Str2Argv(const tchar* _cmd, tchar** _argv, int& _argc)
 {
     if (!_cmd || _argc < 1)   return NULL;
     tchar* buf = strdup_t(_cmd);
@@ -66,65 +72,38 @@ char* Str2Argv(const tchar* _cmd, tchar** _argv, int& _argc)
     bool hasQuote = false;
 
     _argv[argc++] = buf;
-    if (buf[0] == '\'' || buf[0] == '\"')
+    while (*buf)
     {
-        hasQuote = true;
-        ++buf;
-    }
-
-    //
-    // get the program path surround by "'" or '"'
-    //
-    if (hasQuote)
-    {
-        while (buf && *buf && *buf != '\'' && *buf != '\"') ++buf;
-        *++buf = 0;
-
-        ++buf;
-        if (buf && *buf)
-            _argv[argc++] = buf;
-    }
-
-    if (argc >= _argc) 
-    {
-        free(tmp); 
-        return NULL;
-    }
-
-    if (!buf || !*buf)     
-    {
-        free(tmp);
-        return NULL;
-    }
-
-    //
-    // get the arguments split by " "
-    //
-    while (buf && *buf)
-    {
-        if (*buf == ' ') 
+        if (*buf == ' ' && !hasQuote)
         {
             *buf = 0;
-            _argv[argc++] = ++buf;
-            if (argc >= _argc)
-                break;
+            while (*++buf == ' ');  // skip the blanks
+
+            if (*buf)   _argv[argc++] = buf;
+            else break;
         }
-        else
-            ++buf;
+        
+        if (*buf == '\'' || *buf == '\"')
+            hasQuote = !hasQuote;
+
+        ++buf;
     }
 
     _argc = argc;
     return tmp;
 }
 
-void Bin2Str(const byte* _p, char* _to, size_t _len) 
+void Bin2Str(const byte* _p, char* _to, size_t _len, bool _upperCase)
 {
     static const char *hex = "0123456789abcdef";
+    static const char *hexU = "0123456789ABCDEF";
+    const char* table = NULL;
+    table = _upperCase ? hexU : hex;
 
     for (; _len--; _p++) 
     {
-        *_to++ = hex[_p[0] >> 4];
-        *_to++ = hex[_p[0] & 0x0f];
+        *_to++ = table[_p[0] >> 4];
+        *_to++ = table[_p[0] & 0x0f];
     }
     *_to = '\0';
 }
@@ -151,11 +130,22 @@ int GetXValue(char _x)
     case 'A':
     case 'a':
         return 10;
-    default:
+    case '9':
+    case '8':
+    case '7':
+    case '6':
+    case '5':
+    case '4':
+    case '3':
+    case '2':
+    case '1':
+    case '0':
         return _x - '0';
+    default:
+        return -1;
     }
 
-    return 0;
+    return -1;
 }
 
 byte AtoX(const char* _xcode)

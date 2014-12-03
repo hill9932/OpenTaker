@@ -344,7 +344,7 @@ if $(ConfigurationType) == Application (copy $(SolutionDir)..\tmp\$(ProjectName)
     <ClInclude Include="..\..\inc\common\math_.h" />
     <ClInclude Include="..\..\inc\common\mutex.h" />
     <ClInclude Include="..\..\inc\common\numa_.h" />
-    <ClInclude Include="..\..\inc\common\object_buffer.h" />
+    <ClInclude Include="..\..\inc\common\object_buffer.hxx" />
     <ClInclude Include="..\..\inc\common\platform.h" />
     <ClInclude Include="..\..\inc\common\platform_linux.h" />
     <ClInclude Include="..\..\inc\common\platform_win32.h" />

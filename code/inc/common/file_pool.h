@@ -5,7 +5,7 @@
 #include "aio_.h"
 #include "thread_pool.h"
 #include "fixsize_buffer.h"
-#include "object_buffer.h"
+#include "object_buffer.hxx"
 #include <boost/function.hpp>
 
 typedef boost::function<int (void*, PPER_FILEIO_INFO_t, u_int32)>  CompleteCallback;

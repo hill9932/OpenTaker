@@ -2,7 +2,8 @@
 
 int GetRandomNumber(int _begin, int _end)
 {
-    assert(_end > _begin);
+    if (_end < _begin)  return -1;
+    else if (_end == _begin)    return _begin;
 
     srand((unsigned)time(0));
     return rand() % (_end - _begin) + _begin;
@@ -28,7 +29,7 @@ int Sqrt2(u_int64 _value)
 u_int32 Distance(u_int32 _value1, u_int32 _value2, u_int32 _total)
 {
     u_int32 distance = _value2 > _value1 ? _value2 - _value1 : (_value2 + _total - _value1);
-    return distance;
+    return distance % _total;
 }
 
 CStdString ChangeUnit(u_int64 _count, u_int32 _unit, const char* _suffix, int _maxLevel)
