@@ -10,10 +10,7 @@
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
     <Filter Include="unit_test">
-      <UniqueIdentifier>{cbf7e099-cb2d-448c-ad05-08d5ef4a90ba}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="unit_test\common">
-      <UniqueIdentifier>{44864c66-aabf-44c8-9700-8c1b077f99ad}</UniqueIdentifier>
+      <UniqueIdentifier>{57ad9dc8-e385-497e-8308-bdaf3bfe73c6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -23,20 +20,8 @@
     <ClCompile Include="src\global.cpp">
       <Filter>source file</Filter>
     </ClCompile>
-    <ClCompile Include="src\test\file_ut.cpp">
-      <Filter>unit_test\common</Filter>
-    </ClCompile>
-    <ClCompile Include="src\test\file_system_ut.cpp">
-      <Filter>unit_test\common</Filter>
-    </ClCompile>
-    <ClCompile Include="src\test\math_ut.cpp">
-      <Filter>unit_test\common</Filter>
-    </ClCompile>
-    <ClCompile Include="src\test\string_ut.cpp">
-      <Filter>unit_test\common</Filter>
-    </ClCompile>
-    <ClCompile Include="src\test\system_ut.cpp">
-      <Filter>unit_test\common</Filter>
+    <ClCompile Include="src\test\socket_base_ut.cpp">
+      <Filter>unit_test</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

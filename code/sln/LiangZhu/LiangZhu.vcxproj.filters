@@ -158,5 +158,8 @@
     <ClInclude Include="src\common\version.h">
       <Filter>source file</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\inc\network\change_qian.h">
+      <Filter>source file</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

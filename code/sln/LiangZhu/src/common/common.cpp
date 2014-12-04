@@ -10,9 +10,11 @@ namespace LiangZhu
 
     CStdString GetLibVersion()
     {
-        CStdString version = "RELEASE ";
+        CStdString version = PROJECT_NAME;
 #if defined(DEBUG) || defined(_DEBUG)
-        version = "DEBUG ";
+        version += " DEBUG ";
+#else
+        version += "RELEASE ";
 #endif
         version += HILUO_PACKAGE_VERSION;
         return version;

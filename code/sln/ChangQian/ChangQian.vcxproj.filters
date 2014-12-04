@@ -9,10 +9,6 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="resource">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="network">
       <UniqueIdentifier>{c6404c9e-bb47-4943-b30f-e9088490b3be}</UniqueIdentifier>
     </Filter>
@@ -24,5 +20,43 @@
     <ClInclude Include="..\..\inc\network\protocol.h">
       <Filter>network</Filter>
     </ClInclude>
+    <ClInclude Include="src\decode_basic.h">
+      <Filter>header file</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\network\protocol_header_l4.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\network\socket_base.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\network\inetaddr.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\network\chang_qian.h">
+      <Filter>source file</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp">
+      <Filter>source file</Filter>
+    </ClCompile>
+    <ClCompile Include="src\network\decode_basic.cpp">
+      <Filter>source file</Filter>
+    </ClCompile>
+    <ClCompile Include="src\network\igmp.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="src\network\inetaddr.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="src\network\socket_base.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="src\network\socket_tcp.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="src\network\socket_udp.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

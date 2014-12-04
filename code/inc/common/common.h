@@ -113,4 +113,6 @@ private:\
 
 }
 
+using namespace LiangZhu;
+
 #endif
