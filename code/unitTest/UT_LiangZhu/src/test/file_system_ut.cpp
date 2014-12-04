@@ -1,6 +1,8 @@
 #include "file_system.h"
 #include "gtest/gtest.h"
 
+using namespace LiangZhu;
+
 /**
  * @Function: Test function of IsFileExist()
  **/

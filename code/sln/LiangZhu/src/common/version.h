@@ -1,7 +1,7 @@
 #ifndef __HILUO_VERSION_INCLUDE_H__
 #define __HILUO_VERSION_INCLUDE_H__
 
-#define PROJECT_NAME    TEXT("OpenTaker")
+#define PROJECT_NAME    TEXT("LiangZhu")
 
 //
 // define the application version

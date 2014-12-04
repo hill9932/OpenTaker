@@ -1,0 +1,5 @@
+#ifndef __HILUO_PROTOCOL_INCLUDE_H__
+#define __HILUO_PROTOCOL_INCLUDE_H__
+
+
+#endif

@@ -3,6 +3,8 @@
 #include "file_pool.h"
 #include "gtest/gtest.h"
 
+using namespace LiangZhu;
+
 
 /**
  * @Function: Use CHFile to do synchronous operation
@@ -163,7 +165,7 @@ void CHFileTestAsync::TestWriteAndRead(u_int64 _offset)
     bzero(request, sizeof(OVERLAPPED));
     request->buffer = m_buffer;
     request->dataLen = ONE_MB;
-    request->Offset = _offset;
+    request->Offset = (u_int32)_offset;
     request->context = this;
 
     int z = m_file.write(request);
@@ -186,7 +188,7 @@ void CHFileTestAsync::TestWriteAndRead(u_int64 _offset)
     bzero(request, sizeof(OVERLAPPED));
     request->buffer = buf;
     request->dataLen = ONE_MB;
-    request->Offset = _offset;
+    request->Offset = (u_int32)_offset;
     request->context = this;
 
     z = m_file.read(request);

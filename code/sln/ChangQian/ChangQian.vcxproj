@@ -35,9 +35,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{DB2EDEB8-D24B-4C45-8DCE-F953A327CE63}</ProjectGuid>
+    <ProjectGuid>{C214884E-9670-42F2-AB62-3CF03FE81E5A}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>LiangZhu</RootNamespace>
+    <RootNamespace>ChangQian</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -147,14 +147,15 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\inc\common;$(SolutionDir)..\3rdParty\inc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\inc\common;$(SolutionDir)..\3rdParty;$(SolutionDir)..\3rdParty\inc</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
-      <BrowseInformation>true</BrowseInformation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)..\lib\$(Configuration);$(SolutionDir)..\3rdParty\lib\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>LiangZhu.lib;log4cplus.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <StackReserveSize>4194304</StackReserveSize>
     </Link>
     <PostBuildEvent>
       <Command>if $(ConfigurationType) == StaticLibrary (copy $(SolutionDir)..\tmp\$(ProjectName)\$(Configuration)\$(TargetFileName) $(SolutionDir)..\lib\$(Configuration)\$(TargetFileName))
@@ -165,9 +166,6 @@ if $(ConfigurationType) == Application (copy $(SolutionDir)..\tmp\$(ProjectName)
     <PreBuildEvent>
       <Command>echo $(MyWorld)</Command>
     </PreBuildEvent>
-    <Bscmake>
-      <PreserveSbr>true</PreserveSbr>
-    </Bscmake>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -177,13 +175,15 @@ if $(ConfigurationType) == Application (copy $(SolutionDir)..\tmp\$(ProjectName)
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\inc\common;$(SolutionDir)..\3rdParty\inc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\inc\common;$(SolutionDir)..\3rdParty;$(SolutionDir)..\3rdParty\inc</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)..\lib\$(Configuration);$(SolutionDir)..\3rdParty\lib\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>LiangZhu.lib;log4cplus.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <StackReserveSize>4194304</StackReserveSize>
     </Link>
     <PostBuildEvent>
       <Command>if $(ConfigurationType) == StaticLibrary (copy $(SolutionDir)..\tmp\$(ProjectName)\$(Configuration)\$(TargetFileName) $(SolutionDir)..\lib\$(Configuration)\$(TargetFileName))
@@ -202,7 +202,7 @@ if $(ConfigurationType) == Application (copy $(SolutionDir)..\tmp\$(ProjectName)
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\inc\common;$(SolutionDir)..\3rdParty\inc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\inc\common;$(SolutionDir)..\3rdParty;$(SolutionDir)..\3rdParty\inc</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -211,6 +211,8 @@ if $(ConfigurationType) == Application (copy $(SolutionDir)..\tmp\$(ProjectName)
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>$(SolutionDir)..\lib\$(Configuration);$(SolutionDir)..\3rdParty\lib\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>LiangZhu.lib;log4cplus.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <StackReserveSize>4194304</StackReserveSize>
     </Link>
     <PostBuildEvent>
       <Command>if $(ConfigurationType) == StaticLibrary (copy $(SolutionDir)..\tmp\$(ProjectName)\$(Configuration)\$(TargetFileName) $(SolutionDir)..\lib\$(Configuration)\$(TargetFileName))
@@ -229,7 +231,7 @@ if $(ConfigurationType) == Application (copy $(SolutionDir)..\tmp\$(ProjectName)
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\inc\common;$(SolutionDir)..\3rdParty\inc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\inc\common;$(SolutionDir)..\3rdParty;$(SolutionDir)..\3rdParty\inc</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -238,6 +240,8 @@ if $(ConfigurationType) == Application (copy $(SolutionDir)..\tmp\$(ProjectName)
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>$(SolutionDir)..\lib\$(Configuration);$(SolutionDir)..\3rdParty\lib\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>LiangZhu.lib;log4cplus.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <StackReserveSize>4194304</StackReserveSize>
     </Link>
     <PostBuildEvent>
       <Command>if $(ConfigurationType) == StaticLibrary (copy $(SolutionDir)..\tmp\$(ProjectName)\$(Configuration)\$(TargetFileName) $(SolutionDir)..\lib\$(Configuration)\$(TargetFileName))
@@ -254,12 +258,13 @@ if $(ConfigurationType) == DynamicLibrary (copy $(SolutionDir)..\tmp\$(ProjectNa
 if $(ConfigurationType) == Application (copy $(SolutionDir)..\tmp\$(ProjectName)\$(Configuration)\$(TargetFileName) $(SolutionDir)..\bin\$(Configuration)\$(TargetFileName))</Command>
     </PostBuildEvent>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\inc\common;$(SolutionDir)..\3rdParty\inc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\inc\common;$(SolutionDir)..\3rdParty;$(SolutionDir)..\3rdParty\inc</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
-      <PreprocessorDefinitions>WIN32;_DEBUG;MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)..\lib\$(Configuration);$(SolutionDir)..\3rdParty\lib\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>LiangZhu.lib;log4cplus.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <StackReserveSize>4194304</StackReserveSize>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release64|Win32'">
@@ -270,12 +275,13 @@ if $(ConfigurationType) == DynamicLibrary (copy $(SolutionDir)..\tmp\$(ProjectNa
 if $(ConfigurationType) == Application (copy $(SolutionDir)..\tmp\$(ProjectName)\$(Configuration)\$(TargetFileName) $(SolutionDir)..\bin\$(Configuration)\$(TargetFileName))</Command>
     </PostBuildEvent>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\inc\common;$(SolutionDir)..\3rdParty\inc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\inc\common;$(SolutionDir)..\3rdParty;$(SolutionDir)..\3rdParty\inc</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
-      <PreprocessorDefinitions>WIN32;NDEBUG;MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)..\lib\$(Configuration);$(SolutionDir)..\3rdParty\lib\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>LiangZhu.lib;log4cplus.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <StackReserveSize>4194304</StackReserveSize>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug64|x64'">
@@ -286,12 +292,14 @@ if $(ConfigurationType) == DynamicLibrary (copy $(SolutionDir)..\tmp\$(ProjectNa
 if $(ConfigurationType) == Application (copy $(SolutionDir)..\tmp\$(ProjectName)\$(Configuration)\$(TargetFileName) $(SolutionDir)..\bin\$(Configuration)\$(TargetFileName))</Command>
     </PostBuildEvent>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\inc\common;$(SolutionDir)..\3rdParty\inc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\inc\common;$(SolutionDir)..\3rdParty;$(SolutionDir)..\3rdParty\inc</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
-      <PreprocessorDefinitions>WIN32;_DEBUG;MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)..\lib\$(Configuration);$(SolutionDir)..\3rdParty\lib\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>LiangZhu.lib;log4cplus.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <StackReserveSize>4194304</StackReserveSize>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">
@@ -302,63 +310,19 @@ if $(ConfigurationType) == DynamicLibrary (copy $(SolutionDir)..\tmp\$(ProjectNa
 if $(ConfigurationType) == Application (copy $(SolutionDir)..\tmp\$(ProjectName)\$(Configuration)\$(TargetFileName) $(SolutionDir)..\bin\$(Configuration)\$(TargetFileName))</Command>
     </PostBuildEvent>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\inc\common;$(SolutionDir)..\3rdParty\inc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\inc\common;$(SolutionDir)..\3rdParty;$(SolutionDir)..\3rdParty\inc</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
-      <PreprocessorDefinitions>WIN32;NDEBUG;MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)..\lib\$(Configuration);$(SolutionDir)..\3rdParty\lib\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>LiangZhu.lib;log4cplus.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <StackReserveSize>4194304</StackReserveSize>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\common\aio_.cpp" />
-    <ClCompile Include="src\common\common.cpp" />
-    <ClCompile Include="src\common\file.cpp" />
-    <ClCompile Include="src\common\file_pool.cpp" />
-    <ClCompile Include="src\common\file_system.cpp" />
-    <ClCompile Include="src\common\log.cpp" />
-    <ClCompile Include="src\common\lua_.cpp" />
-    <ClCompile Include="src\common\math_.cpp" />
-    <ClCompile Include="src\common\mutex.cpp" />
-    <ClCompile Include="src\common\numa_.cpp" />
-    <ClCompile Include="src\common\platform_linux.cpp" />
-    <ClCompile Include="src\common\platform_win32.cpp" />
-    <ClCompile Include="src\common\string_.cpp" />
-    <ClCompile Include="src\common\system_.cpp" />
-    <ClCompile Include="src\common\thread.cpp" />
-    <ClCompile Include="src\common\thread_pool.cpp" />
-    <ClCompile Include="src\common\time_.cpp" />
-    <ClCompile Include="src\main.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\inc\common\auto_ptr.hxx" />
-    <ClInclude Include="..\..\inc\common\common.h" />
-    <ClInclude Include="..\..\inc\common\def.h" />
-    <ClInclude Include="..\..\inc\common\device.h" />
-    <ClInclude Include="..\..\inc\common\file_pool.h" />
-    <ClInclude Include="..\..\inc\common\file_pool_linux.hxx" />
-    <ClInclude Include="..\..\inc\common\file_pool_win32.hxx" />
-    <ClInclude Include="..\..\inc\common\file_system.h" />
-    <ClInclude Include="..\..\inc\common\fixsize_buffer.h" />
-    <ClInclude Include="..\..\inc\common\log.h" />
-    <ClInclude Include="..\..\inc\common\lua_.h" />
-    <ClInclude Include="..\..\inc\common\math_.h" />
-    <ClInclude Include="..\..\inc\common\mutex.h" />
-    <ClInclude Include="..\..\inc\common\numa_.h" />
-    <ClInclude Include="..\..\inc\common\object_buffer.hxx" />
-    <ClInclude Include="..\..\inc\common\platform.h" />
-    <ClInclude Include="..\..\inc\common\platform_linux.h" />
-    <ClInclude Include="..\..\inc\common\platform_win32.h" />
-    <ClInclude Include="..\..\inc\common\share_memory.hxx" />
-    <ClInclude Include="..\..\inc\common\share_memory_linux.hxx" />
-    <ClInclude Include="..\..\inc\common\share_memory_win32.hxx" />
-    <ClInclude Include="..\..\inc\common\stdString.h" />
-    <ClInclude Include="..\..\inc\common\string_.h" />
-    <ClInclude Include="..\..\inc\common\system_.h" />
-    <ClInclude Include="..\..\inc\common\thread.h" />
-    <ClInclude Include="..\..\inc\common\time_.h" />
-    <ClInclude Include="..\..\inc\common\util.hxx" />
-    <ClInclude Include="src\common\version.h" />
+    <ClInclude Include="..\..\inc\network\protocol.h" />
+    <ClInclude Include="src\version.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

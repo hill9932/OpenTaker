@@ -6,8 +6,8 @@
  *  Created by hill, 4/15/2014
  **/
 
-#ifndef __VP_SHARE_MEMORY_INCLUDE_H__
-#define __VP_SHARE_MEMORY_INCLUDE_H__
+#ifndef __HILUO_SHARE_MEMORY_INCLUDE_H__
+#define __HILUO_SHARE_MEMORY_INCLUDE_H__
 
 template<class T>
 class CShareMemory

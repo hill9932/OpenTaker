@@ -1,7 +1,7 @@
 #ifdef LINUX
 
-#ifndef __VP_PLATFORM_LINUX_INCLUDE_H__
-#define __VP_PLATFORM_LINUX_INCLUDE_H__
+#ifndef __HILUO_PLATFORM_LINUX_INCLUDE_H__
+#define __HILUO_PLATFORM_LINUX_INCLUDE_H__
 
 #include <unistd.h>
 #include <fcntl.h>

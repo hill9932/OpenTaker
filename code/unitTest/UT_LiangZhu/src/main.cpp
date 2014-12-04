@@ -10,14 +10,9 @@ RM_LOG_DEFINE(PROJECT_NAME);
 
 void ShowConfig()
 {
-    CStdString version = "RELEASE ";
-#if defined(DEBUG) || defined(_DEBUG)
-    version = "DEBUG ";
-#endif
+    CStdString version = LiangZhu::GetLibVersion();
 
-    version += HILUO_PACKAGE_VERSION;
-
-    RM_LOG_INFO_S("Success to initialize the environment (" << version << ", " << \
+    RM_LOG_INFO_S("Success to initialize the environment (Lib version = " << version << ", " << \
                    GetProgramBits() << " bit, pid: " << GetCurrentPID() << ").");
  
 }

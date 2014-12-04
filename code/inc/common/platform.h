@@ -6,8 +6,8 @@
  *  Created by hill, 4/11/2014
  **/
 
-#ifndef __VP_PLATFORM_INCLUDE_H__
-#define __VP_PLATFORM_INCLUDE_H__
+#ifndef __HILUO_PLATFORM_INCLUDE_H__
+#define __HILUO_PLATFORM_INCLUDE_H__
 
 #include <string>
 #include <string.h>

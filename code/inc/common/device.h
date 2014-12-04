@@ -1,5 +1,5 @@
-#ifndef __VP_DEVICE_INCLUDE_H__
-#define __VP_DEVICE_INCLUDE_H__
+#ifndef __HILUO_DEVICE_INCLUDE_H__
+#define __HILUO_DEVICE_INCLUDE_H__
 
 #include "common.h"
 

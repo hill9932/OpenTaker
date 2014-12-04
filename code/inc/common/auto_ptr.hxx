@@ -3,8 +3,8 @@
 *  This file define smart pointers, such as AutoFree, CAutoPtr
 **/
 
-#ifndef __VP_AUTOPTR_INCLUDE_H__
-#define __VP_AUTOPTR_INCLUDE_H__
+#ifndef __HILUO_AUTOPTR_INCLUDE_H__
+#define __HILUO_AUTOPTR_INCLUDE_H__
 
 #include "util.hxx"
 

@@ -152,5 +152,11 @@
     <ClInclude Include="..\..\inc\common\object_buffer.hxx">
       <Filter>header file</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\inc\common\file_pool.h">
+      <Filter>header file</Filter>
+    </ClInclude>
+    <ClInclude Include="src\common\version.h">
+      <Filter>source file</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

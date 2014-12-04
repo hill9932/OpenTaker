@@ -5,8 +5,8 @@
  *  Created by hill, 4/11/2014
  **/
 
-#ifndef __VP_COMMON_INCLUDE_H__
-#define __VP_COMMON_INCLUDE_H__
+#ifndef __HILUO_COMMON_INCLUDE_H__
+#define __HILUO_COMMON_INCLUDE_H__
 
 #include "def.h"
 #include "log.h"
@@ -14,17 +14,21 @@
 #include "util.hxx"
 #include "auto_ptr.hxx"
 
+namespace LiangZhu
+{    
+    extern  
+    CStdString GetFileName(const tchar* _path);
+    CStdString GetLibVersion();
 
-int     GetProgramBits();
+    int     GetProgramBits();
 
-/**
- * @Function: Get the error description specified by error code
- *  typically, error code would be errno in Linux and GetLastError() in Windows
- **/
-CStdString  GetLastSysErrorMessage(u_int32 _errCode = 0, bool _herror = false);
-u_int32     GetLastSysError(bool _herror = false);
-void        SetLastSysError(u_int32 _errCode);
-extern      CStdString GetFileName(const tchar* _path);
+    /**
+     * @Function: Get the error description specified by error code
+     *  typically, error code would be errno in Linux and GetLastError() in Windows
+     **/
+    CStdString  GetLastSysErrorMessage(u_int32 _errCode = 0, bool _herror = false);
+    u_int32     GetLastSysError(bool _herror = false);
+    void        SetLastSysError(u_int32 _errCode);
 
 
 #define LOG_ERROR_MSG(errCode)          RM_LOG_ERROR(GetLastSysErrorMessage(errCode).c_str());
@@ -80,30 +84,33 @@ private:\
 #define THROW_EXCEPTION(className, Message)  throw C##className##Exception(Message);
 #define EXCEPTION_NAME(className)	C##className##Exception
 
-/**
- * exceptions
- */
-DEFINE_EXCEPTION(InvalidParameter);
-DEFINE_EXCEPTION(IOFailure);
-DEFINE_EXCEPTION(Unavailable);
-DEFINE_EXCEPTION(OutOfMemory);
-DEFINE_EXCEPTION(UnImplemented);
-DEFINE_EXCEPTION(NotFound);
-DEFINE_EXCEPTION(MaximumReached);
 
-struct ICallable
-{
-    virtual int operator()() = 0;
-    virtual ~ICallable() {}
-};
+    /**
+     * exceptions
+     */
+    DEFINE_EXCEPTION(InvalidParameter);
+    DEFINE_EXCEPTION(IOFailure);
+    DEFINE_EXCEPTION(Unavailable);
+    DEFINE_EXCEPTION(OutOfMemory);
+    DEFINE_EXCEPTION(UnImplemented);
+    DEFINE_EXCEPTION(NotFound);
+    DEFINE_EXCEPTION(MaximumReached);
 
-class CallTracer
-{
-public:
-    CallTracer(const tchar* _FUNCTION, int _LINE);
-    ~CallTracer();
-};
+    struct ICallable
+    {
+        virtual int operator()() = 0;
+        virtual ~ICallable() {}
+    };
+
+    class CallTracer
+    {
+    public:
+        CallTracer(const tchar* _FUNCTION, int _LINE);
+        ~CallTracer();
+    };
 
 #define TRACE_THIS_CALL()   CallTracer  IamNeverExist(__FUNCTION__, __LINE__);
+
+}
 
 #endif

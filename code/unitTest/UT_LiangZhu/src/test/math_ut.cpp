@@ -1,6 +1,8 @@
 #include "math_.h"
 #include "gtest/gtest.h"
 
+using namespace LiangZhu;
+
 
 /**
  * @Function: Test function of GetFileName()

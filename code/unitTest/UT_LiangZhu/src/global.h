@@ -2,6 +2,7 @@
 #define __HILUO_GLOBAL_INCLUDE_H__
 
 #include "common.h"
+using namespace LiangZhu;
 
 class Enviroment
 {

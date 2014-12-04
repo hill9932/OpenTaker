@@ -1,7 +1,7 @@
 #ifdef WIN32
 
-#ifndef __VP_PLATFORM_WIN32_INCLUDE_H__
-#define __VP_PLATFORM_WIN32_INCLUDE_H__
+#ifndef __HILUO_PLATFORM_WIN32_INCLUDE_H__
+#define __HILUO_PLATFORM_WIN32_INCLUDE_H__
 
 #include <WinSock2.h>
 #include <Windows.h>

@@ -4,8 +4,8 @@
  * @Memo:
  *  Created by hill, 4/17/2014
  **/
-#ifndef __VP_MUTEX_I_INCLUDE_H__
-#define __VP_MUTEX_I_INCLUDE_H__
+#ifndef __HILUO_MUTEX_I_INCLUDE_H__
+#define __HILUO_MUTEX_I_INCLUDE_H__
 
 class ILockable
 {

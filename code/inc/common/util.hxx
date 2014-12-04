@@ -1,5 +1,5 @@
-#ifndef __VP_UTIL_INCLUDE_H__
-#define __VP_UTIL_INCLUDE_H__
+#ifndef __HILUO_UTIL_INCLUDE_H__
+#define __HILUO_UTIL_INCLUDE_H__
 
 #include <boost/thread/lock_guard.hpp>
 #include <boost/thread/mutex.hpp>

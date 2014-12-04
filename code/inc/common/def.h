@@ -5,8 +5,8 @@
 *  Created by hill, 4/11/2014
 **/
 
-#ifndef __VP_DEF_INCLUDE_H__
-#define __VP_DEF_INCLUDE_H__
+#ifndef __HILUO_DEF_INCLUDE_H__
+#define __HILUO_DEF_INCLUDE_H__
 
 #include "platform.h"
 
