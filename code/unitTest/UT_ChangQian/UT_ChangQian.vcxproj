@@ -319,6 +319,7 @@ if $(ConfigurationType) == Application (copy $(SolutionDir)..\tmp\$(ProjectName)
   <ItemGroup>
     <ClCompile Include="src\global.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\test\inetaddr_ut.cpp" />
     <ClCompile Include="src\test\socket_base_ut.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -1,8 +1,8 @@
 #include "inetaddr.h"
 #include "common.h"
-#include "auto_ptr.hxx"
+#include "string_.h"
 
-#define UNDEFINED_PORT  13
+#define UNDEFINED_PORT  0
 
 namespace ChangQian
 {
@@ -11,12 +11,12 @@ namespace ChangQian
         memset(&m_storage, 0, sizeof(m_storage));
     }
 
-    CInetAddr::CInetAddr(const char *_addr, const char *_protocol)
+    CInetAddr::CInetAddr(const char *_addr)
     {
         assert(_addr);
         memset(&m_storage, 0, sizeof(m_storage));
 
-        if (0 != makeaddr(_addr, _protocol))
+        if (0 != makeAddr(_addr))
             throw "Fail";
     }
 
@@ -32,7 +32,6 @@ namespace ChangQian
     CInetAddr::CInetAddr(const in_addr& _addr)
     {
         memset(&m_storage, 0, sizeof(m_storage));
-
         m_storage.ss_family = AF_INET;
 
         sockaddr_in* addr = (sockaddr_in*)&m_storage;
@@ -209,7 +208,6 @@ namespace ChangQian
         ret = gethostname(buffer, sizeof(buffer));
         ON_ERROR_LOG_LAST_ERROR_AND_DO(ret, != , 0, return err);
 
-
         struct addrinfo hints, *res;
         memset(&hints, 0, sizeof(hints));
         hints.ai_family = _family;
@@ -257,72 +255,38 @@ namespace ChangQian
         }
     }
 
-    int CInetAddr::makeaddr(const char* _addr, const char* _protocol)
+    int CInetAddr::makeAddr(const char* _addr)
     {
-        if (!_addr)    return -3;
+        if (!_addr)    return -1;
 
-        AutoFree<char> inp_addr(strdup(_addr));
-        const char *host_part = strtok(inp_addr, ":");
-        const char *port_part = strtok(NULL, "\n");
-        struct sockaddr_in *ap = (sockaddr_in *)this;
-        struct hostent *hp = NULL;
-        struct servent *sp = NULL;
-        char *cp = NULL;
-        long lv;
+        struct in_addr addr4  = { 0 };
+        struct in6_addr addr6 = { 0 };
+        bool isV6 = false;
 
-        if (!host_part) host_part = "*";
-        if (!port_part) port_part = "*";
-        if (!_protocol)  _protocol = "tcp";
+        vector<CStdString> v;
+        LiangZhu::StrSplit(_addr, ":", v);
+        if (strstr(_addr, "::") || v.size() > 2)
+            isV6 = true;
 
-        ap->sin_family = AF_INET;
-        ap->sin_port = 0;
-        ap->sin_addr.s_addr = INADDR_ANY;
-
-        //
-        // Fill in the host address:
-        //
-        if (strcmp(host_part, "*") == 0);   // Leave as INADDR_ANY
-        else if (isdigit(*host_part) &&
-            host_part[0] != '0')       // Numeric IP address
+        if (isV6) // IPv6
         {
-            if (inet_pton(AF_INET, host_part, &ap->sin_addr) <= 0)
-                return -1;
-            /*      ap->sin_addr.s_addr = inet_addr(host_part);
-                  if (ap->sin_addr.s_addr == INADDR_NONE) return -1;
-                  */
+            if (inet_pton(AF_INET6, _addr, &addr6) == 1)
+            {
+                sockaddr_in6* inAddr6 = (sockaddr_in6*)&m_storage;
+                inAddr6->sin6_family = AF_INET6;
+                memcpy(&inAddr6->sin6_addr, &addr6, sizeof(addr6));
+            }
         }
-        else    // Assume a hostname
+        else
         {
-            hp = gethostbyname(host_part);
-            if (!hp)                        return -1;
-            if (hp->h_addrtype != AF_INET ||
-                hp->h_addrtype != AF_INET6)  return -1;
-
-            ap->sin_family = hp->h_addrtype;
-
-            if (hp->h_addrtype == AF_INET)
-                ap->sin_addr = *(struct in_addr *) hp->h_addr_list[0];
-            else if (hp->h_addrtype == AF_INET6)
-                ((struct sockaddr_in6*)ap)->sin6_addr = *(struct in6_addr *) hp->h_addr_list[0];
-        }
-
-        //
-        // Process an optional port
-        //
-        if (!strcmp(port_part, "*"));       // Leave as wild (zero)
-        else if (isdigit(*port_part))       // Process numeric port
-        {
-            lv = strtol(port_part, &cp, 10);
-            if (cp != NULL && *cp)          return -2;  // there is invalid character
-            if (lv < 0L || lv >= 65535)     return -2;  // the port number is invalid
-
-            ap->sin_port = htons((short)lv);
-        }
-        else    // Lookup the service
-        {
-            sp = getservbyname(port_part, _protocol);
-            if (!sp)                        return -2;
-            ap->sin_port = (short)sp->s_port;
+            if (inet_pton(AF_INET, v[0], &addr4) == 1)
+            {
+                sockaddr_in* inAddr4 = (sockaddr_in*)&m_storage;
+                inAddr4->sin_family = AF_INET;
+                inAddr4->sin_addr.s_addr = addr4.s_addr;
+                if (v.size() == 2)
+                    inAddr4->sin_port = htons(atoi(v[1]));
+            }
         }
 
         return 0;

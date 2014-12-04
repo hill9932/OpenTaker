@@ -42,7 +42,7 @@ namespace ChangQian
     public:
         CInetAddr();
         CInetAddr(u_int32 _addr);
-        CInetAddr(const char *_addr, const char *_protocol);
+        CInetAddr(const char *_addr);
         CInetAddr(sockaddr_storage& _addr);
         CInetAddr(const in_addr& _addr);
         CInetAddr(const sockaddr_in& _addr);
@@ -91,7 +91,7 @@ namespace ChangQian
          *  "ftp.redhat.com:ftp"
          *  "sunsite.unc.edu"
          **/
-        int makeaddr(const char *_str_addr, const char *_protocol);
+        int makeAddr(const char *_str_addr);
         bool isGroupAddress();
 
         bool operator == (const CInetAddr& _addr) const;
@@ -136,20 +136,6 @@ namespace ChangQian
     private:
         sockaddr_storage    m_storage;
     };
-
-
-    /**
-    * @Function: Create the socket client
-    * @Param addr: specify the server address to connect
-    */
-    int client(CInetAddr& _server_addr);
-
-    /**
-     * @Function: Create the socket server
-     * @Param addr: specify the local address and port to listen on
-     */
-    int server(CInetAddr& _listen_addr);
-
 }
 
 #endif

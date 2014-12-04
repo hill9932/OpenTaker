@@ -23,6 +23,9 @@
     <ClCompile Include="src\test\socket_base_ut.cpp">
       <Filter>unit_test</Filter>
     </ClCompile>
+    <ClCompile Include="src\test\inetaddr_ut.cpp">
+      <Filter>unit_test</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\global.h">

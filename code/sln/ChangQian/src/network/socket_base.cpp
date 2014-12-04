@@ -172,13 +172,12 @@ namespace ChangQian
         return ret;
     }
 
-
     bool CSocketBase::getBlockMode()
     {
         int block = true;
 
 #ifdef WIN32
-        CInetAddr fakeAddress("127.1.2.3:65534", "tcp");
+        CInetAddr fakeAddress("127.1.2.3:65534");
         int len = fakeAddress.size();
 
         int ret = ::connect(m_hSocket, (sockaddr*)&fakeAddress, len);

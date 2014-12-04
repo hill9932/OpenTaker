@@ -30,7 +30,6 @@ namespace ChangQian
          *  0: success
          *  -1: if reuseAddr is true, failed to setoption
          *  others: see errno or WSAGetLastError
-         *
          **/
         virtual int open(int _family, int _type, int _protocol, bool _reuseAddr = false);
         virtual int close();
