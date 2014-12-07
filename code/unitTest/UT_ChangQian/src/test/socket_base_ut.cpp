@@ -15,11 +15,11 @@ public:
     virtual void TearDown()
     {}
 
-private:
+protected:
     CSocketUdp  m_socket;
 };
 
 TEST_F(CBaseSocketTestSync, WriteAndRead)
 {
-
+    ASSERT_EQ(m_socket.open(true), 0);
 }
