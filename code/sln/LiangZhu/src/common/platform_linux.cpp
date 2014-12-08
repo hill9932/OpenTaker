@@ -18,13 +18,13 @@ int DropPrivileges(const char* _username)
     }
 
     pw = getpwnam(username);
-    ON_ERROR_PRINT_LASTMSG_AND_RETURN(pw, ==, NULL);
+    ON_ERROR_LOG_LAST_ERROR_AND_DO(pw, ==, NULL, return err);
 
     // Drop privileges
     if ((setgid(pw->pw_gid) != 0) || (setuid(pw->pw_uid) != 0)) 
     {
         int err = GetLastSysError();
-        LOG_ERRORMSG(err);
+        LOG_ERROR_MSG(err);
         return err;
     } 
 

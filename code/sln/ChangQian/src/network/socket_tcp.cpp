@@ -104,7 +104,7 @@ namespace ChangQian
             m_buffer, 0,
             64, 64,
             &nBytes, (LPOVERLAPPED)_io_context);
-        if (ret != 0 && GetLastSysError(true) != ERROR_IO_PENDING)
+        if (ret != 0 && LiangZhu::GetLastSysError(true) != ERROR_IO_PENDING)
         {
             ret = -1;
         }

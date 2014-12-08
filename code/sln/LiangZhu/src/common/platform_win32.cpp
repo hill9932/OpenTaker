@@ -18,7 +18,7 @@ int inet_aton(char* _cp, struct in_addr* _in)
     if (!_cp || !_in)   return -1;
 
     int rc = inet_addr(_cp);
-    if (rc == -1 && strcmp(_cp, "255.255.255.255"))
+    if (rc == -1 && strcmp(_cp, "255.255.255.255") == 0)
         return 0;
 
     _in->s_addr = rc;

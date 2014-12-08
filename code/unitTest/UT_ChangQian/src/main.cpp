@@ -13,7 +13,7 @@ void ShowConfig()
     CStdString version = ChangQian::GetLibVersion();
 
     RM_LOG_INFO_S("Success to initialize the environment (Lib version = " << version << ", " << \
-        GetProgramBits() << " bit, pid: " << GetCurrentPID() << ").");
+        LiangZhu::GetProgramBits() << " bit, pid: " << LiangZhu::GetCurrentPID() << ").");
 }
 
 int main(int _argc, char** _argv)

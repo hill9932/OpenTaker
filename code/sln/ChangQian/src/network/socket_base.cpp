@@ -181,7 +181,7 @@ namespace ChangQian
         int len = fakeAddress.size();
 
         int ret = ::connect(m_hSocket, (sockaddr*)&fakeAddress, len);
-        return GetLastSysError() != WSAEWOULDBLOCK;
+        return LiangZhu::GetLastSysError() != WSAEWOULDBLOCK;
 
 #else
         int flags = fcntl(m_hSocket, F_GETFL, 0);
@@ -285,7 +285,7 @@ namespace ChangQian
 
         if (!FD_ISSET(m_hSocket, _rd) && !FD_ISSET(m_hSocket, _wr)) // may be timeout
         {
-            SetLastSysError(err);
+            LiangZhu::SetLastSysError(err);
             return err;
         }
 

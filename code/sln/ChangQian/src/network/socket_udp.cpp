@@ -168,7 +168,7 @@ namespace ChangQian
         int ret = ::WSARecvFrom(m_hSocket, &_io_context->m_WSABuf, 1, NULL, &flags,
             (struct sockaddr*)(_io_context->m_buffer), &from_len,
             (LPOVERLAPPED)_io_context, NULL);
-        if (ret != 0 && GetLastSysError(true) != ERROR_IO_PENDING)
+        if (ret != 0 && LiangZhu::GetLastSysError(true) != ERROR_IO_PENDING)
         {
             ret = SOCKET_EXCEPTION;
         }

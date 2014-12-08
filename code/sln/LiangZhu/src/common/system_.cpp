@@ -357,10 +357,9 @@ namespace LiangZhu
 
 #include <sys/vfs.h>
 #include <dlfcn.h>
-#include <boost/date_time/posix_time/posix_time.hpp> 
-#include <boost/interprocess/sync/named_semaphore.hpp> 
-    using namespace boost::interprocess; 
-    using namespace boost::posix_time; 
+#include "boost/date_time/posix_time/posix_time.hpp"
+#include "boost/interprocess/sync/named_semaphore.hpp" 
+using namespace boost::interprocess;
 
     void YieldCurThread()
     {
@@ -416,7 +415,7 @@ namespace LiangZhu
         while (((revalue = wait(_status)) == -1))
         {
             int err = GetLastSysError();
-            LOG_ERRORMSG(err);
+            LOG_ERROR_MSG(err);
             if (err != EINTR)
                 break;
         }

@@ -31,8 +31,8 @@ namespace LiangZhu
     void        SetLastSysError(u_int32 _errCode);
 
 
-#define LOG_ERROR_MSG(errCode)          RM_LOG_ERROR(GetLastSysErrorMessage(errCode).c_str());
-#define LOG_ERROR_MSG_S(errCode, msg)   RM_LOG_ERROR(msg << ": " << GetLastSysErrorMessage(errCode).c_str());
+#define LOG_ERROR_MSG(errCode)          RM_LOG_ERROR(LiangZhu::GetLastSysErrorMessage(errCode).c_str());
+#define LOG_ERROR_MSG_S(errCode, msg)   RM_LOG_ERROR(msg << ": " << LiangZhu::GetLastSysErrorMessage(errCode).c_str());
 #define LOG_LAST_ERROR_MSG()            LOG_ERROR_MSG(0);
 
 /**
@@ -40,19 +40,19 @@ namespace LiangZhu
  **/
 #define ON_ERROR_RETURN_LAST_ERROR(expr, comp, error)   \
     if (expr comp error)    {\
-        return GetLastSysError();   \
+        return LiangZhu::GetLastSysError();   \
     }
 
 // print the last error message
 #define ON_ERROR_LOG_LAST_ERROR(expr, comp, error)	\
     if (expr comp error)	{\
-        u_int32 err = GetLastSysError();   \
+        u_int32 err = LiangZhu::GetLastSysError();   \
         LOG_ERROR_MSG(err)   \
     }
 
 #define ON_ERROR_LOG_LAST_ERROR_AND_DO(expr, comp, error, action)    \
     if (expr comp error)	{\
-        u_int32 err = GetLastSysError();   \
+        u_int32 err = LiangZhu::GetLastSysError();   \
         LOG_ERROR_MSG(err);     \
         action;	\
     }
@@ -60,7 +60,7 @@ namespace LiangZhu
 // log the specified message and do the action
 #define ON_ERROR_LOG_MESSAGE_AND_DO(expr, comp, error, msg, action)    \
     if (expr comp error)	{\
-        u_int32 err = GetLastSysError();   \
+        u_int32 err = LiangZhu::GetLastSysError();   \
         LOG_ERROR_MSG_S(err, msg);  \
         action; \
     }
@@ -113,6 +113,5 @@ private:\
 
 }
 
-using namespace LiangZhu;
 
 #endif

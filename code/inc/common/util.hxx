@@ -1,8 +1,13 @@
 #ifndef __HILUO_UTIL_INCLUDE_H__
 #define __HILUO_UTIL_INCLUDE_H__
 
-#include <boost/thread/lock_guard.hpp>
-#include <boost/thread/mutex.hpp>
+#include "common.h"
+
+#include "boost/date_time/posix_time/posix_time.hpp"
+#include "boost/thread/lock_guard.hpp"
+#include "boost/thread/mutex.hpp"
+
+using namespace boost::posix_time;
 
 /**
 * @Function: min()/max()
