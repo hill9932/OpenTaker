@@ -389,7 +389,9 @@ int CLua::callFunc(const tchar* _func, const tchar* _params, ...)
 
     va_list args, vl;
     va_start(args, _params);
+#ifdef WIN32
     vl = va_arg(args, va_list);
+#endif
 
     int nArg = 0, nRes = 0;         // number of arguments and results    
     for (nArg = 0; *_params; nArg++)
