@@ -62,7 +62,6 @@ namespace LiangZhu
         struct stat statbuf;
         if (fstat(m_fileHandle, &statbuf) == -1)
         {
-            PV_LOG_LAST_ERRORMSG();
             return 0;
         }
 
