@@ -216,7 +216,6 @@ namespace LiangZhu
 #ifdef LINUX
         /*   struct iocb* iocbs[512] = {0};
 
-
            for (int i = 0; i < _count; ++i)
            {
            #ifdef LINUX
