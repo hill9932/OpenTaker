@@ -23,7 +23,7 @@ int DropPrivileges(const char* _username)
     // Drop privileges
     if ((setgid(pw->pw_gid) != 0) || (setuid(pw->pw_uid) != 0)) 
     {
-        int err = GetLastSysError();
+        int err = LiangZhu::GetLastSysError();
         LOG_ERROR_MSG(err);
         return err;
     } 

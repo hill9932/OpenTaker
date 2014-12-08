@@ -2,6 +2,14 @@
 #include "string_.h"
 #include "file_system.h"
 
+#ifdef LINUX
+#include <sys/vfs.h>
+#include <dlfcn.h>
+#include "boost/date_time/posix_time/posix_time.hpp"
+#include "boost/interprocess/sync/named_semaphore.hpp" 
+using namespace boost::interprocess;
+#endif
+
 namespace LiangZhu
 {
 
@@ -354,12 +362,6 @@ namespace LiangZhu
     }
 
 #else
-
-#include <sys/vfs.h>
-#include <dlfcn.h>
-#include "boost/date_time/posix_time/posix_time.hpp"
-#include "boost/interprocess/sync/named_semaphore.hpp" 
-using namespace boost::interprocess;
 
     void YieldCurThread()
     {
