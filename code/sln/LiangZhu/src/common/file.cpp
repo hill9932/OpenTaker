@@ -226,7 +226,7 @@ namespace LiangZhu
            */
 
         z = io_submit(m_filePool->getAioObject(), _count, (iocb**)_ioRequests);
-        ON_ERROR_PRINT_LASTMSG_AND_DO(z, !=, _count, SetLastSysError(-z));
+        ON_ERROR_LOG_LAST_ERROR_AND_DO(z, !=, _count, SetLastSysError(-z));
 
 #else
         for (int i = 0; i < _count; ++i)
