@@ -33,6 +33,7 @@ typedef pid_t               PID_T;
 typedef io_context_t        Aio_t;    
 
 typedef struct timeval      TIME_INTERVAL;
+typedef pid_t               process_t;
 typedef int                 SOCKET;
 typedef int                 HANDLE;
 typedef u_int32             DWORD, UINT;
