@@ -1,8 +1,7 @@
 AUTOMAKE_OPTIONS = foreign subdir-objects
 noinst_LIBRARIES = libLiangZhu.a
 
-AM_CPPFLAGS = -I$(top_srcdir)/inc -I$(top_srcdir)/inc/common -I$(top_srcdir)/3rdParty/inc
-AM_CPPFLAGS += -DLINUX -fPIC
+include $(top_srcdir)/common.am
 
 libLiangZhu_a_SOURCES = src/main.cpp \
 			src/common/aio_.cpp \

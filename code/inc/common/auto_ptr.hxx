@@ -25,9 +25,12 @@ void Delete(T* _mem)
 /**
  * Auto free the memory which is allocated by malloc()
  **/
-typedef void (*_RELEASE_)(void*);
+typedef void (*_RELEASE_VOID_)(void*);
+typedef void (*_RELEASE_TCHAR_)(tchar*);
+typedef void (*_RELEASE_CHAR_)(char*);
+typedef void (*_RELEASE_BYTE_)(byte*);
 
-template <class T, class FUNC = _RELEASE_>
+template <class T, class FUNC>
 class AutoFree
 {
 public:
@@ -99,10 +102,10 @@ private:
  * @Function:	Auto pointer for ReferenceControl
  * @Memo: T must realize CCountRef interface
  */
-template <class T> class CAutoPtr
+template <class T, class FUNC> class CAutoPtr
 {
 public:
-    CAutoPtr(T *_ptr = NULL, _RELEASE_ _func = NULL)
+    CAutoPtr(T *_ptr = NULL, FUNC _func = NULL)
 		: m_rawPtr(_ptr)
 	{
         m_func = _func;
@@ -170,7 +173,7 @@ public:
 
 private:
 	T *m_rawPtr;
-    _RELEASE_   m_func;
+    FUNC   m_func;
 };
 
 

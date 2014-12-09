@@ -178,7 +178,7 @@ namespace LiangZhu
 
         if (IsDirExist(_path))    return true;
 
-        AutoFree<tchar> buf(new tchar[strlen_t(_path) + 1], DeleteArray);
+        AutoFree<tchar, _RELEASE_TCHAR_> buf(new tchar[strlen_t(_path) + 1], DeleteArray);
         strcpy_t(buf, _path);
 
         tchar  dir_name[256] = { 0 };

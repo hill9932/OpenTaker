@@ -79,7 +79,7 @@ void CHFileTestSync::TestWriteAndRead(u_int64 _offset)
     int bytesWritten = m_file.write_w(m_buffer, ONE_MB, _offset);
     ASSERT_TRUE(bytesWritten == ONE_MB);
 
-    AutoFree<byte> buf(new byte[ONE_MB], DeleteArray);
+    AutoFree<byte, _RELEASE_BYTE_> buf(new byte[ONE_MB], DeleteArray);
     m_file.seek(_offset);
     int bytesRead = m_file.read_w(buf, ONE_MB, _offset);
     ASSERT_TRUE(bytesRead == ONE_MB);
@@ -183,7 +183,7 @@ void CHFileTestAsync::TestWriteAndRead(u_int64 _offset)
     //
     // read the written ONE_MB block data
     //
-    AutoFree<byte> buf(new byte[ONE_MB], DeleteArray);
+    AutoFree<byte, _RELEASE_BYTE_> buf(new byte[ONE_MB], DeleteArray);
     request = new PER_FILEIO_INFO_t;
     bzero(request, sizeof(OVERLAPPED));
     request->buffer = buf;

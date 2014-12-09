@@ -132,7 +132,7 @@ bool CLua::loadObject(const tchar* _tableName, LuaObject& _obj)
             if (key && value)
             {
                 int size = strlen(key);
-                AutoFree<char>keyL(new char[size + 1], DeleteArray);
+                AutoFree<char, _RELEASE_CHAR_> keyL(new char[size + 1], DeleteArray);
                 bzero(keyL.Get(), size + 1);
                 transform(key, key + strlen(key), keyL.Get(), ::tolower);
                 _obj[keyL.Get()] = value;

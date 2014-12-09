@@ -115,8 +115,8 @@ typedef struct iocb         OVERLAPPED;     // libaio provide
 #define GetNowTime(value)           gettimeofday(&value, NULL)
 #define AlignedAlloc(size, align)   aligned_alloc(align, size)
 #define AlignedFree(pointer)        free(pointer)
-#define AlignedAllocFunc            _aligned_malloc
-#define AlignedFreeFunc             _aligned_free
+#define AlignedAllocFunc            aligned_malloc
+#define AlignedFreeFunc             free
 
 #define stat_                       stat
 #define stricmp                     strcasecmp

@@ -380,7 +380,7 @@ namespace LiangZhu
 
     process_t LaunchProcess(tchar* _path)
     {
-        if (!_path) return NULL;
+        if (!_path) return (process_t)NULL;
 
         CStdString path(_path);
         return LaunchProcess(path);
@@ -397,12 +397,12 @@ namespace LiangZhu
             Str2Argv(_path.c_str(), argv, argc);
 
             int z = execv(argv[0], argv);  
-            ON_ERROR_PRINT_LASTMSG_S(z, !=, 0, _path);
+            ON_ERROR_LOG_MESSAGE_AND_DO(z, !=, 0, _path, "");
 
             if (z != 0)
             {
                 z = execvp(_path.c_str(), argv);
-                ON_ERROR_PRINT_LASTMSG_S(z, !=, 0, _path);
+                ON_ERROR_LOG_MESSAGE_AND_DO(z, !=, 0, _path, "");
             }
 
             exit(0);
@@ -502,11 +502,11 @@ namespace LiangZhu
         {
             RM_LOG_ERROR("Fail to create signal '" << _signal << "': " << ex.what());
             umask(mask);
-            return 0;
+            return (handle_t) 0;
         }
 
         umask(mask);
-        return 1;
+        return (handle_t) 1;
     }
 
     int RemoveSignal(const tchar* _signal)
@@ -585,7 +585,7 @@ namespace LiangZhu
         return -1;
     }
 
-    u_int32 GetAvailableSpace(const tchar* _disk)
+    u_int64 GetAvailableSpace(const tchar* _disk)
     {
         if (!_disk) return 0;
 
@@ -596,7 +596,7 @@ namespace LiangZhu
         return totalsize >> 30;     // GB
     }
 
-    u_int32 GetAvailableSpace(const CStdString& _disk)
+    u_int64 GetAvailableSpace(const CStdString& _disk)
     {
         return GetAvailableSpace(_disk.c_str());
     }
