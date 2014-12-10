@@ -1,5 +1,18 @@
 #include "common.h"
 
+#ifdef LINUX
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netinet/ip.h> /* superset of previous */
+
+enum MULTICAST_MODE_TYPE
+{
+    MCAST_INCLUDE_ = 0,
+    MCAST_EXCLUDE_
+};
+
+#endif
+
 
 /**
  * This routine joins the multicast group for the given sources. If the mode
@@ -17,7 +30,7 @@
  *
  * @return 0, success
  **/
-int join_source_group(int sd, 
+int JoinSourceGroup(int sd, 
                       MULTICAST_MODE_TYPE _mode, 
                       u_int32   _grpaddr, 
                       u_int32   _ifaddr,
@@ -109,7 +122,7 @@ int join_source_group(int sd,
 }
 
 
-int leave_source_group(int sd, u_int32 _grpaddr, u_int32 _srcaddr, u_int32 _iaddr)
+int LeaveSourceGroup(int sd, u_int32 _grpaddr, u_int32 _srcaddr, u_int32 _iaddr)
 {
     struct ip_mreq_source imr;
 

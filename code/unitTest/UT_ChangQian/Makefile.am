@@ -4,7 +4,7 @@ noinst_PROGRAMS = UT_ChangQian
 include $(top_srcdir)/common.am
 
 UT_ChangQian_LDFLAGS   = -L$(top_builddir)/sln/ChangQian
-UT_ChangQian_LDADD     = -lChangQian
+UT_ChangQian_LDADD     = -lChangQian -lLiangZhu
 
 UT_ChangQian_SOURCES = src/global.cpp 	\
 		      src/main.cpp 				\

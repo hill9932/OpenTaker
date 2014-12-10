@@ -169,7 +169,7 @@ namespace ChangQian
         if (!_new_socket)
         {
             ret = _new_socket.open();
-            ON_ERROR_RETURN(ret, !=, 0);
+            ON_ERROR_RETURN_LAST_ERROR(ret, !=, 0);
         }
 
         memset(&_io_context->m_overlapped, 0, sizeof(OVERLAPPED));
