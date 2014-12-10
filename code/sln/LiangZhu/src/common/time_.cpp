@@ -69,6 +69,22 @@ namespace LiangZhu
         return r;
     }
 
+    CStdString GetTimeString(time_t _time)
+    {
+        struct tm tm;
+        tm = *localtime(&_time);
+
+        CStdString r;
+        r.Format("%4d.%02d.%02d %02d.%02d.%02d",
+            tm.tm_year + 1900,
+            tm.tm_mon + 1,
+            tm.tm_mday,
+            tm.tm_hour,
+            tm.tm_min,
+            tm.tm_sec);
+        return r;
+    }
+
     CCmdTimer::CCmdTimer(const char* _msg)
     {
         if (_msg)   m_msg = _msg;

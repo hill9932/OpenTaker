@@ -157,9 +157,17 @@ protected:
 
 void CHFileTestAsync::TestWriteAndRead(u_int64 _offset)
 {
+#ifdef WIN32
     RM_LOG_INFO("The following error is intentionally");
+#endif
+
     int bytesWritten = m_file.write_w(m_buffer, ONE_MB, 0); // not workable
+
+#ifdef WIN32
     ASSERT_TRUE(bytesWritten == 0);
+#else
+    ASSERT_TRUE(bytesWritten == ONE_MB);
+#endif
 
     PPER_FILEIO_INFO_t   request = new PER_FILEIO_INFO_t;
     bzero(request, sizeof(OVERLAPPED));

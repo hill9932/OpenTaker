@@ -13,6 +13,11 @@ namespace LiangZhu
     CStdString GetNowTimeStr();
 
     /**
+     * @Function: Convert a time_t value into a string format
+     **/
+    CStdString GetTimeString(time_t _time);
+
+    /**
      * @Function: calculate the different value between two time interval
      **/
     CStdString CalcTimeDiff(TIME_INTERVAL& _start, TIME_INTERVAL& _end, int _count = 1);
