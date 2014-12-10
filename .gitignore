@@ -7,12 +7,7 @@
 *.sln.docstates
 
 # Build results
-
-[Dd]ebug/
-[Rr]elease/
 x64/
-build/
-[Bb]in/
 [Oo]bj/
 
 # Enable "build/" folder in the NuGet Packages folder since NuGet packages use it for MSBuild targets
@@ -163,3 +158,4 @@ $RECYCLE.BIN/
 /code/3rdParty/inc/log4cplus
 /code/3rdParty/inc/popt
 /code/3rdParty/inc/gtest
+/code/tmp
