@@ -106,7 +106,7 @@ namespace LiangZhu
 #ifdef WIN32
         return SetFilePointer(m_fileHandle, 0, NULL, FILE_CURRENT);
 #else
-        return lseek64(m_fileHandle, 0, SEEK_SET);
+        return lseek64(m_fileHandle, 0, SEEK_CUR);
 #endif
     }
 

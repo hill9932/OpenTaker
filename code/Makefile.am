@@ -1,12 +1,12 @@
 AUTOMAKE_OPTIONS = foreign subdir-objects
 
-TARGET_PATH	= $(top_srcdir)/bin/
+TARGET_ROOT	= $(top_srcdir)/bin/
 
 if DEBUG
-TARGET_PATH = $(TARGET_PATH)debug/
+TARGET_PATH = $(TARGET_ROOT)debug/
 
 else
-TARGET_PATH =$(TARGET_PATH)release/
+TARGET_PATH = $(TARGET_ROOT)release/
 
 endif
 
