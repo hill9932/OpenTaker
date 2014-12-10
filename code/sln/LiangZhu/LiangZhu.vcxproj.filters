@@ -161,5 +161,8 @@
     <ClInclude Include="..\..\inc\network\change_qian.h">
       <Filter>source file</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\inc\common\file.h">
+      <Filter>header file</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

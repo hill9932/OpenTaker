@@ -1,7 +1,7 @@
 AUTOMAKE_OPTIONS = foreign subdir-objects
-noinst_PROGRAMS = UT_LiangZhu
-
 include $(top_srcdir)/common.am
+
+noinst_PROGRAMS = UT_LiangZhu
 
 UT_LiangZhu_LDFLAGS   = -L$(top_builddir)/sln/LiangZhu
 UT_LiangZhu_LDADD     = -lLiangZhu 

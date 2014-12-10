@@ -1,7 +1,7 @@
 AUTOMAKE_OPTIONS = foreign subdir-objects
-noinst_LIBRARIES = libLiangZhu.a
-
 include $(top_srcdir)/common.am
+
+noinst_LIBRARIES = libLiangZhu.a
 
 libLiangZhu_a_SOURCES = src/main.cpp \
 			src/common/aio_.cpp \

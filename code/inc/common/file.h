@@ -73,6 +73,7 @@ namespace LiangZhu
         int     write_w(const byte* _data, int _dataLen, u_int64 _offset = -1);
 
         void attach(handle_t _fileHandle, bool _autoClose = true);
+        void setFilePool(CFilePool* _filePool) { m_filePool = _filePool; }
 
         u_int32 getSize(u_int32* _high32 = NULL);
         int     setSize(u_int64 _fileSize);

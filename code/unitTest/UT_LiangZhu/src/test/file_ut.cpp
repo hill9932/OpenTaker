@@ -128,6 +128,7 @@ public:
     {
         ASSERT_FALSE(IsFileExist(m_fileName));  // file shouldn't exist
 
+        m_file.setFilePool(&m_filePool);
         m_file.setFileName(m_fileName);
         m_file.open(ACCESS_READ | ACCESS_WRITE, FILE_OPEN_ALWAYS, true, false);
         ASSERT_TRUE(m_file.isValid());

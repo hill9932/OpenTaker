@@ -1,7 +1,7 @@
 AUTOMAKE_OPTIONS = foreign subdir-objects
-noinst_LIBRARIES = libChangQian.a
-
 include $(top_srcdir)/common.am
+
+noinst_LIBRARIES = libChangQian.a
 
 libChangQian_a_SOURCES = src/main.cpp 		\
 			src/network/decode_basic.cpp	\

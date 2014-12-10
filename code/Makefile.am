@@ -1,12 +1,15 @@
 AUTOMAKE_OPTIONS = foreign subdir-objects
 
-TARGET_ROOT	= $(top_srcdir)/bin/
+TARGET_ROOT	 = $(top_srcdir)/bin/
+LIBRARY_ROOT = $(top_srcdir)/lib/
 
 if DEBUG
-TARGET_PATH = $(TARGET_ROOT)debug/
+TARGET_PATH  = $(TARGET_ROOT)debug/
+LIBRARY_PATH = $(LIBRARY_ROOT)debug/
 
 else
 TARGET_PATH = $(TARGET_ROOT)release/
+LIBRARY_PATH = $(LIBRARY_ROOT)release/
 
 endif
 
