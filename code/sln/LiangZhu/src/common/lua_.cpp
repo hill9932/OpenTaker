@@ -59,7 +59,7 @@ bool CLua::loadInteger(const tchar* _name, int& value)
 bool CLua::loadString(const tchar* _name, CStdString& _value)
 {
     if (!_name) return false;
-    _value.clear();
+    //_value.clear();
 
     int n = lua_gettop(m_luaState);
     lua_getglobal(m_luaState, _name);

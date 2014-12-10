@@ -271,7 +271,7 @@ void CHFileTestDirectSync::TestWriteAndRead(u_int64 _offset)
     else
         ASSERT_TRUE(bytesWritten == 0);
 
-    AutoFree<byte> buf((byte*)AlignedAlloc(ONE_MB, SECTOR_ALIGNMENT), AlignedFreeFunc);
+    AutoFree<byte, _RELEASE_VOID_> buf((byte*)AlignedAlloc(ONE_MB, SECTOR_ALIGNMENT), AlignedFreeFunc);
 
     int bytesRead = m_file.read_w(buf, ONE_MB, _offset);
     if (_offset % SECTOR_ALIGNMENT == 0)

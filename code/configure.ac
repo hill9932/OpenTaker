@@ -5,7 +5,7 @@ AC_PREREQ([2.69])
 AC_INIT([HILUO-OpenTaker], [0.9.1], [hill9932@gmail.com])
 AC_CONFIG_SRCDIR([unitTest/UT_ChangQian/src/version.h])
 AC_CONFIG_HEADERS([config.h])
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE()
 LT_INIT
 
 AC_ARG_ENABLE([debug],

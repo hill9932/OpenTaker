@@ -30,22 +30,31 @@ TEST_F(CLuaTest, LoadConfig)
     ASSERT_TRUE(m_lua.loadString("name", value));
     ASSERT_TRUE(value == "hill");
 
+    value.clear();
     ASSERT_FALSE(m_lua.loadString("novalue", value));
+
+    value.clear();
     ASSERT_TRUE(m_lua.loadString("age", value));
     ASSERT_TRUE(value == "23");
 
     //
     // test the bool value
     // 
+    value.clear();
     ASSERT_FALSE(m_lua.loadString("married", value));
+
+    value.clear();
     ASSERT_TRUE(m_lua.loadBoolean("married", bValue));
     ASSERT_TRUE(bValue);
 
     //
     // test the number value
     //
+    value.clear();
     ASSERT_TRUE(m_lua.loadString("salary", value));
     ASSERT_TRUE(value == "50432.34");
+
+    value.clear();
     ASSERT_TRUE(m_lua.loadDouble("salary", dValue));
     ASSERT_TRUE(dValue == 50432.34);
 

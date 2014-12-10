@@ -1,8 +1,16 @@
 AUTOMAKE_OPTIONS = foreign subdir-objects
 
-AM_LDFLAGS =
-AM_CPPFLAGS = -DLINUX 
+TARGET_PATH	= $(top_srcdir)/bin/
 
-export AM_CPPFLAGS
+if DEBUG
+TARGET_PATH = $(TARGET_PATH)debug/
 
-SUBDIRS = sln/LiangZhu sln/ChangQian unitTest/UT_LiangZhu unitTest/UT_ChangQian
+else
+TARGET_PATH =$(TARGET_PATH)release/
+
+endif
+
+install-exec-local:
+	cp $(top_srcdir)/unitTest/UT_LiangZhu/UT_LiangZhu $(TARGET_PATH)
+
+SUBDIRS = sln/LiangZhu unitTest/UT_LiangZhu
