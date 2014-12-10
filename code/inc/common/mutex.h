@@ -4,6 +4,9 @@
 #include "common.h"
 #include "mutex_i.h"
 
+#define SCOPE_LOCK(lock)    LiangZhu::MutexWrap  locker(lock);
+#define SCOPE_LOCK_(lock)   LiangZhu::MutexWrap_ locker(lock);
+
 namespace LiangZhu
 {
     class Mutex : public ILockable
@@ -52,10 +55,6 @@ namespace LiangZhu
     };
 
     void InitCriticalSec(CRITICAL_SECTION& _cs);
-
-#define SCOPE_LOCK(lock)    MutexWrap locker(lock);
-#define SCOPE_LOCK_(lock)   MutexWrap_ locker(lock);
-
 }
 
 #endif

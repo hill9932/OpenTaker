@@ -635,6 +635,23 @@ namespace LiangZhu
         return dlsym(_module, _funName);
     }
 
+    int TrigSignal(const char* _signal)
+    {
+        if (!_signal) return -1;
+        try
+        {
+            named_semaphore sem(open_only_t(), _signal);
+            sem.post();
+        }
+        catch (interprocess_exception& ex)
+        {
+            printf("Fail to wait signal '%s': %s\r\n", _signal, ex.what());
+            return -1;
+        }
+
+        return 0;
+    }
+
 #endif
 
 }

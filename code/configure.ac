@@ -104,6 +104,7 @@ AC_CHECK_FUNCS([bzero dup2 ftruncate getcwd gethostbyaddr gethostname gettimeofd
 AC_CONFIG_FILES([Makefile
 		 sln/LiangZhu/Makefile
 		 sln/ChangQian/Makefile
+		 sln/PacketRing/Makefile
 		 unitTest/UT_LiangZhu/Makefile
 		 unitTest/UT_ChangQian/Makefile])
 

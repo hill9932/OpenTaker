@@ -1,5 +1,5 @@
 AUTOMAKE_OPTIONS = foreign subdir-objects
-include $(top_srcdir)/common.am
+include $(top_srcdir)/build/common.am
 
 noinst_PROGRAMS = UT_LiangZhu
 

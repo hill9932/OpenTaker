@@ -17,4 +17,4 @@ install-exec-local:
 	cp $(top_srcdir)/unitTest/UT_LiangZhu/UT_LiangZhu $(TARGET_PATH) && \
 	cp $(top_srcdir)/unitTest/UT_ChangQian/UT_ChangQian $(TARGET_PATH)
 
-SUBDIRS = sln/LiangZhu sln/ChangQian unitTest/UT_LiangZhu unitTest/UT_ChangQian
+SUBDIRS = sln/LiangZhu sln/ChangQian sln/PacketRing unitTest/UT_LiangZhu unitTest/UT_ChangQian

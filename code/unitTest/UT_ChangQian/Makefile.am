@@ -1,7 +1,7 @@
 AUTOMAKE_OPTIONS = foreign subdir-objects
 noinst_PROGRAMS = UT_ChangQian
 
-include $(top_srcdir)/common.am
+include $(top_srcdir)/build/common.am
 
 UT_ChangQian_LDFLAGS   = -L$(top_builddir)/sln/ChangQian -L$(top_builddir)/sln/LiangZhu
 UT_ChangQian_LDADD     = -lChangQian -lLiangZhu
