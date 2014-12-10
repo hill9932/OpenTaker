@@ -353,7 +353,8 @@ namespace LiangZhu
         if (_offset != (u_int64)-1)  lseek64(m_fileHandle, _offset, SEEK_SET);
 
         int n = ::read(m_fileHandle, _data, _dataLen);
-        ON_ERROR_LOG_LAST_ERROR(n, == , -1);
+        ON_ERROR_LOG_LAST_ERROR_AND_DO(n, == , -1, return 0);
+
         return n;
     }
 
@@ -363,7 +364,8 @@ namespace LiangZhu
         if (_offset != (u_int64)-1)  lseek64(m_fileHandle, _offset, SEEK_SET);
 
         int n = ::write(m_fileHandle, _data, _dataLen);
-        ON_ERROR_LOG_LAST_ERROR(n, != , _dataLen);
+        ON_ERROR_LOG_LAST_ERROR_AND_DO(n, != , _dataLen, return 0);
+
         return n;
     }
 

@@ -274,6 +274,7 @@ private:
 void CHFileTestDirectSync::TestWriteAndRead(u_int64 _offset)
 {
     int bytesWritten = m_file.write_w(m_buffer, ONE_MB, _offset);
+
     if (_offset % SECTOR_ALIGNMENT == 0 &&
         (u_int64)m_buffer % SECTOR_ALIGNMENT == 0)
         ASSERT_TRUE(bytesWritten == ONE_MB);
