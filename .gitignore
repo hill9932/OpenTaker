@@ -157,3 +157,9 @@ $RECYCLE.BIN/
 /code/3rdParty/src
 /code/tmp/LiangZhu/Debug64
 /code/3rdParty/lib
+/code/3rdParty/inc/boost
+/code/3rdParty/inc/lua
+/code/3rdParty/inc/tinyxml
+/code/3rdParty/inc/log4cplus
+/code/3rdParty/inc/popt
+/code/3rdParty/inc/gtest

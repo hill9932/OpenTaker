@@ -3,12 +3,10 @@ AM_CPPFLAGS += -m64 -DLINUX -fPIC
 AM_CPPFLAGS += -Wall -Wno-unused-value -Wno-unused-function -Wno-pointer-arith -Wno-sign-compare
 
 if DEBUG
-
 AM_CPPFLAGS += -g -ggdb -O2 
 AM_CPPFLAGS += -DDEBUG -D_DEBUG
 
 else
-
 AM_CPPFLAGS += -O0
 
 endif
