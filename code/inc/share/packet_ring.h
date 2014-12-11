@@ -137,6 +137,9 @@ struct ModuleIndex_t
 extern   "C"{
 #endif
 
+VPAGENT_API
+void SetRingLogger(log4cplus::Logger* _logger);
+
 /**
 * @Function: Every process should call this function first to create the
 *            necessary resource such as share memory.
@@ -151,11 +154,11 @@ extern   "C"{
 *  module id
 **/
 VPAGENT_API
-ModuleID InitAgent(PktRingHandle_t *_handler,
-                   const tchar* _globalName,
-                   const tchar* _moduleName,
-                   u_int64 _blockSize,
-                   u_int32 _metaBlkCapacity = 10000);
+ModuleID InitPacketRing(PktRingHandle_t *_handler,
+                        const tchar* _globalName,
+                        const tchar* _moduleName,
+                        u_int64 _blockSize,
+                        u_int32 _metaBlkCapacity = 10000);
 
 VPAGENT_API
 ModuleID GetMyID(const PktRingHandle_t _handler, const char* _name);
@@ -170,7 +173,7 @@ ModuleID GetMyID(const PktRingHandle_t _handler, const char* _name);
 * @Param _handler: specify the packet ring this module register to.
 * @Param _offset[out]: the offset of ext
 * @Return
-*  -1: call InitAgent() first
+*  -1: call InitPacketRing() first
 *  -2: column type invalid, only support "int", "integer", "text", "numeric"
 * @Warning:
 *  If the module crash and restart, make sure the register values are not change,
@@ -234,7 +237,7 @@ VPAGENT_API
 ModuleInfo_t* GetModuleInfo(PktRingHandle_t _handler, ModuleID _id);
 
 VPAGENT_API
-bool IsAgentStop(const PktRingHandle_t _handler);
+bool IsPacketRingStop(const PktRingHandle_t _handler);
 
 #ifdef __cplusplus
 }
@@ -251,7 +254,7 @@ ModuleID RegMySelf(const char* _name,
                    int*        _offset);
 
 VPAGENT_API
-void StopAgent(PktRingHandle_t _handler);
+void StopPacketRing(PktRingHandle_t _handler);
 
 /************************************************************************
  *
@@ -259,7 +262,7 @@ void StopAgent(PktRingHandle_t _handler);
  *
  ************************************************************************/
 VPAGENT_API
-bool ReleaseAgent(PktRingHandle_t _handler, ModuleID _moduleId, const char* _globalName);
+bool ReleasePacketRing(PktRingHandle_t _handler, ModuleID _moduleId, const char* _globalName);
 
 /**
  * @Function: Called by VPEyes to start work.

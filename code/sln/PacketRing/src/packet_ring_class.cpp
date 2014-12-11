@@ -23,11 +23,8 @@ void CPacketRing::Init(const std::string& ringName,
         m_ringName = ringName;
     }
 
-    m_moduleId = InitAgent(&m_ringHandler, name,
-                           moduleName.c_str(), pktBlkSize, metaBlkCapacity);
+    m_moduleId = InitPacketRing(&m_ringHandler, name, moduleName.c_str(), pktBlkSize, metaBlkCapacity);
     if ((int)m_moduleId < 0) {
-        //LOG_ERROR("Failed to init packet ring for module "
-        //             << moduleName << ", block memory size: " << pktBlkSize);
         THROW_EXCEPTION(InitPacketRing, "Get an invalid module ID");
     }
 }
@@ -72,8 +69,7 @@ u_int32 CPacketRing::GetModuleCount()
 PktMetaBlk_t* CPacketRing::GetNextFullMetaBlk()
 {
     if (m_metaBlks.size() == 0) {
-        int sz = GetNextMetaBlks(m_ringHandler, m_moduleId,
-                                 (int&)m_metaBlkPickPos, m_metaBlks);
+        int sz = GetNextMetaBlks(m_ringHandler, m_moduleId, (int&)m_metaBlkPickPos, m_metaBlks);
         if (sz == 0) {
             return NULL;
         }
@@ -113,7 +109,7 @@ byte* CPacketRing::GetPacketData(PacketType_e type, PacketMeta_t* metaInfo)
 
 bool CPacketRing::IsStopped()
 {
-    return IsAgentStop(m_ringHandler);
+    return IsPacketRingStop(m_ringHandler);
 }
 
 bool CPacketRing::IsReady()
@@ -133,18 +129,18 @@ void CPacketRing::Start()
 
 void CPacketRing::Stop()
 {
-    StopAgent(m_ringHandler);
+    StopPacketRing(m_ringHandler);
 }
 
 bool CPacketRing::Release()
 {
-    return ReleaseAgent(m_ringHandler, m_moduleId,
-                        m_ringName.empty() ? NULL : m_ringName.c_str());
+    return ReleasePacketRing(m_ringHandler, m_moduleId,
+                             m_ringName.empty() ? NULL : m_ringName.c_str());
 }
 
 bool CPacketRing::Clear(const std::string& ringName)
 {
-    return ReleaseAgent(NULL, m_moduleId, ringName.empty() ? NULL : ringName.c_str());
+    return ReleasePacketRing(NULL, m_moduleId, ringName.empty() ? NULL : ringName.c_str());
 }
 
 u_int32 CPacketRing::GetMetaCount()

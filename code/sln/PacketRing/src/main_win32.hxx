@@ -22,7 +22,7 @@ byte* CreateBlockMemory(const char* _name, u_int64 _size)
     return lpData;
 }
 
-bool ReleaseAgent(PktRingHandle_t _handler, ModuleID _moduleId, const tchar* _globalName)
+bool ReleasePacketRing(PktRingHandle_t _handler, ModuleID _moduleId, const tchar* _globalName)
 {
     Global_t *_G = (Global_t *)_handler;
 
@@ -41,7 +41,7 @@ bool ReleaseAgent(PktRingHandle_t _handler, ModuleID _moduleId, const tchar* _gl
         bzero(_G, sizeof(Global_t));
     }
 
-    StopAgent(_handler);
+    StopPacketRing(_handler);
 
     return true;
 }

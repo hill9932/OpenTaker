@@ -7,8 +7,8 @@ class CPacketRingTest : public ::testing::Test
 public:
     CPacketRingTest()
     {
-        m_conf.enable = true;
-        m_conf.ready = false;
+        m_conf.enable   = true;
+        m_conf.ready    = false;
         m_makePacketThread = m_handlePacketThread = NULL;
     }
 
@@ -17,6 +17,7 @@ protected:
     {
         m_makePacketThread   = new LiangZhu::CSimpleThread(MakePacketFunc, &m_conf);
         m_handlePacketThread = new LiangZhu::CSimpleThread(HandlePacketFunc, &m_conf);
+        SetRingLogger(g_logger);
     }
 
     virtual void TearDown()

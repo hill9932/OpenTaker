@@ -51,7 +51,7 @@ retry:
     return addr;
 }
 
-bool ReleaseAgent(PktRingHandle_t _handler, ModuleID _moduleId, const char* _globalName)
+bool ReleasePacketRing(PktRingHandle_t _handler, ModuleID _moduleId, const char* _globalName)
 {
     if (!_globalName)   _globalName = SHARE_MEM_GLOBAL_NAME;
     CStdString blockName = _globalName;
@@ -101,7 +101,7 @@ bool ReleaseAgent(PktRingHandle_t _handler, ModuleID _moduleId, const char* _glo
         unlink(shareName);
     }
 
-    StopAgent(_handler);
+    StopPacketRing(_handler);
 
     return true;
 }

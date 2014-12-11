@@ -12,7 +12,7 @@ AM_CPPFLAGS += -O0
 
 endif
 
-AM_LDFLAGS=-Wl,-rpath=$(prefix)/lib,-rpath=/usr/local/lib 
+AM_LDFLAGS	= -Wl,-rpath=$(prefix)/lib,-rpath=/usr/local/lib 
 
 AM_CXXFLAGS = 
 CPPFLAGS 	= 

@@ -42,13 +42,19 @@ int   FindModule(const Global_t *_G, const char* _name);
 
 extern "C"
 {
-    ModuleID InitAgent(PktRingHandle_t *_handler,
-                       const tchar* _globalName,
-                       const tchar* _moduleName,
-                       u_int64 _blockSize,
-                       u_int32 _metaBlkCapacity)
+    void SetRingLogger(log4cplus::Logger* _logger)
+    {
+        g_logger = _logger;
+    }
+
+    ModuleID InitPacketRing(PktRingHandle_t *_handler,
+                            const tchar* _globalName,
+                            const tchar* _moduleName,
+                            u_int64 _blockSize,
+                            u_int32 _metaBlkCapacity)
     {
         if (!_globalName)   _globalName = SHARE_MEM_GLOBAL_NAME;
+        RM_LOG_INFO("New PacketRing is created: " << _globalName);
 
         byte* buf = (byte*)CreateBlockMemory(_globalName, sizeof(Global_t));
         if (!buf)   return -1;
@@ -192,7 +198,7 @@ extern "C"
         return &_G->g_moduleInfo[_id];
     }
 
-    bool IsAgentStop(const PktRingHandle_t _handler)
+    bool IsPacketRingStop(const PktRingHandle_t _handler)
     {
         if (!_handler) return true;
         return ((const Global_t *)_handler)->g_stopped;
@@ -461,7 +467,7 @@ u_int32 GetMetaBlkCount(PktRingHandle_t _handler)
     return _G->g_metaBlkCount;
 }
 
-void StopAgent(PktRingHandle_t _handler)
+void StopPacketRing(PktRingHandle_t _handler)
 {
     Global_t *_G = (Global_t *)_handler;
     if (_G) _G->g_stopped = true;
