@@ -15,6 +15,9 @@
     <Filter Include="unit_test\common">
       <UniqueIdentifier>{44864c66-aabf-44c8-9700-8c1b077f99ad}</UniqueIdentifier>
     </Filter>
+    <Filter Include="unit_test\share">
+      <UniqueIdentifier>{e2ebcd7b-40c9-4c30-b65d-3657cbc2fc40}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -41,6 +44,9 @@
     <ClCompile Include="src\test\lua_ut.cpp">
       <Filter>unit_test\common</Filter>
     </ClCompile>
+    <ClCompile Include="src\test\packet_ring_ut.cpp">
+      <Filter>unit_test\share</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\global.h">
@@ -48,9 +54,6 @@
     </ClInclude>
     <ClInclude Include="src\version.h">
       <Filter>header file</Filter>
-    </ClInclude>
-    <ClInclude Include="src\test\packet_ring_ut.cpp">
-      <Filter>unit_test\common</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

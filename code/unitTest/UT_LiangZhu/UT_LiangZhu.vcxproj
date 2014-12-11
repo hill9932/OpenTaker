@@ -151,7 +151,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)..\lib\$(Configuration);$(SolutionDir)..\3rdParty\lib\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>lua.lib;gtest.lib;LiangZhu.lib;log4cplus.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>lua.lib;gtest.lib;PacketRing.lib;LiangZhu.lib;log4cplus.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>if $(ConfigurationType) == StaticLibrary (copy $(SolutionDir)..\tmp\$(ProjectName)\$(Configuration)\$(TargetFileName) $(SolutionDir)..\lib\$(Configuration)\$(TargetFileName))
@@ -181,7 +181,7 @@ if $(ConfigurationType) == Application (copy $(SolutionDir)..\tmp\$(ProjectName)
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)..\lib\$(Configuration);$(SolutionDir)..\3rdParty\lib\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>lua.lib;gtest.lib;LiangZhu.lib;log4cplus.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>lua.lib;gtest.lib;PacketRing.lib;LiangZhu.lib;log4cplus.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>if $(ConfigurationType) == StaticLibrary (copy $(SolutionDir)..\tmp\$(ProjectName)\$(Configuration)\$(TargetFileName) $(SolutionDir)..\lib\$(Configuration)\$(TargetFileName))
@@ -209,7 +209,7 @@ if $(ConfigurationType) == Application (copy $(SolutionDir)..\tmp\$(ProjectName)
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>$(SolutionDir)..\lib\$(Configuration);$(SolutionDir)..\3rdParty\lib\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>lua.lib;gtest.lib;LiangZhu.lib;log4cplus.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>lua.lib;gtest.lib;PacketRing.lib;LiangZhu.lib;log4cplus.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>if $(ConfigurationType) == StaticLibrary (copy $(SolutionDir)..\tmp\$(ProjectName)\$(Configuration)\$(TargetFileName) $(SolutionDir)..\lib\$(Configuration)\$(TargetFileName))
@@ -237,7 +237,7 @@ if $(ConfigurationType) == Application (copy $(SolutionDir)..\tmp\$(ProjectName)
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>$(SolutionDir)..\lib\$(Configuration);$(SolutionDir)..\3rdParty\lib\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>lua.lib;gtest.lib;LiangZhu.lib;log4cplus.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>lua.lib;gtest.lib;PacketRing.lib;LiangZhu.lib;log4cplus.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>if $(ConfigurationType) == StaticLibrary (copy $(SolutionDir)..\tmp\$(ProjectName)\$(Configuration)\$(TargetFileName) $(SolutionDir)..\lib\$(Configuration)\$(TargetFileName))
@@ -259,7 +259,7 @@ if $(ConfigurationType) == Application (copy $(SolutionDir)..\tmp\$(ProjectName)
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)..\lib\$(Configuration);$(SolutionDir)..\3rdParty\lib\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>lua.lib;gtest.lib;LiangZhu.lib;log4cplus.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>lua.lib;gtest.lib;PacketRing.lib;LiangZhu.lib;log4cplus.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release64|Win32'">
@@ -275,7 +275,7 @@ if $(ConfigurationType) == Application (copy $(SolutionDir)..\tmp\$(ProjectName)
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)..\lib\$(Configuration);$(SolutionDir)..\3rdParty\lib\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>lua.lib;gtest.lib;LiangZhu.lib;log4cplus.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>lua.lib;gtest.lib;PacketRing.lib;LiangZhu.lib;log4cplus.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug64|x64'">
@@ -292,7 +292,7 @@ if $(ConfigurationType) == Application (copy $(SolutionDir)..\tmp\$(ProjectName)
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)..\lib\$(Configuration);$(SolutionDir)..\3rdParty\lib\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>lua.lib;gtest.lib;LiangZhu.lib;log4cplus.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>lua.lib;gtest.lib;PacketRing.lib;LiangZhu.lib;log4cplus.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">
@@ -309,7 +309,7 @@ if $(ConfigurationType) == Application (copy $(SolutionDir)..\tmp\$(ProjectName)
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)..\lib\$(Configuration);$(SolutionDir)..\3rdParty\lib\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>lua.lib;gtest.lib;LiangZhu.lib;log4cplus.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>lua.lib;gtest.lib;PacketRing.lib;LiangZhu.lib;log4cplus.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -319,12 +319,12 @@ if $(ConfigurationType) == Application (copy $(SolutionDir)..\tmp\$(ProjectName)
     <ClCompile Include="src\test\file_ut.cpp" />
     <ClCompile Include="src\test\lua_ut.cpp" />
     <ClCompile Include="src\test\math_ut.cpp" />
+    <ClCompile Include="src\test\packet_ring_ut.cpp" />
     <ClCompile Include="src\test\string_ut.cpp" />
     <ClCompile Include="src\test\system_ut.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\global.h" />
-    <ClInclude Include="src\test\packet_ring_ut.cpp" />
     <ClInclude Include="src\version.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

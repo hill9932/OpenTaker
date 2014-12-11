@@ -12,17 +12,18 @@ public:
         m_makePacketThread = m_handlePacketThread = NULL;
     }
 
+protected:
     virtual void SetUp()
     {
-        m_makePacketThread = new CSimpleThread(MakePacketFunc, &m_conf);
-        m_handlePacketThread = new CSimpleThread(HandlePacketFunc, &m_conf);
-	}
+        m_makePacketThread   = new LiangZhu::CSimpleThread(MakePacketFunc, &m_conf);
+        m_handlePacketThread = new LiangZhu::CSimpleThread(HandlePacketFunc, &m_conf);
+    }
 
-	virtual void TearDown()
+    virtual void TearDown()
     {
         SAFE_DELETE(m_makePacketThread);
         SAFE_DELETE(m_handlePacketThread);
-	}
+    }
 
 protected:
     struct TestConf_t
@@ -36,8 +37,8 @@ protected:
 
 private:
     TestConf_t	m_conf;
-    CSimpleThread*	m_makePacketThread;
-    CSimpleThread*	m_handlePacketThread;
+    LiangZhu::CSimpleThread*	m_makePacketThread;
+    LiangZhu::CSimpleThread*	m_handlePacketThread;
 };
 
 int CPacketRingTest::MakePacketFunc(void* _context)
@@ -52,8 +53,8 @@ int CPacketRingTest::MakePacketFunc(void* _context)
     if (!modInfo)	return -1;
 
     TestConf_t* conf = (TestConf_t*)_context;
-    while (!conf->ready)		
-		SleepSec(1);
+    while (!conf->ready)
+        SleepSec(1);
 
     struct timeval tv;
     u_int64 ts = 0;
@@ -85,5 +86,4 @@ int CPacketRingTest::HandlePacketFunc(void* _context)
 
 TEST_F(CPacketRingTest, WorkRound)
 {
-    Setup();
 }
