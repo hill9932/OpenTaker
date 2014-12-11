@@ -18,12 +18,14 @@ enum WriteMode_e
     WRITE_INTERLEAVED
 };
 
+//
 // config about engine
+//
 struct EngineConf_t
 {
     CStdString  dbPath;         // the path to store the packet db files
     bool        isSecAlign;
-
+    bool        enableParsePacket;
 };
 
 struct TargetConf_t
@@ -82,6 +84,8 @@ struct CaptureConf_t
 struct EnvConfig_t
 {
     DebugMode_e     debugMode;
+    int             justTestCapture;
+
     EngineConf_t    engine;
     StorageConf_t   storage;
     CaptureConf_t   capture;

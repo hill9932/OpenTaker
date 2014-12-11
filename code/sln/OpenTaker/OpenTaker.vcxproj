@@ -321,13 +321,16 @@ if $(ConfigurationType) == Application (copy $(SolutionDir)..\tmp\$(ProjectName)
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\block_capture.cpp" />
     <ClCompile Include="src\capture.cpp" />
     <ClCompile Include="src\global.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\block_capture.h" />
     <ClInclude Include="src\capture.h" />
     <ClInclude Include="src\capture_file.h" />
+    <ClInclude Include="src\capture_store.h" />
     <ClInclude Include="src\global.h" />
     <ClInclude Include="src\version.h" />
   </ItemGroup>

@@ -81,6 +81,9 @@
     <ClCompile Include="src\common\sqlite3.c">
       <Filter>common</Filter>
     </ClCompile>
+    <ClCompile Include="src\common\block_file.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\inc\common\common.h">
@@ -177,6 +180,9 @@
       <Filter>header file</Filter>
     </ClInclude>
     <ClInclude Include="..\..\inc\common\sqlite_.h">
+      <Filter>header file</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\common\block_file.h">
       <Filter>header file</Filter>
     </ClInclude>
   </ItemGroup>

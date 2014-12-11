@@ -20,6 +20,9 @@
     <ClCompile Include="src\capture.cpp">
       <Filter>source file</Filter>
     </ClCompile>
+    <ClCompile Include="src\block_capture.cpp">
+      <Filter>source file</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\global.h">
@@ -32,6 +35,12 @@
       <Filter>header file</Filter>
     </ClInclude>
     <ClInclude Include="src\capture_file.h">
+      <Filter>header file</Filter>
+    </ClInclude>
+    <ClInclude Include="src\block_capture.h">
+      <Filter>header file</Filter>
+    </ClInclude>
+    <ClInclude Include="src\capture_store.h">
       <Filter>header file</Filter>
     </ClInclude>
   </ItemGroup>
