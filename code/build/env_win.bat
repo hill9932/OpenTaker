@@ -6,4 +6,4 @@
 @mklink /D ..\3rdParty\inc\popt			..\src\popt
 @mklink /D ..\3rdParty\inc\tinyxml		..\src\tinyxml
 @mklink /D ..\3rdParty\inc\postgre		..\src\postgre-9.3\include
-@mklink /D ..\3rdParty\inc\winpcap		..\src\WpdPack-4.1.2\Include
+@mklink /D ..\3rdParty\inc\libpcap		..\src\WpdPack-4.1.2\Include

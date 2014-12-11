@@ -549,6 +549,34 @@ u_int64 CNetCapture::getCapability()
     return m_capability;
 }
 
+
+int CNetCapture::padding(DataBlock_t* _block, int _padSize)
+{
+    while (_padSize > 0)
+    {
+        packet_header_t fakeHeader;
+        bzero(&fakeHeader, sizeof(packet_header_t));
+        byte pad[ONE_KB * 64] = { 0 };
+        int len = MyMin((size_t)65535, (size_t)(_padSize));
+        _padSize -= len;
+        if (_padSize > 0 && _padSize <= (int)sizeof(packet_header_t))
+        {
+            len -= sizeof(packet_header_t);
+            _padSize += sizeof(packet_header_t);
+        }
+
+        fakeHeader.len = fakeHeader.caplen = len - sizeof(packet_header_t);
+
+        byte* dst = _block->data + _block->dataDesc.usedSize;
+        memcpy(dst, &fakeHeader, sizeof(packet_header_t));
+        dst += sizeof(packet_header_t);
+        memcpy(dst, pad, fakeHeader.caplen);
+        _block->dataDesc.usedSize += len;
+    }
+
+    return 0;
+}
+
 int ParseBPFilter(Filter_t& _filter, const char* _filterString, int _port)
 {
     vector<CStdString> keys;

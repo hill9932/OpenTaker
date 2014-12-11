@@ -13,7 +13,7 @@
 #include "capture_file.h"
 #include "sqlite_.h"
 #include "mutex.h"
-#include "winpcap/pcap.h"
+#include "libpcap/pcap.h"
 
 #include <fstream>
 
@@ -187,6 +187,7 @@ protected:
     bool updateFileName();
     CStdString getFilePath(u_int32 _index);
     CStdString getFilterString(const Filter_t& _filterItem);
+    int padding(DataBlock_t* _block, int _padSize);
 
 private:
     CStdString getNextFileName();
