@@ -225,11 +225,10 @@ extern "C"
                                 : _G->g_moduleInfo[depModId].packetPtr;
             if (curPtr != limPtr)
             {
-                PacketMeta_t* packet =
-                    (PacketMeta_t*)(modInfo->metaViewStart + _G->g_metaSize * curPtr);
+                PacketMeta_t* packet = (PacketMeta_t*)(modInfo->metaViewStart + _G->g_metaSize * curPtr);
                 //assert(packet->ringPos == curPtr);
 
-                if (packet->indexValue.pktLen == 0)     // packet is not ready
+                if (packet->basicAttr.pktLen == 0)     // packet is not ready
                     return NULL;
 
                 return packet;
@@ -379,7 +378,7 @@ extern "C"
         }
 
 #ifdef LINUX
-        assert(_metaInfo->indexValue.ts == (u_int64)pktHeader->ts.tv_sec * NS_PER_SECOND + pktHeader->ts.tv_nsec);
+        assert(_metaInfo->basicAttr.ts == (u_int64)pktHeader->ts.tv_sec * NS_PER_SECOND + pktHeader->ts.tv_nsec);
 #endif
 
         return pktHeader;
@@ -625,7 +624,7 @@ retry:
     tailPos &= _G->g_metaCount;
 
     PacketMeta_t* metaInfo = (PacketMeta_t*)(modInfo->metaViewStart + _G->g_metaSize * tailPos);
-    while (metaInfo->indexValue.pktLen != 0)
+    while (metaInfo->basicAttr.pktLen != 0)
     {
         LiangZhu::YieldCurThread();
         if (!_wait) return NULL;
@@ -718,7 +717,7 @@ int GetNextPacket(PktRingHandle_t _handler,
     while (distance > 0)
     {
         PacketMeta_t* packet = (PacketMeta_t*)(modInfo->metaViewStart + _G->g_metaSize * curPtr);
-        if (packet->indexValue.pktLen == 0)     // this packet is not ready
+        if (packet->basicAttr.pktLen == 0)     // this packet is not ready
             break;
 
         _packets.push_back(packet);

@@ -18,6 +18,13 @@ enum WriteMode_e
     WRITE_INTERLEAVED
 };
 
+enum IoMode_e
+{
+    IOMODE_NONE,
+    IOMODE_CAPTURE_THREAD = 1,
+    IOMODE_IO_THREAD
+};
+
 //
 // config about engine
 //
@@ -26,6 +33,13 @@ struct EngineConf_t
     CStdString  dbPath;         // the path to store the packet db files
     bool        isSecAlign;
     bool        enableParsePacket;
+    bool        enableS2Disk;
+    bool        enableInsertDB;
+
+    IoMode_e    ioMode;
+
+    u_int32     blockMemSize;   // the size of share memory to cache packets data
+    u_int32     captureDuration;// the time to capture
 };
 
 struct TargetConf_t
@@ -128,7 +142,8 @@ private:
     ~Enviroment();
 
 public:
-    EnvConfig_t   m_config;
+    EnvConfig_t     m_config;
+    TimeSegment     m_capTimeRange;
 
 private:
     bool    m_enable;

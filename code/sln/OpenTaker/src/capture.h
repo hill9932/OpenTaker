@@ -134,7 +134,7 @@ public:
      **/
     virtual int  startCapture(CaptureConfig_t& _config) = 0;
     virtual int  stopCapture() = 0;
-    virtual int  setSlice(int _sliceCount, int _port) = 0;
+    virtual int  setSlice(int _sliceCount, int _port) { return -1; };
 
     /**
      * @Function: Get the statistic of device such as captured bytes
@@ -169,7 +169,6 @@ public:
 
 protected:
     virtual ICaptureFile* createCaptureFile() = 0;
-    virtual int  createStatsTable() = 0;
     virtual int  setCaptureFilter_(const Filter_t& _filter, int _port, const char* _rawFilter) = 0;
     virtual bool openDevice(int _index, const char* _devName) = 0;
 

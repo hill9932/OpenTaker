@@ -158,7 +158,7 @@ bool CPacketRing::IsStopSignal(const PktMetaBlk_t *metaBlock)
     if (metaBlock && metaBlock->dataBlk == NULL && metaBlock->isFinal && metaBlock->size == 1) {
         PacketMeta_t *metaInfo = GetPktMetaInBlk(metaBlock, 0);
         assert(metaInfo);
-        return (metaInfo->indexValue.ts == 0 && metaInfo->indexValue.pktLen == 0);
+        return (metaInfo->basicAttr.ts == 0 && metaInfo->basicAttr.pktLen == 0);
     }
 
     return false;
@@ -169,7 +169,7 @@ bool CPacketRing::IsTimeoutSignal(const PktMetaBlk_t *metaBlock)
     if (metaBlock && metaBlock->dataBlk == NULL && metaBlock->isFinal && metaBlock->size == 1) {
         PacketMeta_t *metaInfo = GetPktMetaInBlk(metaBlock, 0);
         assert(metaInfo);
-        return (metaInfo->indexValue.ts != 0 && metaInfo->indexValue.pktLen == 0);
+        return (metaInfo->basicAttr.ts != 0 && metaInfo->basicAttr.pktLen == 0);
     }
 
     return false;
@@ -359,8 +359,8 @@ void CProducerRing::SendStopSignal()
     PktMetaBlk_t *stopSignal = WaitNextEmptyMetaBlk(NULL);
     assert(stopSignal->dataBlk == NULL);
     PacketMeta_t *meta = GetPktMetaInBlk(stopSignal, 0);
-    meta->indexValue.ts = 0;
-    meta->indexValue.pktLen = 0;
+    meta->basicAttr.ts = 0;
+    meta->basicAttr.pktLen = 0;
     stopSignal->isFinal = true;
 
     stopSignal->size = 1;
@@ -373,8 +373,8 @@ void CProducerRing::SendTimeoutSignal(u_int64 ts)
     PktMetaBlk_t *timeoutSignal = WaitNextEmptyMetaBlk(NULL);
     assert(timeoutSignal->dataBlk == NULL);
     PacketMeta_t *meta = GetPktMetaInBlk(timeoutSignal, 0);
-    meta->indexValue.ts = ts;
-    meta->indexValue.pktLen = 0;
+    meta->basicAttr.ts = ts;
+    meta->basicAttr.pktLen = 0;
     timeoutSignal->isFinal = true;
 
     timeoutSignal->size = 1;

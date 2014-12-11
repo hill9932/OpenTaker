@@ -18,7 +18,7 @@ libLiangZhu_a_SOURCES = src/main.cpp 	\
 			src/common/platform_linux.cpp 	\
 			src/common/platform_win32.cpp 	\
 			src/common/sqlite_.cpp		\
-			src/common/sqlite3.cpp		\			
+			src/common/sqlite3.c		\			
 			src/common/string_.cpp 		\
 			src/common/system_.cpp 		\
 			src/common/thread.cpp 		\

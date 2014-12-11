@@ -3,6 +3,7 @@
 
 #include "block_capture.h"
 #include "packet_ring_class.h"
+#include "block_file.h"
 
 using namespace LiangZhu;
 
@@ -128,8 +129,8 @@ protected:
     *  in the block to get the basic information.
     **/
     virtual ICaptureFile* createCaptureFile();
-    virtual int nextFile(bool _next);
-    virtual int prepareResource(CaptureConfig_t& _config);
+    virtual int  nextFile(bool _next);
+    virtual int  prepareResource(CaptureConfig_t& _config);
     virtual bool openDevice_(int _index, const char* _devName) { return false;   }
     virtual bool closeDevice_() { return false; }
 
@@ -186,11 +187,7 @@ private:
     struct OutRes_t
     {
         ICaptureFile*   pcapFile;
-#ifdef USE_SQLITE
         CSqlLiteDB      blkInfoDB;           // used to keep packet's meta information
-#else
-        CBlockFile      blkInfoDB;
-#endif
         CBlockFile      pktMetaDB;
     };
 
@@ -207,7 +204,6 @@ private:
     PACKET_BLOCK_LIST       m_blockList;        // the captured packet block list and need to process->engine->store
     CSimpleThread*          m_processThread;    // a thread to call PacketRing to do basic analysis
     CSimpleThread*          m_storeThread;      // a thread to do store job
-    CSimpleThread*          m_DBStatsThread;    // a thread to insert NIC stats into db
     CSimpleThread*          m_timerThread;      // a thread to set the timer
 
     CFilePool               m_filePool;

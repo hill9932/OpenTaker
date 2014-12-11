@@ -5,7 +5,7 @@
 void ProcessPacketL4_(u_int16 _l4_packet_len, u_int8 _l4_proto, const u_int8 *_l4h,
                       u_int16 _rawSize, PacketMeta_t* _metaInfo);
 
-int ProcessPacket2(byte* _data, PacketMeta_t* _metaInfo)
+int ProcessPacketBasic(byte* _data, PacketMeta_t* _metaInfo)
 {
     if (!_metaInfo || !_data) return -1;
 

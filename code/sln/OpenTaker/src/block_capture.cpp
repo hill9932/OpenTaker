@@ -4,7 +4,8 @@
 #include "file_system.h"
 #include "system_.h"
 #include "net_util.h"
-
+#include "decode_basic.h"
+#include "pcap_file.h"
 
 CBlockCapture::CBlockCapture()
 {
@@ -136,6 +137,11 @@ int CBlockCapture::releaseResource()
 int CBlockCapture::setCaptureFilter_(const Filter_t& _filter, int _port, const char* _rawFilter)
 {
     return 0;
+}
+
+ICaptureFile* CBlockCapture::createCaptureFile()
+{
+    return new CPCAPFile;
 }
 
 int CBlockCapture::startCapture_(void* _arg)
@@ -329,11 +335,11 @@ PacketMeta_t* CBlockCapture::copy2Block(int _captureId, int _portIndex, packet_h
         dataBlock->dataDesc.firstPacketTime = pktTS;
     }
 
-    metaInfo->indexValue.ts = (u_int64)_header->ts.tv_sec * NS_PER_SECOND + _header->ts.tv_nsec;
-    metaInfo->indexValue.portNum = _portIndex;
+    metaInfo->basicAttr.ts = (u_int64)_header->ts.tv_sec * NS_PER_SECOND + _header->ts.tv_nsec;
+    metaInfo->basicAttr.portNum = _portIndex;
     metaInfo->headerAddr = (u_int64)m_prevPacket[_captureId] - (u_int64)m_myImpl->m_modInfo.blockViewStart;      // point to the header
 
-    //ProcessPacket2((byte*)_data, metaInfo);
+    ProcessPacketBasic((byte*)_data, metaInfo);
 
 #if defined(DEBUG) || defined(_DEBUG)
     if (g_env->m_config.debugMode >= DEBUG_PACKET)
@@ -342,8 +348,8 @@ PacketMeta_t* CBlockCapture::copy2Block(int _captureId, int _portIndex, packet_h
     }
 #endif
 
-    metaInfo->indexValue.wireLen = _header->len;
-    metaInfo->indexValue.pktLen = _header->caplen;  // the packet is ready
+    metaInfo->basicAttr.wireLen = _header->len;
+    metaInfo->basicAttr.pktLen = _header->caplen;  // the packet is ready
 
     if (_header->ts.tv_sec != 0)
     {
@@ -473,19 +479,19 @@ int CBlockCapture::releaseBlock(DataBlock_t* _block)
 int CBlockCapture::testCapture(int _captureId, int _portIndex, packet_header_t* _pktHeader, byte* _pktData, bool _rmon)
 {
     PacketMeta_t metaInfo = {0};
-    metaInfo.indexValue.wireLen = _pktHeader->len;
-    metaInfo.indexValue.pktLen = _pktHeader->caplen;
+    metaInfo.basicAttr.wireLen = _pktHeader->len;
+    metaInfo.basicAttr.pktLen = _pktHeader->caplen;
 
     if (g_env->m_config.justTestCapture == 1)
     {
     }
     else if (g_env->m_config.justTestCapture == 2)
     {
-        ProcessPacket2(_pktData, &metaInfo);
+        ProcessPacketBasic(_pktData, &metaInfo);
     }
     else if (g_env->m_config.justTestCapture == 3)
     {
-        ProcessPacket2(_pktData, &metaInfo);
+        ProcessPacketBasic(_pktData, &metaInfo);
         calcRmon(0, _pktHeader, &metaInfo, _pktData);
     }
     else if (g_env->m_config.justTestCapture == 4)
@@ -495,7 +501,7 @@ int CBlockCapture::testCapture(int _captureId, int _portIndex, packet_header_t* 
         if (!dataBlock)
             dataBlock = m_myImpl->requestBlock(_captureId);
 
-        ProcessPacket2(_pktData, &metaInfo);
+        ProcessPacketBasic(_pktData, &metaInfo);
         calcRmon(0, _pktHeader, &metaInfo, _pktData);
 
         int pktLen = sizeof(packet_header_t) + _pktHeader->caplen;

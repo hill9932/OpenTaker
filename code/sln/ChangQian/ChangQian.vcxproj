@@ -322,12 +322,12 @@ if $(ConfigurationType) == Application (copy $(SolutionDir)..\tmp\$(ProjectName)
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\inc\network\chang_qian.h" />
+    <ClInclude Include="..\..\inc\network\decode_basic.h" />
     <ClInclude Include="..\..\inc\network\inetaddr.h" />
     <ClInclude Include="..\..\inc\network\net_util.h" />
     <ClInclude Include="..\..\inc\network\protocol.h" />
     <ClInclude Include="..\..\inc\network\protocol_header_l4.h" />
     <ClInclude Include="..\..\inc\network\socket_base.h" />
-    <ClInclude Include="src\decode_basic.h" />
     <ClInclude Include="src\version.h" />
   </ItemGroup>
   <ItemGroup>

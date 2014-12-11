@@ -58,6 +58,7 @@ protected:
     virtual int releaseResource();
     virtual int setCaptureFilter_(const Filter_t& _filter, int _port, const char* _rawFilter);
     virtual int startCapture_(void* _arg);
+    virtual ICaptureFile* createCaptureFile();
 
     int calcRmon(int _portIndex, const packet_header_t* _header, PacketMeta_t* _metaInfo, const byte* _pktData);
     int testCapture(int _captureId, int _portIndex, packet_header_t* _pktHeader, byte* _pktData, bool _rmon);

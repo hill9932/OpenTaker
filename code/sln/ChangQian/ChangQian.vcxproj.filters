@@ -20,9 +20,6 @@
     <ClInclude Include="..\..\inc\network\protocol.h">
       <Filter>network</Filter>
     </ClInclude>
-    <ClInclude Include="src\decode_basic.h">
-      <Filter>header file</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\inc\network\protocol_header_l4.h">
       <Filter>network</Filter>
     </ClInclude>
@@ -37,6 +34,9 @@
     </ClInclude>
     <ClInclude Include="..\..\inc\network\net_util.h">
       <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\network\decode_basic.h">
+      <Filter>header file</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

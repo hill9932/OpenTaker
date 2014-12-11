@@ -1,29 +1,16 @@
 #include "capture_store.h"
 #include "virtual_capture.h"
-#include "intel_capture.h"
 #include "pcap_capture.h"
-#include "accolade_capture.h"
-#include "napatech_capture.h"
-#include "memory_capture.h"
 #include "global.h"
 #include "string_.h"
-#include "pcap_file2.h"
-#include "accolade_file.h"
-#include "pv_file.h"
 #include "pcap_file_fake.h"
 #include "file_system.h"
 #include "system_.h"
 #include "net_util.h"
-#include "db/sqlite_.h"
-#include "MVPClient.h"
-#include "raw_db.h"
-#include "AppWars.h"
-#include <boost/foreach.hpp>
+#include "sqlite_.h"
+#include "math_.h"
 
-#ifdef ENABLE_DPDK
-#include "rte_mbuf.h"
-#endif
-#include <nt.h>
+#include <boost/foreach.hpp>
 #include <numeric>
 
 #define LOG_PERFORMANCE_DATA()  \
@@ -161,30 +148,7 @@ int CBlockCaptureImpl::loadResource()
 
 void CBlockCaptureImpl::loadAppWars()
 {
-    bool useProcess = false; // g_env->m_config.testMetaBlock == 0;
-    CStdString cmd;
-    if (useProcess)
-    {
-        cmd = GetAppDir() + "AppWars";
-#ifdef WIN32
-        cmd += TEXT(".exe");
-#endif
-        cmd += TEXT(" --run-mode=1");
-        m_appWarProcess = LaunchProcess(cmd);
-        if (m_appWarProcess == (process_t)NULL)
-        {
-            RM_LOG_ERROR("Fail to launch analyze engine of AppWars.");
-        }
-        else
-        {
-            RM_LOG_INFO("Success launch analyze engine of AppWars.");
-        }
-    }
-    else
-    {
-        if (!startAppWars("", g_env->m_config.engine.runMode))
-            RM_LOG_ERROR("Fail to start AppWars");
-    }
+
 }
 
 CBlockCaptureImpl::CBlockCaptureImpl()
@@ -221,12 +185,12 @@ CBlockCaptureImpl::CBlockCaptureImpl()
     sql.Format("UPDATE " FILE_STATUS_TABLE " SET STATUS=%d WHERE STATUS=%d", STATUS_NORMAL, STATUS_CAPTURE);
     int z = execOnRecordDB(sql, NULL, NULL);
 
-    if (g_env->m_config.engine.debugMode >= DEBUG_BLOCK)
+    if (g_env->m_config.debugMode >= DEBUG_BLOCK)
     {
         m_fsSaveBlock.open("./PerfTest/ResultBlock.txt", ios_base::out | ios_base::trunc);
         m_fsCostBlock.open("./PerfTest/CostBlock.txt", ios_base::out | ios_base::trunc);
 
-        if (g_env->m_config.engine.debugMode >= DEBUG_PACKET)
+        if (g_env->m_config.debugMode >= DEBUG_PACKET)
             m_fsSavePacket.open("./PerfTest/ResultPacket.txt", ios_base::out | ios_base::trunc);
     }
 
@@ -242,16 +206,14 @@ CBlockCaptureImpl::CBlockCaptureImpl()
         m_outRes[i].pcapFile = NULL;
     }
 
-    m_capNotifier = NULL;
 #ifndef _NO_CONSOLE_OUTPUT
     m_Timer.async_wait(boost::bind(&CBlockCaptureImpl::onTimer, this));
     m_timerThread = new CSimpleThread(DoTheTimer, this);
 #endif
 
-    m_processThread = m_storeThread = m_DBStatsThread = NULL;
+    m_processThread = m_storeThread;
     m_processThread = new CSimpleThread(DoTheProcess, this);
     m_storeThread = new CSimpleThread(DoTheStore, this);
-    // m_DBStatsThread = new CSimpleThread(DoTheDBStats, this);
 }
 
 CBlockCaptureImpl::~CBlockCaptureImpl()
@@ -261,7 +223,6 @@ CBlockCaptureImpl::~CBlockCaptureImpl()
     join();
 
     SAFE_DELETE(m_processThread);
-    SAFE_DELETE(m_DBStatsThread);
     SAFE_DELETE(m_storeThread);
 
     if (m_appWarProcess)    KillProcess(m_appWarProcess);
@@ -273,7 +234,6 @@ void CBlockCaptureImpl::join()
     stopCapture();
 
     if (m_processThread)    m_processThread->join();
-    if (m_DBStatsThread)    m_DBStatsThread->join();
     if (m_storeThread)      m_storeThread->join();
 }
 
@@ -301,7 +261,7 @@ int CBlockCaptureImpl::finalize()
     return 0;
 }
 
-int CBlockCaptureImpl::prepareResource(shared::CaptureConfig& _config)
+int CBlockCaptureImpl::prepareResource(CaptureConfig_t& _config)
 {
     //
     // determine the stored file format
@@ -389,7 +349,7 @@ again:
         return -1;
     }
 
-    shared::CaptureConfig config;
+    CaptureConfig_t config;
     if (0 != capture->prepareResource(config))
     {
         RM_LOG_ERROR("Fail to prepare the storage files.");
@@ -521,7 +481,7 @@ int CBlockCaptureImpl::saveBlock(DataBlock_t* _block)
         return z;
     }
 
-    if (g_env->m_config.engine.debugMode >= DEBUG_BLOCK)
+    if (g_env->m_config.debugMode >= DEBUG_BLOCK)
     {
         struct timeval ts;
         gettimeofday(&ts, NULL);
@@ -575,7 +535,7 @@ int CBlockCaptureImpl::prepareNextFile()
     //
     int maxFileIndex = GetMaxFileIndex(m_curTarget);
     int nextFileIndex = (*m_nextFileIndex) % maxFileIndex;
-    TargetConf& targetConf = g_env->m_config.storage.fileDir[m_curDB];
+    TargetConf_t& targetConf = g_env->m_config.storage.fileDir[m_curDB];
 
     if (g_env->m_config.capture.stopWhenWrap &&
        (nextFileIndex == targetConf.firstFileIndex &&
@@ -788,13 +748,13 @@ void CBlockCaptureImpl::processMetaBlock(PktMetaBlk_t *_metaBlk)
         packet_header_t header;
         packet_header_t* pktHeader = m_packetRing->GetPacketHeader(_metaBlk->type, meta, &header);
         if (pktHeader)
-            assert(meta->indexValue.ts == (u_int64)pktHeader->ts.tv_sec * NS_PER_SECOND + pktHeader->ts.tv_nsec);
+            assert(meta->basicAttr.ts == (u_int64)pktHeader->ts.tv_sec * NS_PER_SECOND + pktHeader->ts.tv_nsec);
         else   // fake packet
-            assert(meta->indexValue.pktLen == 1 && meta->indexValue.ts == 0);
+            assert(meta->basicAttr.pktLen == 1 && meta->basicAttr.ts == 0);
 
-        if (g_env->m_config.engine.debugMode >= DEBUG_PACKET && pktHeader)
+        if (g_env->m_config.debugMode >= DEBUG_PACKET && pktHeader)
         {
-            m_fsSavePacket << meta->indexValue.ts << ", "  \
+            m_fsSavePacket << meta->basicAttr.ts << ", "  \
                 << (void*)meta->headerAddr << ", "  \
                 << pktHeader->caplen << ", " << endl;
         }
@@ -805,80 +765,6 @@ void CBlockCaptureImpl::processMetaBlock(PktMetaBlk_t *_metaBlk)
     {
         blockArrived(_metaBlk->dataBlk);    // let doStore_ to do the real job
     }
-}
-
-int CBlockCaptureImpl::DoTheDBStats(void* _obj)
-{
-    if (!_obj)  return -1;
-
-    CBlockCaptureImpl* capture = (CBlockCaptureImpl*)_obj;
-    time_t  now, prevTick = 0;
-    int retry = 0;
-
-    while (g_env->enable())
-    {
-        if (!capture->isOpen())
-        {
-            SleepSec(1);
-            continue;
-        }
-
-        if (prevTick == 0)  time(&prevTick);
-        time(&now);
-
-        if (now - prevTick >= 5)
-        {
-            prevTick = now;
-
-            if (!capture->m_pgSql.isConnect() &&
-                !capture->m_pgSql.connect(g_env->m_config.engine.dbConnection))
-            {
-                RM_LOG_ERROR("Fail to connect to postgres.");
-                continue;
-            }
-
-            list<Statistic_t>::const_iterator it = capture->m_NICStatsList.begin();
-            for (; it != capture->m_NICStatsList.end(); ++it)
-            {
-                CNetCapture* capObj = capture->getCapObj(it->index);
-                if (!capObj)
-                {
-                    RM_LOG_ERROR("Capture object is gone.");
-                    continue;
-                }
-
-                CStdString sql;
-                CStdString tableName = capObj->getStatTableName();
-                if (tableName.empty())
-                    continue;
-
-                sql.Format("INSERT INTO %s VALUES (" I64D ", " I64D ", " I64D ", " I64D ", " I64D ")",
-                    tableName.c_str(),
-                    (u_int64)it->recordTime,
-                    it->bytesSaveCount,
-                    it->pktSaveCount,
-                    it->pktDropCount,
-                    it->pktErrCount);
-                int z = capture->m_pgSql.exec(sql);
-                if (z < 0)
-                {
-                    SleepSec(1);
-                    if (++retry >= 100)
-                        SleepSec(60);
-                }
-                else
-                    retry = 0;
-            }
-
-            capture->m_NICStatsList.clear();
-        }
-        else
-        {
-            SleepMS(20);
-        }
-    }
-
-    return 0;
 }
 
 /**
@@ -894,7 +780,7 @@ DataBlock_t* CBlockCaptureImpl::requestBlock(u_int32 _captureId)
         block->dataDesc.pData = block->data;
         block->dataDesc.id = INTERLOCKED_INCREMENT(&requestCount);
         block->dataDesc.captureId = _captureId;
-        block->dataDesc.type = PACKET_NORMAL;
+        block->dataDesc.type = PACKET_PCAP;
         block->dataDesc.capObject = this;
         block->dataDesc.blockSize = DATA_BLOCK_SIZE;
     }
@@ -969,13 +855,6 @@ CNetCapture* CBlockCaptureImpl::getCapObj(int _index)
         return m_capObjMap[_index];
 
     return NULL;
-}
-
-int CBlockCaptureImpl::setPktTSReporters(PacketTSReporter _first, PacketTSReporter _last)
-{
-    m_firstTSReporter = _first;
-    m_lastTSReporter = _last;
-    return 0;
 }
 
 /************************************************************************/
@@ -1452,17 +1331,6 @@ CProducerRingPtr CBlockCaptureImpl::preparePacketRing()
     RM_LOG_INFO_S("Success to register the module '" << modInfo->moduleName << "' (" << m_packetRing->GetModuleID() << ")");
     RM_LOG_INFO_S("Block count = " << blockCount);
 
-    /**
-     * Get config from MVP to see if analysis is enabled, user's configuration
-     * takes higher priority to local config file.
-     */
-    CMVPClient *client = CMVPClient::GetInstance();
-    if (client->isReady())
-        g_env->m_config.engine.enableParsePacket = client->isAnalysisEnabled();
-
-    RM_LOG_INFO_S("Pakcet analysis is "
-                  << (g_env->m_config.engine.enableParsePacket ? "enabled" : "disabled")
-                  << " during this capture.");
     m_appWarProcess = (process_t)NULL;
     if (g_env->m_config.engine.enableParsePacket)
     {
@@ -1471,12 +1339,6 @@ CProducerRingPtr CBlockCaptureImpl::preparePacketRing()
     m_packetRing->Start();
 
     return m_packetRing;
-}
-
-int CBlockCaptureImpl::setCaptureNotifier(ICaptureNotifier *_notifer)
-{
-    m_capNotifier = _notifer;
-    return 0;
 }
 
 int CBlockCaptureImpl::startCapture()
@@ -1489,7 +1351,7 @@ int CBlockCaptureImpl::startCapture()
     return 0;
 }
 
-int CBlockCaptureImpl::startCapture(int _index, shared::CaptureConfig _config)
+int CBlockCaptureImpl::startCapture(int _index, CaptureConfig_t& _config)
 {
     if ((unsigned int)_index >= m_localNICs.size())
     {
@@ -1504,25 +1366,12 @@ int CBlockCaptureImpl::startCapture(int _index, shared::CaptureConfig _config)
     {
         switch (device.type)
         {
-#ifdef ENABLE_DPDK
-        case DEVICE_TYPE_INTEL:
-            devCapture = new CIntelCapture;
-            break;
-#endif
-        case DEVICE_TYPE_NAPATECH:
-            devCapture = new CNapatechCapture;
-            break;
         case DEVICE_TYPE_LIBPCAP:
             devCapture = new CPcapCapture;
             break;
         case DEVICE_TYPE_VIRTUAL:
             devCapture = new CVirtualCapture;
             break;
-        case DEVICE_TYPE_ACCOLADE:
-            devCapture = new CAccoladeCapture;
-            break;
-        case DEVICE_TYPE_MEMORY:
-            devCapture = new CMemoryCapture;
         default:
             break;
         }
@@ -1538,26 +1387,9 @@ int CBlockCaptureImpl::startCapture(int _index, shared::CaptureConfig _config)
         }
     }
 
-    // TODO change it to real trigger, and maybe, give details if any
-    if (m_capNotifier)
-    {
-        CaptureParam param;
-        param.startTime = 1000000000 * (int64)time(NULL);
-        param.trigger = ::shared::CaptureTrigger::Manual;
-        param.intfID = _index;
-        // TODO fill port speed in
-        m_capNotifier->notifyCaptureStart(param);
-    }
-
     int z = devCapture->startCapture(_config);
     if (0 == z && m_captureState != CAPTURE_STARTED)
     {
-        for (int i = 0; i < _config.netIntfPortSpeed.size(); ++i)
-        {
-            if (i < device.portCount)
-                device.portStat[i].lineRate = 1000 * _config.netIntfPortSpeed[i];
-        }
-
         m_captureState = CAPTURE_STARTING;
     }
 
@@ -1579,25 +1411,12 @@ int CBlockCaptureImpl::startCapture(int _index, const tchar* _filter)
     {
         switch (device.type)
         {
-#ifdef ENABLE_DPDK
-        case DEVICE_TYPE_INTEL:
-            devCapture = new CIntelCapture;
-            break;
-#endif
-        case DEVICE_TYPE_NAPATECH:
-            devCapture = new CNapatechCapture;
-            break;
         case DEVICE_TYPE_LIBPCAP:
             devCapture = new CPcapCapture;
             break;
         case DEVICE_TYPE_VIRTUAL:
             devCapture = new CVirtualCapture;
             break;
-        case DEVICE_TYPE_ACCOLADE:
-            devCapture = new CAccoladeCapture;
-            break;
-        case DEVICE_TYPE_MEMORY:
-            devCapture = new CMemoryCapture;
         default:
             break;
         }
@@ -1616,18 +1435,8 @@ int CBlockCaptureImpl::startCapture(int _index, const tchar* _filter)
     if (_filter && *_filter)
         devCapture->setCaptureFilter(_filter, 0xF);
 
-    // TODO change it to real trigger, and maybe, give details if any
-    if (m_capNotifier)
-    {
-        CaptureParam param;
-        param.startTime = 1000000000 * (int64)time(NULL);
-        param.trigger = ::shared::CaptureTrigger::Manual;
-        param.intfID = _index;
-        // TODO fill port speed in
-        m_capNotifier->notifyCaptureStart(param);
-    }
 
-    shared::CaptureConfig config;
+    CaptureConfig_t config;
     int z = devCapture->startCapture(config);
     if (0 == z && m_captureState != CAPTURE_STARTED)
         m_captureState = CAPTURE_STARTING;
@@ -1652,9 +1461,6 @@ int CBlockCaptureImpl::stopCapture()
             capture->stopCapture();
             capture->closeDevice();
             SAFE_DELETE(capture);
-
-            if (m_capNotifier)
-                m_capNotifier->notifyCaptureStop(devIndex);
 
             break;  // since capture->closeDevice() will erase the object from m_capObjMap, so redo
         }
@@ -1726,9 +1532,6 @@ int CBlockCaptureImpl::stopCapture(int _index)
         }
     }
 
-    if (m_capNotifier)
-        m_capNotifier->notifyCaptureStop(_index);
-
     return z;
 }
 
@@ -1754,12 +1557,6 @@ ICaptureFile* CBlockCaptureImpl::createCaptureFile()
     {
         switch (g_env->m_config.storage.fileType)
         {
-        case FILE_ACCOLADE:
-            pFile = new CAccoladeFile(&m_filePool, g_env->m_config.engine.isSecAlign);
-            break;
-        case FILE_PV:
-            pFile = new CPVFile(&m_filePool, g_env->m_config.engine.isSecAlign);
-            break;
         default:
             pFile = new CPCAPFile2(&m_filePool, g_env->m_config.engine.isSecAlign);
             break;
@@ -1820,8 +1617,7 @@ int CBlockCaptureImpl::nextFile(bool _next)
         z = CNetCapture::nextFile(_next);
         if (z == 0)
         {
-            if (!g_env->m_superSpeed &&
-                0 != createFileDB(_next))
+            if (0 != createFileDB(_next))
             {
                 b = false;
                 ++(*m_nextFileIndex);  // try the next file
@@ -1870,8 +1666,7 @@ int CBlockCaptureImpl::flushDB()
  **/
 int CBlockCaptureImpl::flushFile(u_int64 _tickCount)
 {
-    if (g_env->m_config.engine.isRealTime &&
-        _tickCount % 10 == 0)  // every 10 seconds to update the file info
+    if (_tickCount % 10 == 0)  // every 10 seconds to update the file info
     {
         for (int i = 0; i < GetRecordDBCount(); ++i)
         {
@@ -1885,9 +1680,6 @@ int CBlockCaptureImpl::flushFile(u_int64 _tickCount)
             updateFileName();
             switchTarget();
         }
-
-        RegConfig regConf;
-        g_env->saveConfig(regConf);
     }
 
     return 0;
@@ -1988,7 +1780,6 @@ void CBlockCaptureImpl::constructExtIndices()
     }
 }
 
-#ifdef USE_SQLITE
 int CBlockCaptureImpl::createFileDB(bool _override)
 {
     if (m_extIndexSize.empty())
@@ -2019,13 +1810,13 @@ int CBlockCaptureImpl::createFileDB(bool _override)
     // The table to keep block index information
     //
     int tableExist = outRes.blkInfoDB.isTableExist(FILE_BLOCK_TABLE);
-    ON_ERROR_PRINT_MYMSG_AND_DO(tableExist, == , -1, "", return -1);
+    ON_ERROR_LOG_MESSAGE_AND_DO(tableExist, == , -1, FILE_BLOCK_TABLE "not exist", return -1);
 
     if (_override && tableExist)
     {
         CStdStringA sql = "DELETE FROM " FILE_BLOCK_TABLE;
         z = outRes.blkInfoDB.exec(sql, this, NULL);
-        ON_ERROR_PRINT_MYMSG_AND_DO(z, != , 0, "Fail to delete existing records: " << sql, return z);
+        ON_ERROR_LOG_MESSAGE_AND_DO(z, != , 0, "Fail to delete existing records: " << sql, return z);
     }
 
     if (!tableExist)
@@ -2043,7 +1834,7 @@ int CBlockCaptureImpl::createFileDB(bool _override)
             "BLOCK_SIZE         INTEGER NOT NULL );";
 
         z = outRes.blkInfoDB.exec(sql, this, NULL);
-        ON_ERROR_PRINT_MYMSG_AND_DO(z, != , 0, "Fail to create table: " << sql, return z);
+        ON_ERROR_LOG_MESSAGE_AND_DO(z, != , 0, "Fail to create table: " << sql, return z);
     }
 
     if (!outRes.blkInfoDB.getStatment(FILE_BLOCK_TABLE))
@@ -2056,49 +1847,6 @@ int CBlockCaptureImpl::createFileDB(bool _override)
     return z;
 }
 
-#else
-int CBlockCaptureImpl::createFileDB(bool _override/* = true*/)
-{
-    if (m_extIndexSize.empty())
-    {
-        constructExtIndices();
-    }
-
-    int flag = FILE_OPEN_ALWAYS;
-    if (_override)
-        flag = FILE_CREATE_ALWAYS;
-
-    int z = 0;
-    CStdStringA blkDBName;
-    CStdString targetName;
-    targetName.Format("target%d/", GetTargetDBIndex(m_curTarget));
-    blkDBName.Format("%s/%s%s%04d_file_blk.dbr",
-        g_env->m_config.engine.dbPath,
-        targetName.c_str(),
-        GetFileSubDirByIndex(m_fileInfo->index, g_env->m_config.storage.dirLevel),
-        m_fileInfo->index % g_filesPerDir);
-
-    OutRes_t& outRes = m_outRes[*m_curOutRes];
-    outRes.blkInfoDB.setFileName(blkDBName);
-    z = outRes.blkInfoDB.open(ACCESS_READ | ACCESS_WRITE, flag, false, false);
-    if (z != 0)
-        return z;
-
-    CStdStringA pktDBName;
-    pktDBName.Format("%s/%s%s%04d_file_pkt.dbr",
-        g_env->m_config.engine.dbPath,
-        targetName.c_str(),
-        GetFileSubDirByIndex(m_fileInfo->index, g_env->m_config.storage.dirLevel),
-        m_fileInfo->index % g_filesPerDir);
-
-    outRes.pktMetaDB.setFileName(pktDBName);
-    z = outRes.pktMetaDB.open(ACCESS_READ | ACCESS_WRITE, flag, false, false);
-    if (z != 0)
-        return z;
-
-    return z;
-}
-#endif
 
 int CBlockCaptureImpl::addPacketRecord(PacketMeta_t* _metaInfo, int _curOutRes)
 {
@@ -2109,12 +1857,12 @@ int CBlockCaptureImpl::addPacketRecord(PacketMeta_t* _metaInfo, int _curOutRes)
     OutRes_t& outRes = m_outRes[_curOutRes];
 
     int z = 0;
-    if (_metaInfo->indexValue.ts && _metaInfo->indexValue.pktLen)
+    if (_metaInfo->basicAttr.ts && _metaInfo->basicAttr.pktLen)
     {
         int totalExtSize = 0;
         if (m_extIndexSize.size() > 0)
             totalExtSize = std::accumulate(m_extIndexSize.begin(), m_extIndexSize.end(), 0);
-        outRes.pktMetaDB.saveData((byte*)&_metaInfo->indexValue, totalExtSize + sizeof(PacketBasicIndex_t));
+        outRes.pktMetaDB.saveData((byte*)&_metaInfo->basicAttr, totalExtSize + sizeof(PacketBasicAttr_t));
     }
 
     return z;
@@ -2124,7 +1872,6 @@ int CBlockCaptureImpl::addBlockRecord(DataBlock_t* _block)
 {
     OutRes_t& outRes = m_outRes[_block->dataDesc.resIndex];
 
-#ifdef USE_SQLITE
     sqlite3_stmt* stmt = outRes.blkInfoDB.getStatment(FILE_BLOCK_TABLE);
     if (!_block || !stmt)    return -1;
 
@@ -2150,20 +1897,6 @@ int CBlockCaptureImpl::addBlockRecord(DataBlock_t* _block)
     }
 
     return z;
-#else
-    BlockDesc_t blkDesc;
-    blkDesc.portNum = _block->dataDesc.portNum;
-    blkDesc.firstPacketTime = _block->dataDesc.firstPacketTime;
-    blkDesc.lastPacketTime = _block->dataDesc.lastPacketTime;
-    blkDesc.pktCount = _block->dataDesc.pktCount;
-    blkDesc.offset = _block->dataDesc.offset;
-    blkDesc.usedSize = _block->dataDesc.usedSize;
-    blkDesc.blockSize = _block->dataDesc.blockSize;
-
-    outRes.blkInfoDB.saveData((byte*)&blkDesc, sizeof(BlockDesc_t));
-
-    return 0;
-#endif
 }
 
 int CBlockCaptureImpl::startStoreImpl()
@@ -2219,7 +1952,7 @@ int CBlockCaptureImpl::finalizeBlock(DataBlock_t* _block, bool _ok)
     //
     // TODO: Maybe need to flush outRes.blkInfoDB timely
     //
-    if (g_env->m_config.engine.debugMode >= DEBUG_BLOCK)
+    if (g_env->m_config.debugMode >= DEBUG_BLOCK)
     {
         CBlockCaptureImpl* capture = this;
         DataBlock_t* block = _block;
@@ -2239,14 +1972,11 @@ int CBlockCaptureImpl::finalizeBlock(DataBlock_t* _block, bool _ok)
     //
     // last block of a file, do once commit
     //
-    if (!g_env->m_superSpeed)
-    {
-        if (_ok) addBlockRecord(_block);
+    if (_ok) addBlockRecord(_block);
 
-        if (_block->dataDesc.offset + _block->dataDesc.usedSize >= g_env->m_config.storage.fileSize) // the padding block
-        {
-            outRes.blkInfoDB.flush();
-        }
+    if (_block->dataDesc.offset + _block->dataDesc.usedSize >= g_env->m_config.storage.fileSize) // the padding block
+    {
+        outRes.blkInfoDB.flush();
     }
 
     g_env->m_capTimeRange.startTime = MyMin(g_env->m_capTimeRange.startTime, _block->dataDesc.firstPacketTime);
@@ -2289,7 +2019,7 @@ void CBlockCaptureImpl::releasePktsInBlk(PktMetaBlk_t *_metaBlk, bool _writeSucc
 {
     // Get every packet meta block and insert every meta to DB.
     DataBlock_t *dataBlock = _metaBlk->dataBlk;
-    u_int64 blkDataOffset = dataBlock->dataDesc.type == PACKET_NORMAL
+    u_int64 blkDataOffset = dataBlock->dataDesc.type == PACKET_PCAP
         ? (u_int64)dataBlock->dataDesc.pData - (u_int64)m_modInfo.blockViewStart
         : (u_int64)dataBlock->dataDesc.pData;
     for (u_int32 cursor = 0; cursor < _metaBlk->size; ++cursor)
@@ -2305,28 +2035,28 @@ void CBlockCaptureImpl::releasePktsInBlk(PktMetaBlk_t *_metaBlk, bool _writeSucc
             assert(offsetInBlk < ONE_MB);
             assert(metaInfo->headerAddr >= blkDataOffset);
 
-            metaInfo->indexValue.offset = offsetInBlk + dataBlock->dataDesc.offset;
+            metaInfo->basicAttr.offset = offsetInBlk + dataBlock->dataDesc.offset;
 
-            assert(metaInfo->indexValue.offset >= sizeof(pcap_file_header));
-            assert(metaInfo->indexValue.offset < g_env->m_config.storage.fileSize);
+            assert(metaInfo->basicAttr.offset >= sizeof(pcap_file_header));
+            assert(metaInfo->basicAttr.offset < g_env->m_config.storage.fileSize);
 
 #if defined(DEBUG) || defined(_DEBUG)
             if (_metaBlk->blkPos == dataBlock->dataDesc.metaBlkStartIdx && cursor == 0)
-                assert(metaInfo->indexValue.ts == dataBlock->dataDesc.firstPacketTime);
+                assert(metaInfo->basicAttr.ts == dataBlock->dataDesc.firstPacketTime);
 
             bool isLastPkt = _metaBlk->isFinal && (cursor == _metaBlk->size - 1);
             if (!isLastPkt)    // not the last packet
             {
                 packet_header_t* pktHeader = m_packetRing->GetPacketHeader(_metaBlk->type, metaInfo, &header);
-                assert(metaInfo->indexValue.ts == ((u_int64)pktHeader->ts.tv_sec * NS_PER_SECOND + pktHeader->ts.tv_nsec));
-                assert(metaInfo->indexValue.pktLen > 1);
+                assert(metaInfo->basicAttr.ts == ((u_int64)pktHeader->ts.tv_sec * NS_PER_SECOND + pktHeader->ts.tv_nsec));
+                assert(metaInfo->basicAttr.pktLen > 1);
             }
 #endif
-            if (_metaBlk->type == PACKET_NORMAL)
+            if (_metaBlk->type == PACKET_PCAP)
             {
                 packet_header_t* pktHeader = m_packetRing->GetPacketHeader(_metaBlk->type, metaInfo, &header);
                 if (pktHeader)
-                    metaInfo->indexValue.pktLen = pktHeader->caplen + sizeof(packet_header_t);
+                    metaInfo->basicAttr.pktLen = pktHeader->caplen + sizeof(packet_header_t);
             }
             addPacketRecord(metaInfo, dataBlock->dataDesc.resIndex);
         }
@@ -2365,24 +2095,9 @@ int CBlockCaptureImpl::OnDataWrittenError(void* _handler, PPER_FILEIO_INFO_t _io
     return 0;
 }
 
-void CBlockCaptureImpl::releasePacketResource(PacketType type, PacketMeta_t* _metaInfo)
+void CBlockCaptureImpl::releasePacketResource(PacketType_e type, PacketMeta_t* _metaInfo)
 {
     if (!_metaInfo) return;
-
-    assert(_metaInfo->indexValue.pktLen > 0);
-    if (type == PACKET_NAPATECH)
-    {
-    }
-#ifdef ENABLE_DPDK
-    else if (type == PACKET_DPDK) // if packets are allocated by DPDK, they are saved one by one rather than in block
-    {
-        rte_mbuf* mbuf = (rte_mbuf*)_metaInfo->headerAddr;
-        rte_pktmbuf_free(mbuf);
-    }
-#endif
-    else if (type == PACKET_ACCOLADE)
-    {
-    }
 }
 
 void CBlockCaptureImpl::releaseBlockResource(DataBlock_t* _block)
@@ -2418,8 +2133,9 @@ int CBlockCaptureImpl::updateStatistic(time_t _now, const char* _step)
     stringstream fmtString;
     fmtString << _step << ltm->tm_hour << ":" << ltm->tm_min << ":" << ltm->tm_sec \
         << " Pkts= " << summary.pktSeenByNIC << ", " << summary.pktRecvCount << ", " << summary.pktSaveCount << "; " \
-        << ChangeUnit(summary.bytesSaveCount, 1024, "B").c_str() << "; "    \
-        << "Speed= " << ChangeUnit(deltaBytes, 1024, "BPS", 2).c_str() << ", " << ChangeUnit(deltaPkts, 1000, "pps").c_str() << "; ";
+        << LiangZhu::ChangeUnit(summary.bytesSaveCount, 1024, "B").c_str() << "; "    \
+        << "Speed= " << LiangZhu::ChangeUnit(deltaBytes, 1024, "BPS", 2).c_str() << ", " \
+        << LiangZhu::ChangeUnit(deltaPkts, 1000, "pps").c_str() << "; ";
 
     if (m_packetRing && m_packetRing->IsReady())
     {
