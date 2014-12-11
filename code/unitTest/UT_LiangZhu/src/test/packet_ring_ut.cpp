@@ -48,7 +48,7 @@ int CPacketRingTest::MakePacketFunc(void* _context)
 
     CProducerRingPtr packetRing = CProducerRingPtr(new CProducerRing());
     packetRing->Clear();
-    packetRing->Init("", "CPacketRingTest", 10 * ONE_MB);
+    packetRing->Init("CPacketRingTest", "CPacketRingTest", 10 * ONE_MB);
 
     ModuleInfo_t* modInfo = (ModuleInfo_t*)packetRing->GetModuleInfo();
     if (!modInfo)	return -1;

@@ -7,4 +7,4 @@ automake --foreign --add-missing --copy
 autoconf
 ./configure --enable-debug=yes
 make
-make install
+sudo make install
