@@ -35,6 +35,9 @@
     <ClInclude Include="..\..\inc\network\chang_qian.h">
       <Filter>source file</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\inc\network\net_util.h">
+      <Filter>network</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -56,6 +59,9 @@
       <Filter>network</Filter>
     </ClCompile>
     <ClCompile Include="src\network\socket_udp.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="src\network\net_util.cpp">
       <Filter>network</Filter>
     </ClCompile>
   </ItemGroup>

@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenTaker", "OpenTaker\OpenTaker\OpenTaker.vcxproj", "{490E3C36-2A4C-4FEA-8783-AB1EDFFD5A1E}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LiangZhu", "LiangZhu\LiangZhu.vcxproj", "{DB2EDEB8-D24B-4C45-8DCE-F953A327CE63}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UT_LiangZhu", "..\unitTest\UT_LiangZhu\UT_LiangZhu.vcxproj", "{1DB34D28-E081-453B-9044-C573DA1547AD}"
@@ -33,6 +31,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "share", "share", "{743A54DB
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PacketRing", "PacketRing\PacketRing.vcxproj", "{3A314142-54A1-4564-8C61-0460669F7412}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenTaker", "OpenTaker\OpenTaker.vcxproj", "{490E3C36-2A4C-4FEA-8783-AB1EDFFD5A1E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -45,18 +45,6 @@ Global
 		Release64|x64 = Release64|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{490E3C36-2A4C-4FEA-8783-AB1EDFFD5A1E}.Debug|Win32.ActiveCfg = Debug|Win32
-		{490E3C36-2A4C-4FEA-8783-AB1EDFFD5A1E}.Debug|Win32.Build.0 = Debug|Win32
-		{490E3C36-2A4C-4FEA-8783-AB1EDFFD5A1E}.Debug|x64.ActiveCfg = Debug|x64
-		{490E3C36-2A4C-4FEA-8783-AB1EDFFD5A1E}.Debug64|Win32.ActiveCfg = Debug64|Win32
-		{490E3C36-2A4C-4FEA-8783-AB1EDFFD5A1E}.Debug64|x64.ActiveCfg = Debug64|x64
-		{490E3C36-2A4C-4FEA-8783-AB1EDFFD5A1E}.Debug64|x64.Build.0 = Debug64|x64
-		{490E3C36-2A4C-4FEA-8783-AB1EDFFD5A1E}.Release|Win32.ActiveCfg = Release|Win32
-		{490E3C36-2A4C-4FEA-8783-AB1EDFFD5A1E}.Release|Win32.Build.0 = Release|Win32
-		{490E3C36-2A4C-4FEA-8783-AB1EDFFD5A1E}.Release|x64.ActiveCfg = Release|x64
-		{490E3C36-2A4C-4FEA-8783-AB1EDFFD5A1E}.Release64|Win32.ActiveCfg = Release64|Win32
-		{490E3C36-2A4C-4FEA-8783-AB1EDFFD5A1E}.Release64|x64.ActiveCfg = Release64|x64
-		{490E3C36-2A4C-4FEA-8783-AB1EDFFD5A1E}.Release64|x64.Build.0 = Release64|x64
 		{DB2EDEB8-D24B-4C45-8DCE-F953A327CE63}.Debug|Win32.ActiveCfg = Debug|Win32
 		{DB2EDEB8-D24B-4C45-8DCE-F953A327CE63}.Debug|Win32.Build.0 = Debug|Win32
 		{DB2EDEB8-D24B-4C45-8DCE-F953A327CE63}.Debug|x64.ActiveCfg = Debug|x64
@@ -133,6 +121,22 @@ Global
 		{3A314142-54A1-4564-8C61-0460669F7412}.Release64|Win32.Build.0 = Release64|Win32
 		{3A314142-54A1-4564-8C61-0460669F7412}.Release64|x64.ActiveCfg = Release64|x64
 		{3A314142-54A1-4564-8C61-0460669F7412}.Release64|x64.Build.0 = Release64|x64
+		{490E3C36-2A4C-4FEA-8783-AB1EDFFD5A1E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{490E3C36-2A4C-4FEA-8783-AB1EDFFD5A1E}.Debug|Win32.Build.0 = Debug|Win32
+		{490E3C36-2A4C-4FEA-8783-AB1EDFFD5A1E}.Debug|x64.ActiveCfg = Debug|x64
+		{490E3C36-2A4C-4FEA-8783-AB1EDFFD5A1E}.Debug|x64.Build.0 = Debug|x64
+		{490E3C36-2A4C-4FEA-8783-AB1EDFFD5A1E}.Debug64|Win32.ActiveCfg = Debug64|Win32
+		{490E3C36-2A4C-4FEA-8783-AB1EDFFD5A1E}.Debug64|Win32.Build.0 = Debug64|Win32
+		{490E3C36-2A4C-4FEA-8783-AB1EDFFD5A1E}.Debug64|x64.ActiveCfg = Debug64|x64
+		{490E3C36-2A4C-4FEA-8783-AB1EDFFD5A1E}.Debug64|x64.Build.0 = Debug64|x64
+		{490E3C36-2A4C-4FEA-8783-AB1EDFFD5A1E}.Release|Win32.ActiveCfg = Release|Win32
+		{490E3C36-2A4C-4FEA-8783-AB1EDFFD5A1E}.Release|Win32.Build.0 = Release|Win32
+		{490E3C36-2A4C-4FEA-8783-AB1EDFFD5A1E}.Release|x64.ActiveCfg = Release|x64
+		{490E3C36-2A4C-4FEA-8783-AB1EDFFD5A1E}.Release|x64.Build.0 = Release|x64
+		{490E3C36-2A4C-4FEA-8783-AB1EDFFD5A1E}.Release64|Win32.ActiveCfg = Release64|Win32
+		{490E3C36-2A4C-4FEA-8783-AB1EDFFD5A1E}.Release64|Win32.Build.0 = Release64|Win32
+		{490E3C36-2A4C-4FEA-8783-AB1EDFFD5A1E}.Release64|x64.ActiveCfg = Release64|x64
+		{490E3C36-2A4C-4FEA-8783-AB1EDFFD5A1E}.Release64|x64.Build.0 = Release64|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

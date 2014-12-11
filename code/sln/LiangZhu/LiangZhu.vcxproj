@@ -323,6 +323,9 @@ if $(ConfigurationType) == Application (copy $(SolutionDir)..\tmp\$(ProjectName)
     <ClCompile Include="src\common\numa_.cpp" />
     <ClCompile Include="src\common\platform_linux.cpp" />
     <ClCompile Include="src\common\platform_win32.cpp" />
+    <ClCompile Include="src\common\postgres_db.cpp" />
+    <ClCompile Include="src\common\sqlite3.c" />
+    <ClCompile Include="src\common\sqlite_.cpp" />
     <ClCompile Include="src\common\string_.cpp" />
     <ClCompile Include="src\common\system_.cpp" />
     <ClCompile Include="src\common\thread.cpp" />
@@ -350,9 +353,11 @@ if $(ConfigurationType) == Application (copy $(SolutionDir)..\tmp\$(ProjectName)
     <ClInclude Include="..\..\inc\common\platform.h" />
     <ClInclude Include="..\..\inc\common\platform_linux.h" />
     <ClInclude Include="..\..\inc\common\platform_win32.h" />
+    <ClInclude Include="..\..\inc\common\postgres_db.h" />
     <ClInclude Include="..\..\inc\common\share_memory.hxx" />
     <ClInclude Include="..\..\inc\common\share_memory_linux.hxx" />
     <ClInclude Include="..\..\inc\common\share_memory_win32.hxx" />
+    <ClInclude Include="..\..\inc\common\sqlite_.h" />
     <ClInclude Include="..\..\inc\common\stdString.h" />
     <ClInclude Include="..\..\inc\common\string_.h" />
     <ClInclude Include="..\..\inc\common\system_.h" />

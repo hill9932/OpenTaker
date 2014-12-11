@@ -77,6 +77,8 @@ AC_LINK_IFELSE(
 AC_CHECK_LIB([lua5.2], [lua_copy], [], [AC_MSG_ERROR([No liblua5.2 installed.])])
 AC_CHECK_LIB([aio], [io_cancel])
 AC_CHECK_LIB([dl], [dlopen])
+AC_CHECK_LIB([pcap], [pcap_datalink], [],[AC_MSG_ERROR([No libpcap installed.])])
+AC_CHECK_LIB([pq], [main])
 AC_CHECK_LIB([pthread], [main])
 AC_CHECK_LIB([gtest], [main], [], [AC_MSG_ERROR([No gtest installed.])])
 
@@ -105,6 +107,7 @@ AC_CONFIG_FILES([Makefile
 		 sln/LiangZhu/Makefile
 		 sln/ChangQian/Makefile
 		 sln/PacketRing/Makefile
+		 sln/OpenTaker/Makefile
 		 unitTest/UT_LiangZhu/Makefile
 		 unitTest/UT_ChangQian/Makefile])
 

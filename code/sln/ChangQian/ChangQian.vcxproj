@@ -323,6 +323,7 @@ if $(ConfigurationType) == Application (copy $(SolutionDir)..\tmp\$(ProjectName)
   <ItemGroup>
     <ClInclude Include="..\..\inc\network\chang_qian.h" />
     <ClInclude Include="..\..\inc\network\inetaddr.h" />
+    <ClInclude Include="..\..\inc\network\net_util.h" />
     <ClInclude Include="..\..\inc\network\protocol.h" />
     <ClInclude Include="..\..\inc\network\protocol_header_l4.h" />
     <ClInclude Include="..\..\inc\network\socket_base.h" />
@@ -334,6 +335,7 @@ if $(ConfigurationType) == Application (copy $(SolutionDir)..\tmp\$(ProjectName)
     <ClCompile Include="src\network\decode_basic.cpp" />
     <ClCompile Include="src\network\igmp.cpp" />
     <ClCompile Include="src\network\inetaddr.cpp" />
+    <ClCompile Include="src\network\net_util.cpp" />
     <ClCompile Include="src\network\socket_base.cpp" />
     <ClCompile Include="src\network\socket_tcp.cpp" />
     <ClCompile Include="src\network\socket_udp.cpp" />

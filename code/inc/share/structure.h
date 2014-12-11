@@ -14,14 +14,6 @@ enum PacketType_e
     PACKET_ACCOLADE = 3,
 };
 
-enum FileType_e
-{
-    FILE_PCAP       = 1,
-    FILE_ACCOLADE   = 2,
-    FILE_PV         = 3,
-    FILE_FAKE
-};
-
 
 #define DATA_BLOCK_SIZE ONE_MB
 
@@ -83,53 +75,6 @@ struct packet_header_t
     u_int32 caplen;	            // length of portion present
     u_int32 len;	            // length this packet (off wire)
 };
-
-/**
-* @Function: Used to create the file name
-**/
-enum FileStatus_e
-{
-    STATUS_NORMAL   = 0,
-    STATUS_LOCKED   = 1,
-    STATUS_ERROR    = 2,
-    STATUS_CAPTURE  = 3,
-    STATUS_SHOW     = 4,
-    STATUS_DELETING = 5
-};
-
-struct FileInfo_t
-{
-    int         index;
-    u_int64     firstPacketTime;
-    u_int64     lastPacketTime;
-    int         age;
-    int         status;
-    u_int64     size;
-    u_int64     packetCount;
-    u_int64     bytesCount;
-};
-
-
-#pragma pack(push, 4)
-
-typedef struct pcap_file_header_t
-{
-    u_int32 magic;
-    u_int16 version_major;
-    u_int16 version_minor;
-    u_int32 thiszone;
-    u_int32 sigfigs;
-    u_int32 snaplen;
-    u_int32 linktype;
-} pcap_file_header_t;
-
-#pragma pack(pop)
-
-#define PCAP_NSEC_MAGIC         0xa1b23c4d
-#define PCAP_MSEC_MAGIC         0xa1b2c3d4
-
-#define PCAP_VERSION_MAJOR  2
-#define PCAP_VERSION_MINOR  4
 
 #endif
 
