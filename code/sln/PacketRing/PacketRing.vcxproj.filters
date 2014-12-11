@@ -17,9 +17,21 @@
     <ClInclude Include="..\..\inc\share\packet_ring.h">
       <Filter>header file</Filter>
     </ClInclude>
+    <ClInclude Include="src\main_linux.hxx">
+      <Filter>header file</Filter>
+    </ClInclude>
+    <ClInclude Include="src\main_win32.hxx">
+      <Filter>header file</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\share\packet_ring_class.h">
+      <Filter>header file</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\packet_ring.cpp">
+      <Filter>source file</Filter>
+    </ClCompile>
+    <ClCompile Include="src\packet_ring_class.cpp">
       <Filter>source file</Filter>
     </ClCompile>
   </ItemGroup>

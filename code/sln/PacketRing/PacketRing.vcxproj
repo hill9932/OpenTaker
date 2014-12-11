@@ -328,10 +328,14 @@ if $(ConfigurationType) == Application (copy $(SolutionDir)..\tmp\$(ProjectName)
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\inc\share\packet_ring.h" />
+    <ClInclude Include="..\..\inc\share\packet_ring_class.h" />
+    <ClInclude Include="src\main_linux.hxx" />
+    <ClInclude Include="src\main_win32.hxx" />
     <ClInclude Include="src\version.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\packet_ring.cpp" />
+    <ClCompile Include="src\packet_ring_class.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

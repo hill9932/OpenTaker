@@ -200,8 +200,10 @@ VPAGENT_API
 struct PktMetaBlk_t* GetNextMetaBlk(PktRingHandle_t _handler, ModuleID _id);
 
 VPAGENT_API
-struct PacketMeta_t* GetMetaInBlk(PktRingHandle_t _handler, ModuleID _id,
-                                  const PktMetaBlk_t *_metaBlk, u_int32 _idx);
+struct PacketMeta_t* GetMetaInBlk(PktRingHandle_t _handler, 
+                                  ModuleID _id,
+                                  const PktMetaBlk_t *_metaBlk, 
+                                  u_int32 _idx);
 
 /**
 * @Function: Tell the agent module have processed the packet and move forward the pointer.

@@ -497,6 +497,35 @@ ModuleID RegMySelf( const char* _name,
     return ID;
 }
 
+
+int GetModuleIndex(PktRingHandle_t _handler, vector<ModuleIndex_t>& _vec)
+
+{
+    Global_t *_G = (Global_t *)_handler;
+    assert(_G);
+    for (int i = 0; i < _G->g_index; ++i)
+    {
+        _vec.push_back(_G->g_moduleIndex[i]);
+    }
+
+    return _vec.size();
+}
+
+int GetAllModuleInfo(PktRingHandle_t _handler, vector<int>& _vec)
+{
+    Global_t *_G = (Global_t *)_handler;
+    assert(_G);
+    _vec.push_back(_G->g_tailPacket & _G->g_metaCount);
+
+    for (int i = 1; i < _G->g_index; ++i)
+    {
+        _vec.push_back(_G->g_moduleInfo[i].packetPtr);
+    }
+
+    _vec.push_back(_G->g_moduleInfo[0].packetPtr);
+    return _vec.size();
+}
+
 /**
 * @Function: find module register information according to module name
 **/

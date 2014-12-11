@@ -32,6 +32,9 @@ void Swap(T& _v1, T& _v2)
     _v2 = t;
 }
 
+template<typename T> 
+void zero(T& t) { t = (T)0; }
+
 /**
  * @Function: reference count
  **/

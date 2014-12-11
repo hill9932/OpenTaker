@@ -22,7 +22,7 @@ byte* CreateBlockMemory(const tchar* _name, u_int64 _size)
         printf("ftok failed: %s", strerror(errno));
         return NULL;
     }
-    ON_ERROR_PRINT_LASTMSG_AND_DO(key, ==, -1, return NULL);
+    ON_ERROR_LOG_LAST_ERROR_AND_DO(key, ==, -1, return NULL);
 
     int flag = 0;//SHM_HUGETLB; // try huge page first
 retry:
@@ -38,7 +38,7 @@ retry:
         return NULL;
     }
 
-    ON_ERROR_PRINT_LASTMSG_AND_DO(shmID, ==, -1, return NULL);
+    ON_ERROR_LOG_LAST_ERROR_AND_DO(shmID, ==, -1, return NULL);
 
     byte* addr = (byte*)shmat(shmID, NULL, 0);
     if (addr == NULL)
@@ -46,7 +46,7 @@ retry:
         printf("shmat failed: %s %s " I64D, strerror(errno), _name, _size);
         return NULL;
     }
-    ON_ERROR_PRINT_LASTMSG_AND_DO(addr, ==, NULL, return NULL);
+    ON_ERROR_LOG_LAST_ERROR_AND_DO(addr, ==, NULL, return NULL);
 
     return addr;
 }

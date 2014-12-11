@@ -49,7 +49,7 @@
     <ClInclude Include="src\version.h">
       <Filter>header file</Filter>
     </ClInclude>
-    <ClInclude Include="src\test\packet_ring_ut.pp">
+    <ClInclude Include="src\test\packet_ring_ut.cpp">
       <Filter>unit_test\common</Filter>
     </ClInclude>
   </ItemGroup>

@@ -14,6 +14,7 @@ LIBRARY_PATH = $(LIBRARY_ROOT)release/
 endif
 
 install-exec-local:
+	cp $(top_srcdir)/sln/PacketRing/libPacketRing.la $(TARGET_PATH) && \
 	cp $(top_srcdir)/unitTest/UT_LiangZhu/UT_LiangZhu $(TARGET_PATH) && \
 	cp $(top_srcdir)/unitTest/UT_ChangQian/UT_ChangQian $(TARGET_PATH)
 

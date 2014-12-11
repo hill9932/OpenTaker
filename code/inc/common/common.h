@@ -15,8 +15,8 @@
 #include "auto_ptr.hxx"
 
 namespace LiangZhu
-{    
-    extern  
+{
+    extern
     CStdString GetFileName(const tchar* _path);
     CStdString GetLibVersion();
 
@@ -30,6 +30,20 @@ namespace LiangZhu
     u_int32     GetLastSysError(bool _herror = false);
     void        SetLastSysError(u_int32 _errCode);
 
+
+    struct ICallable
+    {
+        virtual int operator()() = 0;
+        virtual ~ICallable() {}
+    };
+
+    class CallTracer
+    {
+    public:
+        CallTracer(const tchar* _FUNCTION, int _LINE);
+        ~CallTracer();
+    };
+}
 
 #define LOG_ERROR_MSG(errCode)          RM_LOG_ERROR(LiangZhu::GetLastSysErrorMessage(errCode).c_str());
 #define LOG_ERROR_MSG_S(errCode, msg)   RM_LOG_ERROR(msg << ": " << LiangZhu::GetLastSysErrorMessage(errCode).c_str());
@@ -83,35 +97,18 @@ private:\
 
 #define THROW_EXCEPTION(className, Message)  throw C##className##Exception(Message);
 #define EXCEPTION_NAME(className)	C##className##Exception
+#define TRACE_THIS_CALL()   LiangZhu::CallTracer  IamNeverExist(__FUNCTION__, __LINE__);
 
-
-    /**
-     * exceptions
-     */
-    DEFINE_EXCEPTION(InvalidParameter);
-    DEFINE_EXCEPTION(IOFailure);
-    DEFINE_EXCEPTION(Unavailable);
-    DEFINE_EXCEPTION(OutOfMemory);
-    DEFINE_EXCEPTION(UnImplemented);
-    DEFINE_EXCEPTION(NotFound);
-    DEFINE_EXCEPTION(MaximumReached);
-
-    struct ICallable
-    {
-        virtual int operator()() = 0;
-        virtual ~ICallable() {}
-    };
-
-    class CallTracer
-    {
-    public:
-        CallTracer(const tchar* _FUNCTION, int _LINE);
-        ~CallTracer();
-    };
-
-#define TRACE_THIS_CALL()   CallTracer  IamNeverExist(__FUNCTION__, __LINE__);
-
-}
+/**
+    * exceptions
+    */
+DEFINE_EXCEPTION(InvalidParameter);
+DEFINE_EXCEPTION(IOFailure);
+DEFINE_EXCEPTION(Unavailable);
+DEFINE_EXCEPTION(OutOfMemory);
+DEFINE_EXCEPTION(UnImplemented);
+DEFINE_EXCEPTION(NotFound);
+DEFINE_EXCEPTION(MaximumReached);    
 
 
 #endif

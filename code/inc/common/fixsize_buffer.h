@@ -10,6 +10,7 @@
 
 #include "common.h"
 #include "system_.h"
+#include "mutex.h"
 
 namespace LiangZhu
 {
