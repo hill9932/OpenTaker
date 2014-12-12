@@ -71,11 +71,7 @@ u_int32 CPCAPFile::getSize(u_int32* _high32)
     low32 = GetFileSize(m_fileHandle, (LPDWORD)&high32);
 #else
     struct stat statbuf;
-    if (fstat(m_fileHandle, &statbuf) == -1)
-    {
-        LOG_LAST_ERRORMSG();
-        return 0;
-    }
+    ON_ERROR_LOG_LAST_ERROR_AND_DO(fstat(m_fileHandle, &statbuf), ==, -1, return 0);
 
     if (S_ISREG(statbuf.st_mode))
     {
