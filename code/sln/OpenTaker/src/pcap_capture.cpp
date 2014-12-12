@@ -50,7 +50,7 @@ int CPcapCapture::scanLocalNICs()
     //
     CStdString lspci = "lspci";
     FILE *stream = popen(lspci, "r" );
-    ON_ERROR_LOG_MESSAGE_AND_DO(stream, ==, NULL, return -1);
+    ON_ERROR_LOG_LAST_ERROR_AND_DO(stream, ==, NULL, return -1);
 
     char buf[4096] = {0};
     char* z = fgets(buf, 4096, stream);
@@ -111,51 +111,7 @@ int CPcapCapture::scanLocalNICs()
     }
 
     pclose(stream);
-
-    /*
-    char errBuf[PCAP_ERRBUF_SIZE] = { 0 };
-    pcap_if_t *allDevs = NULL;
-    pcap_if_t *d = NULL;
-
-    // Retrieve the device list from the local machine
-    if (pcap_findalldevs(&allDevs, errBuf) == -1)
-    {
-        RM_LOG_ERROR("Error in pcap_findalldevs_ex: " << errBuf);
-        return -1;
-    }
-
-    // Print the list
-    int myPortIndex = 0;
-    int myDevIndex = 0;
-    for (d = allDevs; d != NULL; d = d->next)
-    {
-        DeviceST device;
-        device.name = d->name ? d->name : "No name available";
-        device.desc = d->description ? d->description : "No description available";
-
-        pcap_t* pcapHandle = pcap_create(device.name, errBuf);
-        if (!pcapHandle)    continue;
-
-        int linkType = pcap_datalink(pcapHandle);
-        if (linkType != DLT_EN10MB)     continue;
-        pcap_close(pcapHandle);
-
-        device.portStat[0].status = LINK_ON;
-        device.myDevIndex = myDevIndex;
-        device.portIndex = portIndex;
-        device.myPortIndex = myPortIndex;
-        device.type = DEVICE_TYPE_LIBPCAP;
-
-        m_localNICs.push_back(device);
-
-        portIndex += device.portCount;
-        myPortIndex += device.portCount;
-        myDevIndex++;
-    }
-
-    // We don't need any more the device list. 
-    pcap_freealldevs(allDevs);
-    */
+    
 #endif
 
     return m_localNICs.size() - curSize;
