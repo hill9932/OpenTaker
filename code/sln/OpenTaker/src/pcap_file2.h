@@ -13,6 +13,8 @@
 #include "file_pool.h"
 #include "capture_file.h"
 
+using namespace LiangZhu;
+
 class CPCAPFile2 : public CHFile, public ICaptureFile
 {
 public:

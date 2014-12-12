@@ -5,8 +5,8 @@
  *  Create by hill, 7/5/2014
  **/
 
-#ifndef __VP_PCAP_FILE_FAKE_INCLUDE_H__
-#define __VP_PCAP_FILE_FAKE_INCLUDE_H__
+#ifndef __HILUO_PCAP_FILE_FAKE_INCLUDE_H__
+#define __HILUO_PCAP_FILE_FAKE_INCLUDE_H__
 
 #include "pcap_file2.h"
 
@@ -24,10 +24,17 @@ public:
     virtual int flush()         { return 0;     }
     virtual int rename(const tchar* _fileName) { return 0; }
 
-    virtual int read(byte* _data, int _dataLen, u_int64 _offset = -1, void* _context = NULL);
-    virtual int write(const byte* _data, int _dataLen, 
-                      u_int64 _offset = -1, void* _context = NULL, 
-                      void* _context2 = NULL, u_int32 _flag = 0);
+    virtual int read(   byte* _data, 
+                        int _dataLen, 
+                        u_int64 _offset = -1, 
+                        void* _context = NULL);
+
+    virtual int write(  const byte* _data, 
+                        int _dataLen, 
+                        u_int64 _offset = -1, 
+                        void* _context = NULL, 
+                        void* _context2 = NULL, 
+                        u_int32 _flag = 0);
 };
 
 #endif

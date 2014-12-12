@@ -37,7 +37,7 @@ typedef HANDLE              handle_t;
 #define S_IFREG         _S_IFREG
 #define X_OK            04
 #define EPOLLIN         0
-#define I64D             "%I64d"
+#define I64D            "%I64d"
 
 // 
 // redefine these macros, since not all of the system define them 
@@ -65,7 +65,7 @@ typedef HANDLE              handle_t;
 
 #define DEFAULT_RIGHT               NULL
 
-#define SleepUS(tick)               MySleep(tick)
+#define SleepUS(tick)               LiangZhu::MySleep(tick)
 #define SleepMS(tick)               Sleep(tick)
 #define SleepSec(tick)              Sleep(tick*1000)      
 #define GetNowTime(value)           QueryPerformanceCounter(&value)

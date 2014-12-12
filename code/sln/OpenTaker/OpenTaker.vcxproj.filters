@@ -9,6 +9,9 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="capture">
+      <UniqueIdentifier>{7d8e37f4-f22a-4ff1-98a4-99ff277cd07b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -17,14 +20,29 @@
     <ClCompile Include="src\global.cpp">
       <Filter>source file</Filter>
     </ClCompile>
-    <ClCompile Include="src\capture.cpp">
-      <Filter>source file</Filter>
-    </ClCompile>
     <ClCompile Include="src\block_capture.cpp">
-      <Filter>source file</Filter>
+      <Filter>capture</Filter>
+    </ClCompile>
+    <ClCompile Include="src\capture.cpp">
+      <Filter>capture</Filter>
     </ClCompile>
     <ClCompile Include="src\capture_store.cpp">
-      <Filter>source file</Filter>
+      <Filter>capture</Filter>
+    </ClCompile>
+    <ClCompile Include="src\virtual_capture.cpp">
+      <Filter>capture</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pcap_file.cpp">
+      <Filter>capture</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pcap_capture.cpp">
+      <Filter>capture</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pcap_file2.cpp">
+      <Filter>capture</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pcap_file_fake.cpp">
+      <Filter>capture</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -34,23 +52,44 @@
     <ClInclude Include="src\version.h">
       <Filter>header file</Filter>
     </ClInclude>
+    <ClInclude Include="src\block_capture.h">
+      <Filter>capture</Filter>
+    </ClInclude>
     <ClInclude Include="src\capture.h">
-      <Filter>header file</Filter>
+      <Filter>capture</Filter>
     </ClInclude>
     <ClInclude Include="src\capture_file.h">
-      <Filter>header file</Filter>
-    </ClInclude>
-    <ClInclude Include="src\block_capture.h">
-      <Filter>header file</Filter>
-    </ClInclude>
-    <ClInclude Include="src\capture_store.h">
-      <Filter>header file</Filter>
-    </ClInclude>
-    <ClInclude Include="src\virtual_capture.h">
-      <Filter>header file</Filter>
+      <Filter>capture</Filter>
     </ClInclude>
     <ClInclude Include="src\pcap_file.h">
+      <Filter>capture</Filter>
+    </ClInclude>
+    <ClInclude Include="src\virtual_capture.h">
+      <Filter>capture</Filter>
+    </ClInclude>
+    <ClInclude Include="src\capture_store.h">
+      <Filter>capture</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pcap_file_linux.hxx">
       <Filter>header file</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pcap_file_win32.hxx">
+      <Filter>header file</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pcap_file2_linux.hxx">
+      <Filter>header file</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pcap_file2_win32.hxx">
+      <Filter>header file</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pcap_capture.h">
+      <Filter>capture</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pcap_file2.h">
+      <Filter>capture</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pcap_file_fake.h">
+      <Filter>capture</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

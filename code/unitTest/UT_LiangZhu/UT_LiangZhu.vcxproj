@@ -143,7 +143,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\inc\share;$(SolutionDir)..\inc\common;$(SolutionDir)..\3rdParty;$(SolutionDir)..\3rdParty\inc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\inc\share;$(SolutionDir)..\inc\common;$(SolutionDir)..\inc\network;$(SolutionDir)..\3rdParty;$(SolutionDir)..\3rdParty\inc</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
       <BrowseInformation>true</BrowseInformation>
     </ClCompile>
@@ -174,7 +174,7 @@ if $(ConfigurationType) == Application (copy $(SolutionDir)..\tmp\$(ProjectName)
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\inc\share;$(SolutionDir)..\inc\common;$(SolutionDir)..\3rdParty;$(SolutionDir)..\3rdParty\inc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\inc\share;$(SolutionDir)..\inc\common;$(SolutionDir)..\inc\network;$(SolutionDir)..\3rdParty;$(SolutionDir)..\3rdParty\inc</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -200,7 +200,7 @@ if $(ConfigurationType) == Application (copy $(SolutionDir)..\tmp\$(ProjectName)
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\inc\share;$(SolutionDir)..\inc\common;$(SolutionDir)..\3rdParty;$(SolutionDir)..\3rdParty\inc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\inc\share;$(SolutionDir)..\inc\common;$(SolutionDir)..\inc\network;$(SolutionDir)..\3rdParty;$(SolutionDir)..\3rdParty\inc</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -228,7 +228,7 @@ if $(ConfigurationType) == Application (copy $(SolutionDir)..\tmp\$(ProjectName)
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\inc\share;$(SolutionDir)..\inc\common;$(SolutionDir)..\3rdParty;$(SolutionDir)..\3rdParty\inc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\inc\share;$(SolutionDir)..\inc\common;$(SolutionDir)..\inc\network;$(SolutionDir)..\3rdParty;$(SolutionDir)..\3rdParty\inc</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -254,7 +254,7 @@ if $(ConfigurationType) == DynamicLibrary (copy $(SolutionDir)..\tmp\$(ProjectNa
 if $(ConfigurationType) == Application (copy $(SolutionDir)..\tmp\$(ProjectName)\$(Configuration)\$(TargetFileName) $(SolutionDir)..\bin\$(Configuration)\$(TargetFileName))</Command>
     </PostBuildEvent>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\inc\share;$(SolutionDir)..\inc\common;$(SolutionDir)..\3rdParty;$(SolutionDir)..\3rdParty\inc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\inc\share;$(SolutionDir)..\inc\common;$(SolutionDir)..\inc\network;$(SolutionDir)..\3rdParty;$(SolutionDir)..\3rdParty\inc</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -270,7 +270,7 @@ if $(ConfigurationType) == DynamicLibrary (copy $(SolutionDir)..\tmp\$(ProjectNa
 if $(ConfigurationType) == Application (copy $(SolutionDir)..\tmp\$(ProjectName)\$(Configuration)\$(TargetFileName) $(SolutionDir)..\bin\$(Configuration)\$(TargetFileName))</Command>
     </PostBuildEvent>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\inc\share;$(SolutionDir)..\inc\common;$(SolutionDir)..\3rdParty;$(SolutionDir)..\3rdParty\inc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\inc\share;$(SolutionDir)..\inc\common;$(SolutionDir)..\inc\network;$(SolutionDir)..\3rdParty;$(SolutionDir)..\3rdParty\inc</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -286,7 +286,7 @@ if $(ConfigurationType) == DynamicLibrary (copy $(SolutionDir)..\tmp\$(ProjectNa
 if $(ConfigurationType) == Application (copy $(SolutionDir)..\tmp\$(ProjectName)\$(Configuration)\$(TargetFileName) $(SolutionDir)..\bin\$(Configuration)\$(TargetFileName))</Command>
     </PostBuildEvent>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\inc\share;$(SolutionDir)..\inc\common;$(SolutionDir)..\3rdParty;$(SolutionDir)..\3rdParty\inc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\inc\share;$(SolutionDir)..\inc\common;$(SolutionDir)..\inc\network;$(SolutionDir)..\3rdParty;$(SolutionDir)..\3rdParty\inc</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
       <PreprocessorDefinitions>WIN32;_DEBUG;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
@@ -303,7 +303,7 @@ if $(ConfigurationType) == DynamicLibrary (copy $(SolutionDir)..\tmp\$(ProjectNa
 if $(ConfigurationType) == Application (copy $(SolutionDir)..\tmp\$(ProjectName)\$(Configuration)\$(TargetFileName) $(SolutionDir)..\bin\$(Configuration)\$(TargetFileName))</Command>
     </PostBuildEvent>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\inc\share;$(SolutionDir)..\inc\common;$(SolutionDir)..\3rdParty;$(SolutionDir)..\3rdParty\inc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\inc\share;$(SolutionDir)..\inc\common;$(SolutionDir)..\inc\network;$(SolutionDir)..\3rdParty;$(SolutionDir)..\3rdParty\inc</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
       <PreprocessorDefinitions>WIN32;NDEBUG;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>

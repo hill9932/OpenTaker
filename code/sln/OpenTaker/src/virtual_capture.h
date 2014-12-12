@@ -19,8 +19,6 @@ public:
     virtual int  getStatistic(Statistic_t& _pcapStat);
     virtual int  getStatistic(Statistic_t& _pcapStat, int _port);
 
-    virtual int releaseBlock(DataBlock_t* _block);
-
 protected:
     virtual bool openDevice_(int _index, const char* _devName);
     virtual bool closeDevice_();

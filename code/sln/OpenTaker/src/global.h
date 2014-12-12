@@ -31,6 +31,7 @@ enum IoMode_e
 struct EngineConf_t
 {
     CStdString  dbPath;         // the path to store the packet db files
+    CStdString  pcapFile;
     bool        isSecAlign;
     bool        enableParsePacket;
     bool        enableS2Disk;

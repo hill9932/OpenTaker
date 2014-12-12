@@ -94,7 +94,7 @@ int CPCAPFile::rename(const tchar* _newFileName)
     if (m_fileName == _newFileName)     return 0;
 
     int z = ::rename_t(m_fileName, _newFileName);
-    ON_ERROR_PRINT_LAST_ERROR(z, !=, 0);
+    ON_ERROR_LOG_LAST_ERROR(z, !=, 0);
     if (0 == z)
         m_fileName = _newFileName;
     return z;

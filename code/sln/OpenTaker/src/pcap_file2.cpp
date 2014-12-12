@@ -1,7 +1,6 @@
 #include "pcap_file2.h"
 #include "global.h"
 #include "capture.h"
-#include <pcap.h>
 
 
 CPCAPFile2::CPCAPFile2(CFilePool* _filePool, bool _secAlign)

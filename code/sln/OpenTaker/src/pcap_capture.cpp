@@ -170,19 +170,19 @@ bool CPcapCapture::openDevice_(int _index, const char* _devName)
 
     char errBuf[PCAP_ERRBUF_SIZE] = { 0 };
     m_devHandle = pcap_open_live(_devName, 65535, PCAP_OPENFLAG_PROMISCUOUS, CAPTURE_TIME_OUT, errBuf);
-    ON_ERROR_PRINT_MYMSG_AND_DO(m_devHandle, == , NULL, errBuf, return false);
+    ON_ERROR_LOG_MESSAGE_AND_DO(m_devHandle, == , NULL, errBuf, return false);
 
  /*   pcap_t* pcapHandle = pcap_create(_devName, errBuf);
-    ON_ERROR_PRINT_MYMSG_AND_DO(pcapHandle, == , NULL, errBuf, return false);
+    ON_ERROR_LOG_MESSAGE_AND_DO(pcapHandle, == , NULL, errBuf, return false);
     
     int z = pcap_set_promisc(pcapHandle, PCAP_OPENFLAG_PROMISCUOUS);
-    ON_ERROR_PRINT_MYMSG_AND_DO(z, != , 0, pcap_geterr(pcapHandle), return false);
+    ON_ERROR_LOG_MESSAGE_AND_DO(z, != , 0, pcap_geterr(pcapHandle), return false);
 
     z = pcap_set_snaplen(pcapHandle, 65535);
-    ON_ERROR_PRINT_MYMSG_AND_DO(z, != , 0, pcap_geterr(pcapHandle), return false);
+    ON_ERROR_LOG_MESSAGE_AND_DO(z, != , 0, pcap_geterr(pcapHandle), return false);
 
     z = pcap_set_timeout(pcapHandle, CAPTURE_TIME_OUT);
-    ON_ERROR_PRINT_MYMSG_AND_DO(z, != , 0, pcap_geterr(pcapHandle), return false);
+    ON_ERROR_LOG_MESSAGE_AND_DO(z, != , 0, pcap_geterr(pcapHandle), return false);
 
     z = -1;
     u_int32 buffSize = 200 * ONE_MB;
@@ -220,7 +220,7 @@ int CPcapCapture::openFile(const char* _fileName)
     closeDevice();
 
     m_devHandle = pcap_open_offline(_fileName, err);
-    ON_ERROR_PRINT_MYMSG_AND_DO(m_devHandle, == , NULL, err, return -1);
+    ON_ERROR_LOG_MESSAGE_AND_DO(m_devHandle, == , NULL, err, return -1);
 
     return 0;
 }
@@ -340,25 +340,25 @@ int CPcapCapture::getStatistic(Statistic_t& _pcapStat, int _port)
     bzero(&_pcapStat, sizeof(_pcapStat));
 
     int i = _port;
-    _pcapStat.rmonStat.total_pkts = m_rmonStats[i].total_pkts;
-    _pcapStat.rmonStat.total_bytes = m_rmonStats[i].total_bytes;
-    _pcapStat.rmonStat.err_pkts = m_rmonStats[i].err_pkts;
-    _pcapStat.rmonStat.drop_pkts = m_rmonStats[i].drop_pkts;
-    _pcapStat.rmonStat.brdcst_pkts = m_rmonStats[i].brdcst_pkts;
-    _pcapStat.rmonStat.mcst_pkts = m_rmonStats[i].mcst_pkts;
-    _pcapStat.rmonStat.pkts_lt_64 = m_rmonStats[i].pkts_lt_64;
-    _pcapStat.rmonStat.pkts_eq_64 = m_rmonStats[i].pkts_eq_64;
-    _pcapStat.rmonStat.pkts_65_127 = m_rmonStats[i].pkts_65_127;
-    _pcapStat.rmonStat.pkts_128_255 = m_rmonStats[i].pkts_128_255;
-    _pcapStat.rmonStat.pkts_256_511 = m_rmonStats[i].pkts_256_511;
-    _pcapStat.rmonStat.pkts_512_1023 = m_rmonStats[i].pkts_512_1023;
-    _pcapStat.rmonStat.pkts_1024_1518 = m_rmonStats[i].pkts_1024_1518;
-    _pcapStat.rmonStat.pkts_1519_2047 = m_rmonStats[i].pkts_1519_2047;
-    _pcapStat.rmonStat.pkts_2048_4095 = m_rmonStats[i].pkts_2048_4095;
-    _pcapStat.rmonStat.pkts_4096_8191 = m_rmonStats[i].pkts_4096_8191;
-    _pcapStat.rmonStat.pkts_8192_9018 = m_rmonStats[i].pkts_8192_9018;
-    _pcapStat.rmonStat.pkts_9019_9198 = m_rmonStats[i].pkts_9019_9198;
-    _pcapStat.rmonStat.pkts_oversize = m_rmonStats[i].pkts_oversize;
+    _pcapStat.rmonStat.total_pkts   = m_portStats[i].rmonStat.total_pkts;
+    _pcapStat.rmonStat.total_bytes  = m_portStats[i].rmonStat.total_bytes;
+    _pcapStat.rmonStat.err_pkts     = m_portStats[i].rmonStat.err_pkts;
+    _pcapStat.rmonStat.drop_pkts    = m_portStats[i].rmonStat.drop_pkts;
+    _pcapStat.rmonStat.brdcst_pkts  = m_portStats[i].rmonStat.brdcst_pkts;
+    _pcapStat.rmonStat.mcst_pkts    = m_portStats[i].rmonStat.mcst_pkts;
+    _pcapStat.rmonStat.pkts_lt_64   = m_portStats[i].rmonStat.pkts_lt_64;
+    _pcapStat.rmonStat.pkts_eq_64   = m_portStats[i].rmonStat.pkts_eq_64;
+    _pcapStat.rmonStat.pkts_65_127  = m_portStats[i].rmonStat.pkts_65_127;
+    _pcapStat.rmonStat.pkts_128_255 = m_portStats[i].rmonStat.pkts_128_255;
+    _pcapStat.rmonStat.pkts_256_511 = m_portStats[i].rmonStat.pkts_256_511;
+    _pcapStat.rmonStat.pkts_512_1023    = m_portStats[i].rmonStat.pkts_512_1023;
+    _pcapStat.rmonStat.pkts_1024_1518   = m_portStats[i].rmonStat.pkts_1024_1518;
+    _pcapStat.rmonStat.pkts_1519_2047   = m_portStats[i].rmonStat.pkts_1519_2047;
+    _pcapStat.rmonStat.pkts_2048_4095   = m_portStats[i].rmonStat.pkts_2048_4095;
+    _pcapStat.rmonStat.pkts_4096_8191   = m_portStats[i].rmonStat.pkts_4096_8191;
+    _pcapStat.rmonStat.pkts_8192_9018   = m_portStats[i].rmonStat.pkts_8192_9018;
+    _pcapStat.rmonStat.pkts_9019_9198   = m_portStats[i].rmonStat.pkts_9019_9198;
+    _pcapStat.rmonStat.pkts_oversize    = m_portStats[i].rmonStat.pkts_oversize;
 
     pcap_stat pcapStat = { 0 };
     int z = pcap_stats(m_devHandle, &pcapStat);
@@ -372,11 +372,6 @@ int CPcapCapture::getStatistic(Statistic_t& _pcapStat, int _port)
     return 0;
 }
 
-int CPcapCapture::setCaptureFilter_(const shared::FilterConfig& _filter, int _port)
-{
-    return 0;
-}
-
 int CPcapCapture::setCaptureFilter_(const Filter_t& _filter, int _port, const char* _rawFilter)
 {
     if (!isOpen() || !_rawFilter || !*_rawFilter) return -1;
@@ -387,11 +382,11 @@ int CPcapCapture::setCaptureFilter_(const Filter_t& _filter, int _port, const ch
     u_int32 netmask = -1;
 
     int z = pcap_compile(m_devHandle, &fcode, _rawFilter, 1, netmask);
-    ON_ERROR_PRINT_MYMSG_AND_DO(z, <, 0, pcap_geterr(m_devHandle), return z);
+    ON_ERROR_LOG_MESSAGE_AND_DO(z, <, 0, pcap_geterr(m_devHandle), return z);
 
     // set the filter
     z = pcap_setfilter(m_devHandle, &fcode);
-    ON_ERROR_PRINT_MYMSG_AND_DO(z, <, 0, pcap_geterr(m_devHandle), return z);
+    ON_ERROR_LOG_MESSAGE_AND_DO(z, <, 0, pcap_geterr(m_devHandle), return z);
 
     pcap_freecode(&fcode);
     return z;
