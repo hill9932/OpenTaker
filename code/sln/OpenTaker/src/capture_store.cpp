@@ -51,11 +51,11 @@ int CBlockCaptureImpl::loadResource()
     RM_LOG_INFO("Set kernel.shmmax = 536870912");
     cmd = "sudo sysctl -w kernel.shmmax=536870912";
     stream = popen(cmd, "r");
-    ON_ERROR_PRINT_LASTMSG_AND_DO(stream, == , NULL, return -1);
+    ON_ERROR_LOG_LAST_ERROR_AND_DO(stream, == , NULL, return -1);
 
     cmd = "cat /proc/meminfo | grep HugePages_Free";
     stream = popen(cmd, "r");
-    ON_ERROR_PRINT_LASTMSG_AND_DO(stream, == , NULL, return -1);
+    ON_ERROR_LOG_LAST_ERROR_AND_DO(stream, == , NULL, return -1);
     z = fgets(buf, 4096, stream);
     while (z)
     {
@@ -84,7 +84,7 @@ int CBlockCaptureImpl::loadResource()
         bzero(buf, sizeof(buf));
         cmd = "sudo mkdir -p /mnt/hugetlbfs 2>&1";
         stream = popen(cmd, "r");
-        ON_ERROR_PRINT_LASTMSG_AND_DO(stream, == , NULL, return -1);
+        ON_ERROR_LOG_LAST_ERROR_AND_DO(stream, == , NULL, return -1);
         while (z)
         {
             if (strstr(buf, "ERROR"))
@@ -102,7 +102,7 @@ int CBlockCaptureImpl::loadResource()
         bzero(buf, sizeof(buf));
         cmd = "sudo mount -t hugetlbfs nodev /mnt/hugetlbfs 2>&1";
         stream = popen(cmd, "r");
-        ON_ERROR_PRINT_LASTMSG_AND_DO(stream, == , NULL, return -1);
+        ON_ERROR_LOG_LAST_ERROR_AND_DO(stream, == , NULL, return -1);
         z = fgets(buf, 4096, stream);
         while (z)
         {
@@ -124,7 +124,7 @@ int CBlockCaptureImpl::loadResource()
         bzero(buf, sizeof(buf));
         cmd = "echo 1024 > /sys/kernel/mm/hugepages/hugepages-2048kB/nr_hugepages 2>&1";
         stream = popen(cmd, "r");
-        ON_ERROR_PRINT_LASTMSG_AND_DO(stream, == , NULL, return -1);
+        ON_ERROR_LOG_LAST_ERROR_AND_DO(stream, == , NULL, return -1);
         z = fgets(buf, 4096, stream);
         while (z)
         {
