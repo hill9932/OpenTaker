@@ -134,6 +134,7 @@ public:
     }
 
     bool init(int _argc, char** _argv, const char* _projectName);
+    bool loadConfig();
 
     void enable(bool _enable) { m_enable = _enable; }
     bool enable() { return m_enable; }

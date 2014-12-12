@@ -1,7 +1,7 @@
 AM_CPPFLAGS  = -I$(top_srcdir)/inc -I$(top_srcdir)/inc/common -I$(top_srcdir)/inc/network -I$(top_srcdir)/inc/share
 AM_CPPFLAGS += -I$(top_srcdir)/3rdParty/inc
 AM_CPPFLAGS += -m64 -DLINUX -fPIC
-AM_CPPFLAGS += -Wall -Wno-unused-value -Wno-unused-function -Wno-pointer-arith -Wno-sign-compare
+AM_CPPFLAGS += -Wall -Wno-unused-value -Wno-unused-function -Wno-pointer-arith -Wno-sign-compare -Wunused-local-typedefs -Wunused-variable
 
 if DEBUG
 AM_CPPFLAGS += -g -ggdb -O2 

@@ -50,7 +50,7 @@ int CPcapCapture::scanLocalNICs()
     //
     CStdString lspci = "lspci";
     FILE *stream = popen(lspci, "r" );
-    ON_ERROR_PRINT_LASTMSG_AND_DO(stream, ==, NULL, return -1);
+    ON_ERROR_LOG_MESSAGE_AND_DO(stream, ==, NULL, return -1);
 
     char buf[4096] = {0};
     char* z = fgets(buf, 4096, stream);
@@ -71,9 +71,6 @@ int CPcapCapture::scanLocalNICs()
             //
             lspci = "lspci -vmmks ";
             lspci += slot;
-            device.portStat[0].driver = getField(lspci, "Driver:");
-            device.desc += ", ";
-            device.desc += device.portStat[0].driver;
 
             //
             // get the interface name if has

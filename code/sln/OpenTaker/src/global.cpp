@@ -19,6 +19,10 @@ bool Enviroment::init(int _argc, char** _argv, const char* _projectName)
     return ret;
 }
 
+bool Enviroment::loadConfig()
+{
+    return true;
+}
 
 bool CreateSubDirs(CStdString& _path, int _startIndex, int _stopIndex, int& _itemLeft, int _level, bool _createFile = false)
 {
