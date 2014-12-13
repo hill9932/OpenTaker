@@ -64,5 +64,8 @@
     <ClCompile Include="src\network\net_util.cpp">
       <Filter>network</Filter>
     </ClCompile>
+    <ClCompile Include="src\network\ntp.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

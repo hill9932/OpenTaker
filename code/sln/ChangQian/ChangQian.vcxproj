@@ -336,6 +336,7 @@ if $(ConfigurationType) == Application (copy $(SolutionDir)..\tmp\$(ProjectName)
     <ClCompile Include="src\network\igmp.cpp" />
     <ClCompile Include="src\network\inetaddr.cpp" />
     <ClCompile Include="src\network\net_util.cpp" />
+    <ClCompile Include="src\network\ntp.cpp" />
     <ClCompile Include="src\network\socket_base.cpp" />
     <ClCompile Include="src\network\socket_tcp.cpp" />
     <ClCompile Include="src\network\socket_udp.cpp" />

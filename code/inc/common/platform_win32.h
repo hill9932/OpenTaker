@@ -85,6 +85,7 @@ typedef HANDLE              handle_t;
 int     fcntl(int _fd, int _cmd, ... /* arg */);
 int     gettimeofday(struct timeval* _tp);
 int     gettimeofday(struct timeval* _tp, struct timezone *_tz);
+int     settimeofday(struct timeval* _tp, struct timezone *_tz);
 void    bzero(void* _src, size_t _size);
 void    bcopy(const void *_src, void *_dest, size_t _n);
 

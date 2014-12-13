@@ -92,4 +92,22 @@ int gettimeofday(struct timeval *_tmvalue)
     return (0);
 }
 
+int settimeofday(struct timeval* _tv, struct timezone *_tz)
+{
+    FILETIME    pft;
+    SYSTEMTIME  syst, syslocal;
+
+    LONGLONG ll = Int32x32To64(_tv->tv_sec, 10000000) + 116444736000000000;
+    pft.dwLowDateTime = (DWORD)ll;
+    pft.dwHighDateTime = ll >> 32;
+    pft.dwLowDateTime += _tv->tv_usec * 10;
+
+    ::FileTimeToSystemTime(&pft, &syst);
+    ::SystemTimeToTzSpecificLocalTime(NULL, &syst, &syslocal);
+
+    bool v = ::SetSystemTime(&syslocal);
+    ON_ERROR_LOG_LAST_ERROR_AND_DO(v, == , false, return -1);
+    return 0;
+}
+
 #endif

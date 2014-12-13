@@ -81,7 +81,7 @@ AC_CHECK_LIB([pcap], [pcap_datalink], [],[AC_MSG_ERROR([No libpcap installed.])]
 AC_CHECK_LIB([pq], [main])
 AC_CHECK_LIB([pthread], [main])
 AC_CHECK_LIB([gtest], [main], [], [AC_MSG_ERROR([No gtest installed.])])
-
+AC_CHECK_LIB([popt], [poptGetContext], [],[AC_MSG_ERROR([No libpopt installed.])])
 
 # Checks for header files.
 AC_CHECK_HEADERS([arpa/inet.h fcntl.h malloc.h netdb.h netinet/in.h stdlib.h string.h sys/ioctl.h sys/socket.h sys/time.h sys/timeb.h sys/vfs.h unistd.h wchar.h wctype.h])

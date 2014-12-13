@@ -36,7 +36,7 @@ protected:
     static int MakePacketFunc(void* _context);
     static int HandlePacketFunc(void* _context);
 
-private:
+protected:
     TestConf_t	m_conf;
     LiangZhu::CSimpleThread*	m_makePacketThread;
     LiangZhu::CSimpleThread*	m_handlePacketThread;
@@ -87,4 +87,6 @@ int CPacketRingTest::HandlePacketFunc(void* _context)
 
 TEST_F(CPacketRingTest, WorkRound)
 {
+    m_makePacketThread->join();
+    m_handlePacketThread->join();
 }
