@@ -98,7 +98,7 @@ namespace LiangZhu
         bool checkValid(T* _block)
         {
             bool ret = false;
-            for (int i = 0; i < m_bufCount; ++i)
+            for (u_int32 i = 0; i < m_bufCount; ++i)
             {
                 if (!ret)   ret = _block == &m_bufAddr[i];
                 else break;
@@ -154,7 +154,7 @@ namespace LiangZhu
             if (!m_bufAddr) return;
 
             Block_t* block = (Block_t*)&m_bufAddr[0];
-            for (int i = 1; i < m_bufCount; ++i)
+            for (u_int32 i = 1; i < m_bufCount; ++i)
             {
                 block->m_next = &m_bufAddr[i];
                 block = (Block_t*)block->m_next;

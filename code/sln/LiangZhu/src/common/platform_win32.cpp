@@ -105,7 +105,7 @@ int settimeofday(struct timeval* _tv, struct timezone *_tz)
     ::FileTimeToSystemTime(&pft, &syst);
     ::SystemTimeToTzSpecificLocalTime(NULL, &syst, &syslocal);
 
-    bool v = ::SetSystemTime(&syslocal);
+    bool v = ::SetSystemTime(&syst);
     ON_ERROR_LOG_LAST_ERROR_AND_DO(v, == , false, return -1);
     return 0;
 }

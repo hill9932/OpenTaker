@@ -85,7 +85,7 @@ int CPCAPFile2::read(byte* _data, int _dataLen, u_int64 _offset, void* _context,
     readBlock->dataLen  = _dataLen;
     readBlock->context  = _context;
     readBlock->context2 = _context2;
-    readBlock->Offset   = offset;
+    readBlock->Offset   = (u_int32)offset;
 #ifdef WIN32
     readBlock->OffsetHigh = offset >> 32;
 #endif
@@ -110,7 +110,7 @@ int CPCAPFile2::write(const byte* _data, int _dataLen, u_int64 _offset, void* _c
 
     writeBlock->buffer  = const_cast<byte*>(_data);
     writeBlock->dataLen = _dataLen;
-    writeBlock->Offset  = offset;
+    writeBlock->Offset  = (u_int32)offset;
     writeBlock->flag    = _flag;
 
 #ifdef WIN32
@@ -147,7 +147,7 @@ int CPCAPFile2::write(int _ioCount, const byte* _data[], int _dataLen[], u_int64
         writeBlock->buffer  = const_cast<byte*>(_data[i]);
         writeBlock->dataLen = _dataLen[i];
         writeBlock->flag    = _flag;
-        writeBlock->Offset  = offset;
+        writeBlock->Offset  = (u_int32)offset;
         writeBlock->context = _context;
         writeBlock->context2 = _context2[i];        
         writeBlock->hFile = m_fileHandle;

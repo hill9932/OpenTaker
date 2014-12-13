@@ -21,7 +21,7 @@ int CPcapCapture::scanLocalNICs()
     int pcapDevSize = 0;
 
     // check whether has detected
-    for (unsigned int i = 0; i < m_localNICs.size(); ++i)
+    for (u_int32 i = 0; i < m_localNICs.size(); ++i)
     {
         if (m_localNICs[i].type == DEVICE_TYPE_LIBPCAP)
             ++pcapDevSize;
@@ -34,7 +34,7 @@ int CPcapCapture::scanLocalNICs()
 
 #ifdef WIN32
     GetSysNICs2(m_localNICs);
-    for (int i = curSize; i < m_localNICs.size(); ++i)
+    for (u_int32 i = curSize; i < m_localNICs.size(); ++i)
     {
         m_localNICs[i].name = "\\Device\\NPF_" + m_localNICs[i].name;
         m_localNICs[i].portIndex = portIndex++;

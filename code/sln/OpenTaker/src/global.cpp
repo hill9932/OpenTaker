@@ -1,10 +1,46 @@
 #include "global.h"
 #include "file_system.h"
+#include "popt/popt.h"
 
+/**
+* @Function: System signal handler
+**/
+#ifdef WIN32
+BOOL WINAPI HandlerRoutine(DWORD _sig)
+#else
+void HandlerRoutine(int _sig)
+#endif
+{
+    RM_LOG_INFO("Receiving exit instruction " << _sig);
+    if (g_env)   g_env->enable(false);
+    SleepSec(5);
+
+#ifdef WIN32
+    return TRUE;
+#endif
+}
+
+bool SetupEnviroment(int _argc, char** _argv, const char* _projectName)
+{
+    g_env = Enviroment::GetInstance();
+    bool r = g_env->init(_argc, _argv, _projectName);
+
+#ifdef WIN32
+    SetConsoleCtrlHandler(HandlerRoutine, TRUE);
+#else
+    signal(SIGINT, HandlerRoutine);
+    signal(SIGTERM, HandlerRoutine);
+    signal(SIGSTOP, HandlerRoutine);
+#endif
+
+    return r;
+}
 
 Enviroment* g_env = NULL;
 Enviroment::Enviroment()
 {
+    m_config.configFile = LiangZhu::GetAppDir() + "config/open_take.lua";
+    m_config.engine.pcapFile = LiangZhu::GetAppDir() + "validation.pcap";
 }
 
 Enviroment::~Enviroment()
@@ -15,6 +51,45 @@ bool Enviroment::init(int _argc, char** _argv, const char* _projectName)
 {
     bool ret = false;
     ret = InitLog(LiangZhu::GetAppDir() + "config/log4cplus.properties", _projectName);
+    if (!ret)   return false;
+
+    char* pcapFile = NULL;
+    char* confFileName = NULL;
+    struct poptOption table[] =
+    {
+        { "config-file",
+        '\0',
+        POPT_ARG_STRING,
+        &confFileName,
+        1,
+        "specify config file name.",
+        NULL},
+
+        { "pcap-file",
+        '\0',
+        POPT_ARG_STRING,
+        &pcapFile,
+        1,
+        "specify the pcap file to open",
+        NULL },
+
+        { NULL, 0, 0, NULL, 0 }
+    };
+    poptContext context = poptGetContext(NULL, _argc, const_cast<const char**>(_argv), table, 0);
+
+    int r = 0;
+    while ((r = poptGetNextOpt(context)) >= 0);
+    if (r < -1)
+    {
+        poptPrintHelp(context, stderr, 0);
+        cerr << "Has invalid command options.";
+        poptFreeContext(context);
+        return false;
+    }
+    poptFreeContext(context);
+
+    if (confFileName)   m_config.configFile = confFileName;
+    if (pcapFile)       m_config.engine.pcapFile = pcapFile;
 
     return ret;
 }
@@ -57,7 +132,7 @@ CStdString GetFileSubDirByIndex(u_int32 _index, u_int32 _dirLevel)
     CStdString subDir;
     CStdString tmp;
     int index = _index;
-    for (int i = 0; i < _dirLevel; ++i)
+    for (u_int32 i = 0; i < _dirLevel; ++i)
     {
         int levelCount = (int)pow(g_filesPerDir, _dirLevel - i);
         tmp.Format("%04d/", index / levelCount);
@@ -71,7 +146,7 @@ CStdString GetFileSubDirByIndex(u_int32 _index, u_int32 _dirLevel)
 CStdString GetFilePathByIndex(u_int32 _index, u_int32 _dirLevel)
 {
     int target = 0;
-    int count = g_env->m_config.storage.fileDir[target].fileCount;
+    u_int32 count = g_env->m_config.storage.fileDir[target].fileCount;
 
     while (count < _index)
     {
@@ -87,7 +162,7 @@ CStdString GetFilePathByIndex(u_int32 _index, u_int32 _dirLevel)
     return path;
 }
 
-int AdjustFileIndex(int _target, int& _fileIndex)
+int AdjustFileIndex(u_int32 _target, int& _fileIndex)
 {
     assert(_target < g_env->m_config.storage.fileDir.size());
     if (_target >= g_env->m_config.storage.fileDir.size())  return -1;
@@ -98,7 +173,7 @@ int AdjustFileIndex(int _target, int& _fileIndex)
     return 0;
 }
 
-int GetMaxFileIndex(int _target)
+int GetMaxFileIndex(u_int32 _target)
 {
     assert(_target < g_env->m_config.storage.fileDir.size());
     if (_target >= g_env->m_config.storage.fileDir.size())  return -1;
@@ -114,7 +189,7 @@ int GetRecordDBCount()
         1 : g_env->m_config.storage.fileDir.size();
 }
 
-int GetTargetDBIndex(int _target)
+int GetTargetDBIndex(u_int32 _target)
 {
     return g_env->m_config.storage.writeMode == WRITE_SEQUENTIAL ? 0 : _target;
 }

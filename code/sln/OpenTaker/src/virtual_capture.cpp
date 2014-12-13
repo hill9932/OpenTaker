@@ -110,9 +110,6 @@ int CVirtualCapture::getStatistic(Statistic_t& _pcapStat, int _port)
 bool CVirtualCapture::openDevice_(int _index, const char* _devName)
 {
     CStdString filePath = g_env->m_config.engine.pcapFile;
-    if (filePath.IsEmpty())
-        filePath = GetAppDir() + "virtual/validation.pcap";
-
     if (!IsFileExist(filePath) || 
       0 != m_pcapFile.open(filePath, ACCESS_READ, FILE_OPEN_EXISTING, false, false))
     {

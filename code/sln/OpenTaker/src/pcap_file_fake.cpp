@@ -27,7 +27,7 @@ int CFakePcapFile::write(const byte* _data, int _dataLen, u_int64 _offset,
 
     writeBlock.buffer = const_cast<byte*>(_data);
     writeBlock.dataLen = _dataLen;
-    writeBlock.Offset = offset;
+    writeBlock.Offset = (u_int32)offset;
     writeBlock.flag = _flag;
 
 #ifdef WIN32

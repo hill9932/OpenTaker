@@ -99,14 +99,18 @@ struct CaptureConf_t
 struct EnvConfig_t
 {
     DebugMode_e     debugMode;
-    int             justTestCapture;
+    CStdString      configFile;
 
     EngineConf_t    engine;
     StorageConf_t   storage;
-    CaptureConf_t   capture;
+    CaptureConf_t   capture;    
+    
+    int             justTestCapture;
 };
 
 const int g_filesPerDir = 128;  // max file count in a directory
+
+bool SetupEnviroment(int _argc, char** _argv, const char* _projectName);
 
 /**
  * When multiple target config, and write mode could be sequential or interleaved
@@ -114,11 +118,12 @@ const int g_filesPerDir = 128;  // max file count in a directory
  **/
 CStdString GetFileSubDirByIndex(u_int32 _index, u_int32 _dirLevel);
 CStdString GetFilePathByIndex(u_int32 _index, u_int32 _dirLevel);
-int AdjustFileIndex(int _target, int& _fileIndex);
-int GetMaxFileIndex(int _target);
-int GetRecordDBCount();
-int GetTargetDBIndex(int _target);
+int AdjustFileIndex(u_int32 _target, int& _fileIndex);
+int GetMaxFileIndex(u_int32 _target);
+int GetTargetDBIndex(u_int32 _target);
 int GetTargetByFileIndex(int& _index);
+int GetRecordDBCount();
+
 
 /**
  * @Function:¡¡Keep the global setting for the process
@@ -153,12 +158,14 @@ private:
 
 extern Enviroment* g_env;
 
+/**
+* @Function: System signal handler
+**/
+#ifdef WIN32
+BOOL WINAPI HandlerRoutine(DWORD _sig);
+#else
+void HandlerRoutine(int _sig);
+#endif
 
-static inline 
-bool SetupEnviroment(int _argc, char** _argv, const char* _projectName)
-{
-    g_env = Enviroment::GetInstance();  
-    return g_env->init(_argc, _argv, _projectName);
-}
 
 #endif

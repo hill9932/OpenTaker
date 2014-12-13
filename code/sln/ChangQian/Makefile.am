@@ -8,6 +8,7 @@ libChangQian_a_SOURCES = src/main.cpp 		\
 			src/network/igmp.cpp			\
 			src/network/inetaddr.cpp		\
 			src/network/net_util.cpp		\
+			src/network/ntp.cpp				\
 			src/network/socket_base.cpp		\
 			src/network/socket_tcp.cpp		\
 			src/network/socket_udp.cpp		
