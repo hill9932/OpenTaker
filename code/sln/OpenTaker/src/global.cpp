@@ -1,5 +1,9 @@
 #include "global.h"
 #include "file_system.h"
+#include "packet_ring.h"
+#include "string_.h"
+#include "system_.h"
+#include "code_convert.h"
 #include "popt/popt.h"
 
 /**
@@ -33,14 +37,31 @@ bool SetupEnviroment(int _argc, char** _argv, const char* _projectName)
     signal(SIGSTOP, HandlerRoutine);
 #endif
 
+    g_env->enable(true);
     return r;
 }
 
 Enviroment* g_env = NULL;
 Enviroment::Enviroment()
-{
-    m_config.configFile = LiangZhu::GetAppDir() + "config/open_take.lua";
-    m_config.engine.pcapFile = LiangZhu::GetAppDir() + "validation.pcap";
+{    
+    m_enable = false;
+    m_config.configFile             = LiangZhu::GetAppDir() + "config/open_taker.lua";
+    m_config.capture.captureMode    = 0;
+    m_config.capture.stopWhenWrap   = false;
+    m_config.capture.pcapFile       = LiangZhu::GetAppDir() + "validation.pcap";
+
+    m_config.storage.fileSize       = 512 * ONE_MB;
+    m_config.storage.sliceSize      = 64;
+    m_config.storage.fileType       = FILE_PCAP;
+
+    m_config.engine.dbPath          = LiangZhu::GetAppDir() + "filedb";
+    m_config.engine.blockMemSize    = 10 * ONE_MB;
+    m_config.engine.debugMode       = DEBUG_BLOCK;
+    m_config.engine.enableInsertDB  = false;
+    m_config.engine.enableS2Disk    = true;
+    m_config.engine.enableParsePacket = true;
+    m_config.engine.ioCount         = 16;
+    m_config.engine.ioMode          = IOMODE_IO_THREAD;
 }
 
 Enviroment::~Enviroment()
@@ -52,6 +73,7 @@ bool Enviroment::init(int _argc, char** _argv, const char* _projectName)
     bool ret = false;
     ret = InitLog(LiangZhu::GetAppDir() + "config/log4cplus.properties", _projectName);
     if (!ret)   return false;
+    SetRingLogger(g_logger);
 
     char* pcapFile = NULL;
     char* confFileName = NULL;
@@ -89,120 +111,160 @@ bool Enviroment::init(int _argc, char** _argv, const char* _projectName)
     poptFreeContext(context);
 
     if (confFileName)   m_config.configFile = confFileName;
-    if (pcapFile)       m_config.engine.pcapFile = pcapFile;
+    if (pcapFile)       m_config.capture.pcapFile = pcapFile;
 
-    return ret;
+    return loadConfig();
 }
+
+#define KEY_STORAGE                 "storage"
+#define KEY_STORAGE_PATH            "path"
+#define KEY_STORAGE_FILESIZE        "file_size"
+#define KEY_STORAGE_SLICESIZE       "slice_size"
+#define KEY_STORAGE_WRITE_MODE      "write_mode"
+#define KEY_STORAGE_IO_COUNT        "io_count"
+
+#define KEY_ENGINE                  "engine"
+#define KEY_ENGINE_BLOCKSIZE        "block_size"
+#define KEY_ENGINE_BLOCKMEM_SIZE    "block_share_memory_size"
+#define KEY_ENGINE_METAMEM_SIZE     "meta_share_memory_size"
+#define KEY_ENGINE_ENABLE_N2DISK    "enable_n2disk"
+#define KEY_ENGINE_PARSE_PACKET     "enable_parse_packet"
+#define KEY_ENGINE_ENABLE_N2DB      "enable_insert_db"
+#define KEY_ENGINE_DB_PATH          "db_path"
+#define KEY_ENGINE_DEBUG_MODE       "debug_mode"    // 1 - record block information 2 - record packet information, default is 0
+#define KEY_ENGINE_IO_MODE          "io_mode"       // 1 - own thread to recycle finished io 2 - capture thread to recycle
+
 
 bool Enviroment::loadConfig()
 {
-    return true;
-}
+    LuaObject   confObj;
+    if (0 != m_lua.doFile(m_config.configFile))  return false;
+    m_lua.loadObject(KEY_STORAGE, confObj);
 
-bool CreateSubDirs(CStdString& _path, int _startIndex, int _stopIndex, int& _itemLeft, int _level, bool _createFile = false)
-{
-    CStdString filePath;
-    int stop = MyMin(_stopIndex, _itemLeft);
-    for (int i = _startIndex; i < stop; ++i)
+    if (confObj.size() == 0)  return false;
+    if (confObj.count(KEY_STORAGE_PATH) == 0)
     {
-        if (_level > 0)
+        RM_LOG_ERROR("Please config the storage path.");
+        return false;
+    }
+
+    //
+    // check path
+    //
+    CStdString value = confObj[KEY_STORAGE_PATH];
+    if (value.empty())    return false;
+    string ansiValue;
+    Utf82Ansi(value.data(), value.size(), ansiValue);
+    if (!ansiValue.empty())
+    {
+        //
+        // multiple paths are split with ";"
+        //
+        vector<CStdString> paths;
+        StrSplit(ansiValue.c_str(), TEXT(";"), paths);
+        if (paths.size() == 0)  return false;
+
+        if (confObj.count(KEY_STORAGE_FILESIZE))
         {
-            filePath.Format("%s/%04d", _path.c_str(), i);
-            CreateAllDir(filePath);
-            CreateSubDirs(filePath, 0, stop, _itemLeft, _level - 1, _createFile);
+            m_config.storage.fileSize = MyMax(atoi_t(confObj[KEY_STORAGE_FILESIZE]), 2);
+            m_config.storage.fileSize *= ONE_MB;
         }
-        else if (_createFile)
+
+        if (confObj.count(KEY_STORAGE_SLICESIZE))
+            m_config.storage.sliceSize = atoi_t(confObj[KEY_STORAGE_SLICESIZE]);
+
+        //
+        // path and size are split with "|"
+        //
+        for (unsigned int i = 0; i < paths.size(); ++i)
         {
-            filePath.Format("%s/%04d-0-0-0-0-0.pcap", _path.c_str(), i);
-            AllocateFile(filePath, g_env->m_config.storage.fileSize);
+            CStdString& value = paths[i];
+            TargetConf_t conf;
+            vector<CStdString> vv;
+            StrSplit(value.c_str(), TEXT("|"), vv);
+            if (vv.size() == 0)   continue;
+
+            conf.target = vv[0].Trim();    // target path
+            if (vv.size() == 2 && atoi_t(vv[1]) > 0)     // target capacity
+                conf.capacity = atoi_t(vv[1]) * ONE_GB;
+            else if (atoi_t(vv[1]) == -1)
+            {
+                conf.capacity = GetAvailableSpace(conf.target);
+                if (conf.capacity == 0)  conf.capacity = ONE_GB;
+                else conf.capacity *= ONE_GB;
+            }
+            else
+            {
+                cout << "Use config a invalid disk storage size, we will set it as 1 GB." << endl;
+                conf.capacity = ONE_GB;
+            }
+
+            conf.curFileIndex = 0;
+            conf.fileIndexOffset = m_config.storage.fileCount;
+            conf.fileCount = conf.capacity / m_config.storage.fileSize;
+            conf.firstFileIndex = conf.curFileIndex = 0;
+
+            conf.outResIndex = -1;
+            bzero(&conf.fileInfo, sizeof(FileInfo_t));
+            m_config.storage.fileDir.push_back(conf);
+            m_config.storage.fileCount += conf.fileCount;
+
+            if (!CreateAllDir(conf.target))
+            {
+                cout << "Create all directories " << conf.target << " failed, "
+                     << GetLastSysErrorMessage(GetLastSysError()).c_str() << endl;
+                return false;
+            }
         }
-
-        if (_itemLeft <= 0) break;
     }
 
-    if (_level == 0)    _itemLeft -= stop;
-    return true;
-}
+    //
+    // configure of "engine"
+    //
+    confObj.clear();
+    m_lua.loadObject(KEY_ENGINE, confObj);
 
-CStdString GetFileSubDirByIndex(u_int32 _index, u_int32 _dirLevel)
-{
-    assert(_index < g_env->m_config.storage.fileCount);
-    if (_index >= g_env->m_config.storage.fileCount)    return "";
-
-    CStdString subDir;
-    CStdString tmp;
-    int index = _index;
-    for (u_int32 i = 0; i < _dirLevel; ++i)
+    // block share memory size
+    if (confObj.count(KEY_ENGINE_BLOCKMEM_SIZE))
     {
-        int levelCount = (int)pow(g_filesPerDir, _dirLevel - i);
-        tmp.Format("%04d/", index / levelCount);
-        subDir += tmp;
-        index %= levelCount;
+        m_config.engine.blockMemSize = MyMax(atoi_t(confObj[KEY_ENGINE_BLOCKMEM_SIZE]), 10);
+        m_config.engine.blockMemSize *= ONE_MB;
     }
 
-    return subDir;
+    if (confObj.count(KEY_ENGINE_ENABLE_N2DISK))
+        m_config.engine.enableS2Disk = stricmp("true", confObj[KEY_ENGINE_ENABLE_N2DISK]) == 0;
+
+    if (confObj.count(KEY_ENGINE_PARSE_PACKET))
+        m_config.engine.enableParsePacket = stricmp("true", confObj[KEY_ENGINE_PARSE_PACKET]) == 0;
+
+    if (confObj.count(KEY_ENGINE_ENABLE_N2DB))
+        m_config.engine.enableInsertDB = stricmp("true", confObj[KEY_ENGINE_ENABLE_N2DB]) == 0;
+
+    if (confObj.count(KEY_ENGINE_DB_PATH))
+        m_config.engine.dbPath = confObj[KEY_ENGINE_DB_PATH].Trim();
+
+    if (confObj.count(KEY_ENGINE_DEBUG_MODE))
+        m_config.engine.debugMode = (DebugMode_e)atoi_t(confObj[KEY_ENGINE_DEBUG_MODE]);
+
+    if (confObj.count(KEY_ENGINE_IO_MODE))
+        m_config.engine.ioMode = (IoMode_e)atoi_t(confObj[KEY_ENGINE_IO_MODE]);
+
+    return createDirs();
 }
 
-CStdString GetFilePathByIndex(u_int32 _index, u_int32 _dirLevel)
+bool Enviroment::createDirs()
 {
-    int target = 0;
-    u_int32 count = g_env->m_config.storage.fileDir[target].fileCount;
-
-    while (count < _index)
+    bool b = false;
+    for (u_int32 i = 0; i < m_config.storage.fileDir.size(); ++i)
     {
-        count += g_env->m_config.storage.fileDir[++target].fileCount;
+        CStdString targetName;
+        targetName.Format("%s/target%d", g_env->m_config.engine.dbPath, i);
+        b = CreateAllDir(targetName);
+        if (m_config.storage.writeMode == WRITE_SEQUENTIAL)
+            break;
     }
 
-    if (g_env->m_config.storage.writeMode == WRITE_SEQUENTIAL)
-        _index -= g_env->m_config.storage.fileDir[target].fileIndexOffset;
+    b = CreateAllDir(GetAppDir() + "./PerfTest");
 
-    CStdString path;
-    path.Format("%s/%s", g_env->m_config.storage.fileDir[target].target.c_str(),
-        GetFileSubDirByIndex(_index, _dirLevel).c_str());
-    return path;
-}
-
-int AdjustFileIndex(u_int32 _target, int& _fileIndex)
-{
-    assert(_target < g_env->m_config.storage.fileDir.size());
-    if (_target >= g_env->m_config.storage.fileDir.size())  return -1;
-
-    if (g_env->m_config.storage.writeMode == WRITE_SEQUENTIAL)
-        _fileIndex -= g_env->m_config.storage.fileDir[_target].fileIndexOffset;
-
-    return 0;
-}
-
-int GetMaxFileIndex(u_int32 _target)
-{
-    assert(_target < g_env->m_config.storage.fileDir.size());
-    if (_target >= g_env->m_config.storage.fileDir.size())  return -1;
-
-    return g_env->m_config.storage.writeMode == WRITE_SEQUENTIAL ?
-        g_env->m_config.storage.fileCount :
-        g_env->m_config.storage.fileDir[_target].fileCount;
-}
-
-int GetRecordDBCount()
-{
-    return g_env->m_config.storage.writeMode == WRITE_SEQUENTIAL ?
-        1 : g_env->m_config.storage.fileDir.size();
-}
-
-int GetTargetDBIndex(u_int32 _target)
-{
-    return g_env->m_config.storage.writeMode == WRITE_SEQUENTIAL ? 0 : _target;
-}
-
-int GetTargetByFileIndex(int& _index)
-{
-    int target = 0;
-    int count = g_env->m_config.storage.fileDir[target].fileCount;
-
-    while (count <= _index)
-    {
-        count += g_env->m_config.storage.fileDir[++target].fileCount;
-    }
-
-    return target;
+    return b; 
 }

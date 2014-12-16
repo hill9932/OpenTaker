@@ -4,11 +4,11 @@
 
 CPCAPFile::CPCAPFile()
 {
-    m_fileHandle     = INVALID_HANDLE_VALUE;
-    m_fileView = NULL;
-    m_buf       = NULL;
-    m_offset    = 0;
-    m_fileSize = g_env ? g_env->m_config.storage.fileSize : 0;
+    m_fileHandle    = INVALID_HANDLE_VALUE;
+    m_fileView      = (handle_t)NULL;
+    m_buf           = NULL;
+    m_offset        = 0;
+    m_fileSize      = g_env ? g_env->m_config.storage.fileSize : 0;
 }
 
 CPCAPFile::~CPCAPFile()

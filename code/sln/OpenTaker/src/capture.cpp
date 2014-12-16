@@ -101,19 +101,19 @@ int CNetCapture::openDevice(int _index)
     m_device = m_localNICs[_index];
     if (openDevice(_index, m_device.name))
     {
-        if (g_env->m_config.debugMode >= DEBUG_BLOCK)
+        if (g_env->m_config.engine.debugMode >= DEBUG_BLOCK)
         {
             u_int32 hashValue = HashString(m_device.name);
             CStdString  logName;
-            logName.Format("./PerfTest/CaptureBlock_%u.txt", hashValue);
+            logName.Format("%sPerfTest/CaptureBlock_%u.txt", LiangZhu::GetAppDir(), hashValue);
             if (!m_fsCaptureBlock.is_open())
                 m_fsCaptureBlock.open(logName, ios_base::out | ios_base::trunc);
 
-            if (g_env->m_config.debugMode >= DEBUG_PACKET)
+            if (g_env->m_config.engine.debugMode >= DEBUG_PACKET)
             {
                 for (int i = 0; i < MAX_CAPTURE_THREAD; ++i)
                 {
-                    logName.Format("./PerfTest/CapturePacket_%u_%u.txt", hashValue, i);
+                    logName.Format("%sPerfTest/CapturePacket_%u_%u.txt", GetAppDir(), hashValue, i);
                     if (!m_fsCapturePacket[i].is_open())
                         m_fsCapturePacket[i].open(logName, ios_base::out | ios_base::trunc);
                 }
@@ -212,7 +212,7 @@ int CNetCapture::createTables()
     {
         CStdString targetName;
         targetName.Format("target%d", i);
-        dbPath.Format("%s/%s/farewell.db", g_env->m_config.engine.dbPath, targetName.c_str());
+        dbPath.Format("%s/%s/" FILE_DB_NAME, g_env->m_config.engine.dbPath, targetName.c_str());
         z = createDB(i, dbPath);
     }
 
@@ -514,7 +514,7 @@ nextfile:
 
     RM_LOG_DEBUG("Next file = " << fileName);
     int z = 0;
-    if (0 == m_pcapFile->open(fileName, ACCESS_WRITE, FILE_OPEN_ALWAYS, true, g_env->m_config.engine.isSecAlign))
+    if (0 == m_pcapFile->open(fileName, ACCESS_WRITE, FILE_OPEN_ALWAYS, true, g_env->m_config.storage.secAlign))
     {
         m_fileInfo->status = STATUS_CAPTURE;
         if (updateFileName())   // restore the file name to n-0-0-0-0 before to write

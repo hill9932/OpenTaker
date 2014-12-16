@@ -2,7 +2,10 @@
 #define __HILUO_GLOBAL_INCLUDE_H__
 
 #include "common.h"
+#include "storage.h"
 #include "capture_file.h"
+#include "lua_.h"
+
 using namespace LiangZhu;
 
 enum DebugMode_e
@@ -12,17 +15,11 @@ enum DebugMode_e
     DEBUG_PACKET
 };
 
-enum WriteMode_e
-{
-    WRITE_SEQUENTIAL = 1,
-    WRITE_INTERLEAVED
-};
-
 enum IoMode_e
 {
     IOMODE_NONE,
-    IOMODE_CAPTURE_THREAD = 1,
-    IOMODE_IO_THREAD
+    IOMODE_CAPTURE_THREAD = 1,  // use the same thread as capture
+    IOMODE_IO_THREAD            // a separate thread to get the finished IO
 };
 
 //
@@ -31,16 +28,15 @@ enum IoMode_e
 struct EngineConf_t
 {
     CStdString  dbPath;         // the path to store the packet db files
-    CStdString  pcapFile;
-    bool        isSecAlign;
     bool        enableParsePacket;
     bool        enableS2Disk;
     bool        enableInsertDB;
 
     IoMode_e    ioMode;
+    DebugMode_e debugMode;
 
+    u_int32     ioCount;
     u_int32     blockMemSize;   // the size of share memory to cache packets data
-    u_int32     captureDuration;// the time to capture
 };
 
 struct TargetConf_t
@@ -61,16 +57,16 @@ struct TargetConf_t
 //
 struct StorageConf_t
 {
-    u_int64 fileSize;       // default size is 512 MB
-    u_int32 fileCount;      // total file count of the storage
-    u_int32 sliceSize;      // the size of packet to store
-    u_int32 dirLevel;
-    u_int32 ioCount;
-    bool    renameFile;
+    u_int64     fileSize;       // default size is 512 MB
+    u_int32     fileCount;      // total file count of the storage
+    u_int32     sliceSize;      // the size of packet to store
+    u_int32     dirLevel;
+    bool        renameFile;
+    bool        secAlign;
 
-    vector<TargetConf_t>  fileDir;
-    WriteMode_e         writeMode;
-    FileType_e          fileType;
+    WriteMode_e             writeMode;
+    FileType_e              fileType;
+    vector<TargetConf_t>    fileDir;
 };
 
 struct TimeSegment
@@ -91,38 +87,25 @@ struct TimeSegment
 
 struct CaptureConf_t
 {
+    int                 captureMode;
     bool                stopWhenWrap;
-    FileStatus_e        fileStatus;
+    u_int32             captureDuration;    // the time to capture
+
+    CStdString          pcapFile;           // the pcap file to open
+    FileStatus_e        fileStatus;         // the default file status of this capture session
     vector<TimeSegment> lockTime;
 };
 
 struct EnvConfig_t
 {
-    DebugMode_e     debugMode;
     CStdString      configFile;
 
     EngineConf_t    engine;
     StorageConf_t   storage;
     CaptureConf_t   capture;    
-    
-    int             justTestCapture;
 };
 
-const int g_filesPerDir = 128;  // max file count in a directory
-
 bool SetupEnviroment(int _argc, char** _argv, const char* _projectName);
-
-/**
- * When multiple target config, and write mode could be sequential or interleaved
- * these function used to adjust the file info according to the write mode
- **/
-CStdString GetFileSubDirByIndex(u_int32 _index, u_int32 _dirLevel);
-CStdString GetFilePathByIndex(u_int32 _index, u_int32 _dirLevel);
-int AdjustFileIndex(u_int32 _target, int& _fileIndex);
-int GetMaxFileIndex(u_int32 _target);
-int GetTargetDBIndex(u_int32 _target);
-int GetTargetByFileIndex(int& _index);
-int GetRecordDBCount();
 
 
 /**
@@ -139,7 +122,6 @@ public:
     }
 
     bool init(int _argc, char** _argv, const char* _projectName);
-    bool loadConfig();
 
     void enable(bool _enable) { m_enable = _enable; }
     bool enable() { return m_enable; }
@@ -148,24 +130,19 @@ private:
     Enviroment();
     ~Enviroment();
 
+    bool loadConfig();
+    bool createDirs();
+
 public:
     EnvConfig_t     m_config;
     TimeSegment     m_capTimeRange;
 
 private:
     bool    m_enable;
+    CLua        m_lua;
 };
 
 extern Enviroment* g_env;
-
-/**
-* @Function: System signal handler
-**/
-#ifdef WIN32
-BOOL WINAPI HandlerRoutine(DWORD _sig);
-#else
-void HandlerRoutine(int _sig);
-#endif
 
 
 #endif

@@ -67,7 +67,7 @@ extern "C"
         {
             bzero(buf, sizeof(Global_t));
             _G->g_blockSize = _blockSize;
-            int size2 = LiangZhu::Sqrt2(_blockSize / 80) + 1;   // 80 is the minimum packet size 64 B + packet header 16 B
+            int size2 = LiangZhu::Sqrt2(_blockSize / 80);   // 80 is the minimum packet size 64 B + packet header 16 B
 
             _G->g_metaPoolSize = (2 << size2) * sizeof(PacketMeta_t);
             _G->g_stopped = false;

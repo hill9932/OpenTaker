@@ -313,6 +313,7 @@ if $(ConfigurationType) == Application (copy $(SolutionDir)..\tmp\$(ProjectName)
   <ItemGroup>
     <ClCompile Include="src\common\aio_.cpp" />
     <ClCompile Include="src\common\block_file.cpp" />
+    <ClCompile Include="src\common\code_convert.cpp" />
     <ClCompile Include="src\common\common.cpp" />
     <ClCompile Include="src\common\file.cpp" />
     <ClCompile Include="src\common\file_pool.cpp" />
@@ -337,6 +338,7 @@ if $(ConfigurationType) == Application (copy $(SolutionDir)..\tmp\$(ProjectName)
   <ItemGroup>
     <ClInclude Include="..\..\inc\common\auto_ptr.hxx" />
     <ClInclude Include="..\..\inc\common\block_file.h" />
+    <ClInclude Include="..\..\inc\common\code_convert.h" />
     <ClInclude Include="..\..\inc\common\common.h" />
     <ClInclude Include="..\..\inc\common\def.h" />
     <ClInclude Include="..\..\inc\common\device.h" />

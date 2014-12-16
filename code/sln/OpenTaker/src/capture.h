@@ -98,6 +98,7 @@ int ParseBPFilter(Filter_t& _filter, const char* _filterString, int _port);
 CStdString GenQuerySql(Filter_t _bpfFilter);
 typedef int(*RecordFileFunc)(FileInfo_t*, void* _context);  // define the function to handle queried file
 
+#define FILE_DB_NAME        "OpenTaker.db"
 #define FILE_STATUS_TABLE   "FileStatusInfo"        // the table name to store all the file information, created in farewell.db
 #define FILE_PACKET_TABLE   "FilePacketInfo"        // the table name to store packets meta information, created in every file db
 #define FILE_BLOCK_TABLE    "FileBlockInfo"         // the table name to store block information

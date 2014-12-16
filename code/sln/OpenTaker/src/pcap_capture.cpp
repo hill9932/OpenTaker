@@ -246,10 +246,7 @@ int CPcapCapture::startCapture_(void* _arg)
         }
         prevTimeStamp = ts;
 
-        if (g_env->m_config.justTestCapture > 0)
-            testCapture(context->captureId, m_device.portIndex, &header, (byte*)pktData, true);
-        else
-            handlePacket(context->captureId, m_device.portIndex, &header, pktData, true);
+        testCapture(context->captureId, m_device.portIndex, &header, (byte*)pktData, true);
     }
 
     RM_LOG_INFO("CPcapCapture Capturing exited.");

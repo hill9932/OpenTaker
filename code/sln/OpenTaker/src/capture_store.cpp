@@ -185,13 +185,13 @@ CBlockCaptureImpl::CBlockCaptureImpl()
     sql.Format("UPDATE " FILE_STATUS_TABLE " SET STATUS=%d WHERE STATUS=%d", STATUS_NORMAL, STATUS_CAPTURE);
     int z = execOnRecordDB(sql, NULL, NULL);
 
-    if (g_env->m_config.debugMode >= DEBUG_BLOCK)
+    if (g_env->m_config.engine.debugMode >= DEBUG_BLOCK)
     {
-        m_fsSaveBlock.open("./PerfTest/ResultBlock.txt", ios_base::out | ios_base::trunc);
-        m_fsCostBlock.open("./PerfTest/CostBlock.txt", ios_base::out | ios_base::trunc);
+        m_fsSaveBlock.open(GetAppDir() + "PerfTest/ResultBlock.txt", ios_base::out | ios_base::trunc);
+        m_fsCostBlock.open(GetAppDir() + "PerfTest/CostBlock.txt", ios_base::out | ios_base::trunc);
 
-        if (g_env->m_config.debugMode >= DEBUG_PACKET)
-            m_fsSavePacket.open("./PerfTest/ResultPacket.txt", ios_base::out | ios_base::trunc);
+        if (g_env->m_config.engine.debugMode >= DEBUG_PACKET)
+            m_fsSavePacket.open(GetAppDir() + "PerfTest/ResultPacket.txt", ios_base::out | ios_base::trunc);
     }
 
     m_curTarget = -1;
@@ -266,25 +266,7 @@ int CBlockCaptureImpl::prepareResource(CaptureConfig_t& _config)
     //
     // determine the stored file format
     //
-    map<int, CNetCapture*>::const_iterator it = m_capObjMap.begin();
-    if (it->second->getDevice().type == DEVICE_TYPE_ACCOLADE &&
-        it->second->getDevice().productID >= 0x20)
-    {
-        g_env->m_config.storage.fileType = FILE_ACCOLADE;
-        RM_LOG_INFO("Target file format will be FILE_ACCOLADE.");
-    }
-    else if (it->second->getDevice().type == DEVICE_TYPE_MEMORY ||
-             it->second->getDevice().type == DEVICE_TYPE_NAPATECH)
-    {
-        g_env->m_config.storage.fileType = FILE_PV;
-        RM_LOG_INFO("Target file format will be FILE_PV");
-    }
-    else
-    {
-        g_env->m_config.storage.fileType = FILE_PCAP;
-        g_env->m_config.engine.isSecAlign = false;
-        RM_LOG_INFO("Target file format will be FILE_PCAP.");
-    }
+    RM_LOG_INFO("Target file format will be FILE_PCAP.");
 
     for (unsigned int i = 0; i < sizeof(m_outRes) / sizeof(m_outRes[0]); ++i)
     {
@@ -360,7 +342,7 @@ again:
     capture->m_saveByteCount = 0;
     capture->m_captureState = CAPTURE_STARTED;
 
-    bool timeLimit = g_env->m_config.engine.captureDuration != 0;
+    bool timeLimit = g_env->m_config.capture.captureDuration != 0;
     u_int64 tickCount = 0;
     time_t  prevCheckTime;
     time(&prevCheckTime);
@@ -376,9 +358,9 @@ again:
             prevCheckTime = now;
             capture->flushFile(++tickCount);
 
-            if (timeLimit && tickCount >= g_env->m_config.engine.captureDuration)
+            if (timeLimit && tickCount >= g_env->m_config.capture.captureDuration)
             {
-                RM_LOG_INFO("Time is up: " << g_env->m_config.engine.captureDuration);
+                RM_LOG_INFO("Time is up: " << g_env->m_config.capture.captureDuration);
                 break;
             }
         }
@@ -466,7 +448,7 @@ int CBlockCaptureImpl::saveBlock(DataBlock_t* _block)
 {
     assert(m_pcapFile->isValid());
 
-    if (g_env->m_config.engine.isSecAlign) // DIRECT IO need size and address sector alignment
+    if (g_env->m_config.storage.secAlign) // DIRECT IO need size and address sector alignment
     {
         assert(_block->dataDesc.blockSize % SECTOR_ALIGNMENT == 0);
         assert((u_int64)_block->dataDesc.pData % SECTOR_ALIGNMENT == 0);
@@ -481,7 +463,7 @@ int CBlockCaptureImpl::saveBlock(DataBlock_t* _block)
         return z;
     }
 
-    if (g_env->m_config.debugMode >= DEBUG_BLOCK)
+    if (g_env->m_config.engine.debugMode >= DEBUG_BLOCK)
     {
         struct timeval ts;
         gettimeofday(&ts, NULL);
@@ -700,12 +682,13 @@ int CBlockCaptureImpl::DoTheProcess(void* _obj)
 
                 continue;
             }
-            //assert((blockPos++ % pktRing->GetMetaBlockCount()) == metaBlock->blkPos);
+
             idleTime = 0;
             bool stop = pktRing->IsStopSignal(metaBlock);
             bool timeout = pktRing->IsTimeoutSignal(metaBlock);
             if (!stop && !timeout)
                 capture->processMetaBlock(metaBlock);
+
             pktRing->Move2NextMetaBlk();
 
             if (stop)
@@ -724,7 +707,6 @@ int CBlockCaptureImpl::DoTheProcess(void* _obj)
             else if (timeout)
             {
                 pktRing->FreeFullMetaBlk(metaBlock);
-                // XXX do something on timeout?
             }
         }
     } while (again);
@@ -752,7 +734,7 @@ void CBlockCaptureImpl::processMetaBlock(PktMetaBlk_t *_metaBlk)
         else   // fake packet
             assert(meta->basicAttr.pktLen == 1 && meta->basicAttr.ts == 0);
 
-        if (g_env->m_config.debugMode >= DEBUG_PACKET && pktHeader)
+        if (g_env->m_config.engine.debugMode >= DEBUG_PACKET && pktHeader)
         {
             m_fsSavePacket << meta->basicAttr.ts << ", "  \
                 << (void*)meta->headerAddr << ", "  \
@@ -1179,7 +1161,7 @@ int CBlockCaptureImpl::queryRecordDB(const tchar* _sql, vector<u_int64>& _result
     {
         CStdString targetName;
         targetName.Format("target%d", i);
-        dbPath.Format("%s/%s/farewell.db", g_env->m_config.engine.dbPath, targetName.c_str());
+        dbPath.Format("%s/%s/" FILE_DB_NAME, g_env->m_config.engine.dbPath, targetName.c_str());
 
         CSqlLiteDB db;
         if (0 == db.open(dbPath))
@@ -1214,7 +1196,7 @@ int CBlockCaptureImpl::execOnRecordDB(const tchar* _sql, RecordFileFunc _func, v
     {
         CStdString targetName;
         targetName.Format("target%d", i);
-        dbPath.Format("%s/%s/farewell.db", g_env->m_config.engine.dbPath, targetName.c_str());
+        dbPath.Format("%s/%s/" FILE_DB_NAME, g_env->m_config.engine.dbPath, targetName.c_str());
 
         CSqlLiteDB db;
         if (0 == db.open(dbPath))
@@ -1306,7 +1288,7 @@ CProducerRingPtr CBlockCaptureImpl::preparePacketRing()
 
     m_packetRing = CProducerRingPtr(new CProducerRing());
     m_packetRing->Clear(); // Clear first, in case something left in share memory
-    m_packetRing->Init("", "NetKeeper", MAX_CAPTURE_THREAD * g_env->m_config.engine.blockMemSize);
+    m_packetRing->Init("OpenTaker", "Producer", g_env->m_config.engine.blockMemSize);
 
     ModuleInfo_t* modInfo = (ModuleInfo_t*)m_packetRing->GetModuleInfo();
     if (!modInfo)
@@ -1558,13 +1540,13 @@ ICaptureFile* CBlockCaptureImpl::createCaptureFile()
         switch (g_env->m_config.storage.fileType)
         {
         default:
-            pFile = new CPCAPFile2(&m_filePool, g_env->m_config.engine.isSecAlign);
+            pFile = new CPCAPFile2(&m_filePool, g_env->m_config.storage.secAlign);
             break;
         }
     }
     else
     {
-        pFile = new CFakePcapFile(&m_filePool, g_env->m_config.engine.isSecAlign);
+        pFile = new CFakePcapFile(&m_filePool, g_env->m_config.storage.secAlign);
     }
 
     return pFile;
@@ -1952,7 +1934,7 @@ int CBlockCaptureImpl::finalizeBlock(DataBlock_t* _block, bool _ok)
     //
     // TODO: Maybe need to flush outRes.blkInfoDB timely
     //
-    if (g_env->m_config.debugMode >= DEBUG_BLOCK)
+    if (g_env->m_config.engine.debugMode >= DEBUG_BLOCK)
     {
         CBlockCaptureImpl* capture = this;
         DataBlock_t* block = _block;

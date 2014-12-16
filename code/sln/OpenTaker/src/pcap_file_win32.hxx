@@ -6,6 +6,7 @@ int CPCAPFile::setFileSize(u_int64 _fileSize)
     SetEndOfFile(m_fileHandle);
 
     m_fileSize = _fileSize;
+    return 0;
 }
 
 int CPCAPFile::createMapFile(const tchar* _fileName, u_int64 _fileSize)

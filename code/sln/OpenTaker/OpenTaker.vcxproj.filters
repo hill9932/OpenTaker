@@ -44,11 +44,11 @@
     <ClCompile Include="src\pcap_file_fake.cpp">
       <Filter>capture</Filter>
     </ClCompile>
+    <ClCompile Include="src\storage.cpp">
+      <Filter>source file</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\global.h">
-      <Filter>header file</Filter>
-    </ClInclude>
     <ClInclude Include="src\version.h">
       <Filter>header file</Filter>
     </ClInclude>
@@ -90,6 +90,12 @@
     </ClInclude>
     <ClInclude Include="src\pcap_file_fake.h">
       <Filter>capture</Filter>
+    </ClInclude>
+    <ClInclude Include="src\storage.h">
+      <Filter>header file</Filter>
+    </ClInclude>
+    <ClInclude Include="src\global.h">
+      <Filter>source file</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

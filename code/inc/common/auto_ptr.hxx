@@ -29,6 +29,7 @@ typedef void (*_RELEASE_VOID_)(void*);
 typedef void (*_RELEASE_TCHAR_)(tchar*);
 typedef void (*_RELEASE_CHAR_)(char*);
 typedef void (*_RELEASE_BYTE_)(byte*);
+typedef void (*_RELEASE_WCHAR_)(wchar_t*);
 
 template <class T, class FUNC>
 class AutoFree

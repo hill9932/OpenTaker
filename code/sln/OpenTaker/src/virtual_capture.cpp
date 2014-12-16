@@ -109,7 +109,7 @@ int CVirtualCapture::getStatistic(Statistic_t& _pcapStat, int _port)
 
 bool CVirtualCapture::openDevice_(int _index, const char* _devName)
 {
-    CStdString filePath = g_env->m_config.engine.pcapFile;
+    CStdString filePath = g_env->m_config.capture.pcapFile;
     if (!IsFileExist(filePath) || 
       0 != m_pcapFile.open(filePath, ACCESS_READ, FILE_OPEN_EXISTING, false, false))
     {
@@ -153,14 +153,6 @@ int CVirtualCapture::startCapture_(void* _arg)
             return 1;
         }
 
-        // Wait until all threads are ready, current capture thread and store
-        // thread, maybe process thread, too.
-        if (!isCaptureStarted(context->captureId))
-        {
-            SleepSec(1);
-            continue;
-        }
-
         u_int64 fileSize = m_pcapFile.getFileSize();
         byte* fileData = m_pcapFile.getBuf();
         if (!fileData)  return -1;
@@ -170,40 +162,29 @@ int CVirtualCapture::startCapture_(void* _arg)
         packet_header_t* pktHeader = NULL;
         byte *pktData = NULL;
 
-        if (0 == ts)
-        {
-            gettimeofday(&tsVal, NULL);
-            ts = (u_int64)tsVal.tv_sec * NS_PER_SECOND + tsVal.tv_usec * 1000;
-        }
         while (offset < fileSize)
         {
+            if (m_captureState[context->captureId] == CAPTURE_STOPPING ||
+                !g_env->enable())
+            {
+                CBlockCapture::handlePacket(context->captureId, m_device.portIndex, NULL, NULL, true);
+                break;
+            }
+
             gettimeofday(&tsVal, NULL);
             ts = (u_int64)tsVal.tv_sec * NS_PER_SECOND + tsVal.tv_usec * 1000;
 
-            ts += 2;
+            ts += 1;
             pktHeader = (packet_header_t*)(fileData + offset);
             pktLen = sizeof(packet_header_t) + pktHeader->caplen;
             pktData = (byte*)pktHeader + sizeof(packet_header_t);
             offset += pktLen;
 
-//            assert(pktLen == 76 || pktLen == 488);
-
             packet_header_t newPktHeader = *pktHeader;
-            newPktHeader.ts.tv_sec = ts / NS_PER_SECOND;
+            newPktHeader.ts.tv_sec  = ts / NS_PER_SECOND;
             newPktHeader.ts.tv_nsec = ts % NS_PER_SECOND;
 
-            if (g_env->m_config.justTestCapture > 0)
-                testCapture(context->captureId, m_device.portIndex, &newPktHeader, pktData, true);
-            else
-                CBlockCapture::handlePacket(context->captureId,
-                                            m_device.portIndex,
-                                            &newPktHeader, pktData, true);
-            SleepUS(1);
-
-            if (m_captureState[context->captureId] == CAPTURE_STOPPING)
-                break;
-
-            if (!g_env->enable())   return 1;
+            testCapture(context->captureId, m_device.portIndex, &newPktHeader, pktData, true);
         }
 
         //break;

@@ -17,8 +17,6 @@ CBlockCapture::CBlockCapture()
 
     m_capThreadCount = 0;
     m_isReady = false;
-
-    CreateAllDir(CStdString("./PerfTest"));
 }
 
 CBlockCapture::~CBlockCapture()
@@ -248,7 +246,7 @@ void CBlockCapture::flushDataBlock(int _captureId)
         dataBlock->dataDesc.metaBlkStopIdx = m_myImpl->getCurMetaBlkPos(_captureId);
     }
 
-    if (g_env->m_config.engine.isSecAlign)
+    if (g_env->m_config.storage.secAlign)
         assert(dataBlock->dataDesc.blockSize % SECTOR_ALIGNMENT == 0);
 
     handleBlock(dataBlock);
@@ -263,7 +261,7 @@ void CBlockCapture::alignBlock(int _captureId, DataBlock_t *_dataBlock)
 {
     int tail = _dataBlock->dataDesc.usedSize % SECTOR_ALIGNMENT;
     u_int32 padSize = tail == 0 ? 0 : SECTOR_ALIGNMENT - tail;
-    if (g_env->m_config.engine.isSecAlign &&
+    if (g_env->m_config.storage.secAlign &&
         padSize != 0)
     {
         // only real time and need sector align
@@ -342,7 +340,7 @@ PacketMeta_t* CBlockCapture::copy2Block(int _captureId, int _portIndex, packet_h
     ProcessPacketBasic((byte*)_data, metaInfo);
 
 #if defined(DEBUG) || defined(_DEBUG)
-    if (g_env->m_config.debugMode >= DEBUG_PACKET)
+    if (g_env->m_config.engine.debugMode >= DEBUG_PACKET)
     {
         m_fsCapturePacket[_captureId] << pktTS << ", " << endl;
     }
@@ -412,19 +410,18 @@ int CBlockCapture::handleBlock(DataBlock_t* _block, int _blockCount)
 {
     if (!_block)    return -1;
 
-    if (g_env->m_config.debugMode >= DEBUG_BLOCK)
+    if (g_env->m_config.engine.debugMode >= DEBUG_BLOCK)
     {
         struct timeval ts;
         gettimeofday(&ts, NULL);
         CStdString strIndex;
-        //if (g_env->m_config.engine.debugMode == DEBUG_PACKET) strIndex = getBlockMetaIndex(_block);
 
         SCOPE_LOCK(m_logMutex);
         m_fsCaptureBlock << ts.tv_sec << "." << ts.tv_usec << ": " \
             << _block->dataDesc.id << ", " \
             << (void*)_block << ", " \
             << _block->dataDesc.usedSize << ", " \
-            << _block->dataDesc.firstPacketTime << endl;
+            << _block->dataDesc.firstPacketTime << ", " << endl;
     }
 
     int z = 0;
@@ -480,21 +477,22 @@ int CBlockCapture::testCapture(int _captureId, int _portIndex, packet_header_t* 
 {
     PacketMeta_t metaInfo = {0};
     metaInfo.basicAttr.wireLen = _pktHeader->len;
-    metaInfo.basicAttr.pktLen = _pktHeader->caplen;
+    metaInfo.basicAttr.pktLen  = _pktHeader->caplen;
 
-    if (g_env->m_config.justTestCapture == 1)
+    if (g_env->m_config.capture.captureMode == 1)
     {
+        return 0;
     }
-    else if (g_env->m_config.justTestCapture == 2)
+    else if (g_env->m_config.capture.captureMode == 2)
     {
         ProcessPacketBasic(_pktData, &metaInfo);
     }
-    else if (g_env->m_config.justTestCapture == 3)
+    else if (g_env->m_config.capture.captureMode == 3)
     {
         ProcessPacketBasic(_pktData, &metaInfo);
         calcRmon(0, _pktHeader, &metaInfo, _pktData);
     }
-    else if (g_env->m_config.justTestCapture == 4)
+    else if (g_env->m_config.capture.captureMode == 4)
     {
         DataBlock_t* &dataBlock = m_bufBlock[_captureId];
 

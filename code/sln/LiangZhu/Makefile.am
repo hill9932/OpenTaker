@@ -7,6 +7,7 @@ libLiangZhu_a_SOURCES = src/main.cpp 	\
 			src/common/aio_.cpp 		\
 			src/common/block_file.cpp	\			
 			src/common/common.cpp 		\
+			src/common/code_convert.cpp	\
 			src/common/file.cpp 		\
 			src/common/file_pool.cpp 	\
 			src/common/file_system.cpp 	\

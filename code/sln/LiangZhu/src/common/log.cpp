@@ -26,10 +26,9 @@ namespace LiangZhu
 
             log4cplus::initialize();
             log4cplus::PropertyConfigurator::doConfigure(_configure);
-            log4cplus::helpers::LogLog::getLogLog()->setInternalDebugging(false);
+            //log4cplus::helpers::LogLog::getLogLog()->setInternalDebugging(false);
             g_logger = new log4cplus::Logger(log4cplus::Logger::getInstance(_category));
-
-            //log4cplus::ConfigureAndWatchThread(_configure, 60 * 1000);
+            log4cplus::ConfigureAndWatchThread(_configure, 60 * 1000);
 #ifdef WIN32
             setlocale(LC_ALL, "chs");
 #endif
