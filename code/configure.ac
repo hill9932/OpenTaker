@@ -107,6 +107,7 @@ AC_CONFIG_FILES([Makefile
 		 sln/LiangZhu/Makefile
 		 sln/ChangQian/Makefile
 		 sln/PacketRing/Makefile
+		 sln/PacketRay/Makefile		 
 		 sln/OpenTaker/Makefile
 		 unitTest/UT_LiangZhu/Makefile
 		 unitTest/UT_ChangQian/Makefile])

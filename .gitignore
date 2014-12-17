@@ -149,9 +149,7 @@ $RECYCLE.BIN/
 
 # Mac desktop service store files
 .DS_Store
-/code/3rdParty/src
-/code/tmp/LiangZhu/Debug64
-/code/3rdParty/lib
+/code/3rdParty
 /code/3rdParty/inc/boost
 /code/3rdParty/inc/lua
 /code/3rdParty/inc/tinyxml
@@ -159,3 +157,4 @@ $RECYCLE.BIN/
 /code/3rdParty/inc/popt
 /code/3rdParty/inc/gtest
 /code/tmp
+/code/bin
