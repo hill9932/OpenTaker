@@ -7,3 +7,4 @@
 @mklink /D ..\3rdParty\inc\tinyxml		..\src\tinyxml
 @mklink /D ..\3rdParty\inc\postgre		..\src\postgre-9.3\include
 @mklink /D ..\3rdParty\inc\libpcap		..\src\WpdPack-4.1.2\Include
+@mklink /D ..\3rdParty\inc\tbb			..\src\tbb42\include\tbb

@@ -15,7 +15,8 @@ OpenTaker_SOURCES = src/global.cpp 				\
 					src/capture_store.cpp		\
 					src/pcap_file.cpp			\
 					src/pcap_file2.cpp			\
-					src/pcap_file_fake.cpp
+					src/pcap_file_fake.cpp		\
+					src/storage.cpp 
 	
 
 

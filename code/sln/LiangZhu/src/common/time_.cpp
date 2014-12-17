@@ -53,20 +53,7 @@ namespace LiangZhu
 
     CStdString GetNowTimeStr()
     {
-        time_t td;
-        struct tm tm;
-        time(&td);
-        tm = *localtime(&td);
-
-        CStdString r;
-        r.Format("%4d.%02d.%02d %02d.%02d.%02d",
-            tm.tm_year + 1900,
-            tm.tm_mon + 1,
-            tm.tm_mday,
-            tm.tm_hour,
-            tm.tm_min,
-            tm.tm_sec);
-        return r;
+        return GetTimeString(time(NULL));
     }
 
     CStdString GetTimeString(time_t _time)

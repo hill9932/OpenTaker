@@ -993,12 +993,7 @@ int CBlockCaptureImpl::lockFile(u_int64 _firstTime, u_int64 _lastTime)
                  STATUS_LOCKED, _lastTime, _firstTime);
     z = execOnRecordDB(query, NULL, NULL);
     if (z != 0) return -2;
-
-    TimeSegment timeSeg;
-    timeSeg.startTime = _firstTime;
-    timeSeg.stopTime = _lastTime;
-    g_env->m_config.capture.lockTime.push_back(timeSeg);
-
+    
     return fileCount;
 }
 
@@ -1023,20 +1018,7 @@ int CBlockCaptureImpl::unlockFile(u_int64 _firstTime, u_int64 _lastTime)
         STATUS_NORMAL, _lastTime, _firstTime);
     z = execOnRecordDB(query, NULL, NULL);
     if (z != 0) return -2;
-
-    TimeSegment timeSeg;
-    timeSeg.startTime = _firstTime;
-    timeSeg.stopTime = _lastTime;
-
-    for (unsigned int i = 0; i < g_env->m_config.capture.lockTime.size(); ++i)
-    {
-        if (timeSeg == g_env->m_config.capture.lockTime[i])
-        {
-            g_env->m_config.capture.lockTime.erase(g_env->m_config.capture.lockTime.begin() + i);
-            break;
-        }
-    }
-
+    
     return fileCount;
 }
 
@@ -1288,7 +1270,8 @@ CProducerRingPtr CBlockCaptureImpl::preparePacketRing()
 
     m_packetRing = CProducerRingPtr(new CProducerRing());
     m_packetRing->Clear(); // Clear first, in case something left in share memory
-    m_packetRing->Init("OpenTaker", "Producer", g_env->m_config.engine.blockMemSize);
+    m_packetRing->Init("OpenTaker", "Producer", 
+                        MAX_CAPTURE_THREAD * g_env->m_config.engine.blockMemSize);
 
     ModuleInfo_t* modInfo = (ModuleInfo_t*)m_packetRing->GetModuleInfo();
     if (!modInfo)
