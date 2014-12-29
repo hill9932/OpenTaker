@@ -15,6 +15,25 @@ namespace ChangQian
             close();
     }
 
+    int CSocketBase::Startup()
+    {
+        int z = 0;
+#ifdef WIN32
+        WSADATA WSAData;
+        z = WSAStartup(0x0101, &WSAData);
+#endif
+        return z;
+    }
+
+    int CSocketBase::Cleanup()
+    {
+        int z = 0;
+#ifdef WIN32
+        z = WSACleanup();
+#endif
+        return z;
+    }
+
     SOCKET CSocketBase::createSocket(int _family, int _type, int _protocol)
     {
         return ::socket(_family, _type, _protocol);

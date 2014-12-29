@@ -26,7 +26,7 @@ protected:
     virtual int  startCapture_(void* _arg);
     virtual int  setCaptureFilter_(const Filter_t& _filter, int _port, const char* _rawFilter);
 
-    virtual int  prepareResource(CaptureConfig_t& _config);
+    virtual int  prepareResource(const CaptureConfig_t& _config);
     virtual int  releaseResource();
 
 private:

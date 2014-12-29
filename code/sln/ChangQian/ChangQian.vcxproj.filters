@@ -12,6 +12,9 @@
     <Filter Include="network">
       <UniqueIdentifier>{c6404c9e-bb47-4943-b30f-e9088490b3be}</UniqueIdentifier>
     </Filter>
+    <Filter Include="snmp">
+      <UniqueIdentifier>{e4810847-5f30-4bc2-9f58-8d43dee665db}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\version.h">

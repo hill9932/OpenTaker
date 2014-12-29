@@ -417,6 +417,7 @@ CStdString CNetCapture::getNextFileName()
     m_fileInfo->index = *m_nextFileIndex;
     m_fileInfo->firstPacketTime = m_fileInfo->lastPacketTime = 0;
     m_fileInfo->size = 0;
+    m_fileInfo->packetCount = m_fileInfo->bytesCount = 0;
 
     return GetFileSubDirByIndex(fileIndex, g_env->m_config.storage.dirLevel) + fileName;
 }

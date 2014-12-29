@@ -9,6 +9,7 @@
 #include "net_util.h"
 #include "sqlite_.h"
 #include "math_.h"
+#include "packet_ray.h"
 
 #include <boost/foreach.hpp>
 #include <numeric>
@@ -146,7 +147,7 @@ int CBlockCaptureImpl::loadResource()
     return 0;
 }
 
-void CBlockCaptureImpl::loadAppWars()
+void CBlockCaptureImpl::loadPacketRay()
 {
 
 }
@@ -261,7 +262,7 @@ int CBlockCaptureImpl::finalize()
     return 0;
 }
 
-int CBlockCaptureImpl::prepareResource(CaptureConfig_t& _config)
+int CBlockCaptureImpl::prepareResource(const CaptureConfig_t& _config)
 {
     //
     // determine the stored file format
@@ -1299,7 +1300,7 @@ CProducerRingPtr CBlockCaptureImpl::preparePacketRing()
     m_appWarProcess = (process_t)NULL;
     if (g_env->m_config.engine.enableParsePacket)
     {
-        loadAppWars();
+        loadPacketRay();
     }
     m_packetRing->Start();
 
@@ -1316,7 +1317,7 @@ int CBlockCaptureImpl::startCapture()
     return 0;
 }
 
-int CBlockCaptureImpl::startCapture(int _index, CaptureConfig_t& _config)
+int CBlockCaptureImpl::startCapture(int _index, const CaptureConfig_t& _config)
 {
     if ((unsigned int)_index >= m_localNICs.size())
     {

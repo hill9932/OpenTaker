@@ -24,10 +24,24 @@ namespace LiangZhu
         return (u_int64)tsVal.tv_sec * NS_PER_SECOND + tsVal.tv_usec * 1000;
     }
 
-    u_int64 GetNextBoundaryTime(u_int64 ts, int interval)
+    u_int32 GetSecondSinceToday(time_t _time)
     {
-        u_int64 curSec = ts / NS_PER_SECOND;
-        return (curSec + interval - (curSec % interval)) * NS_PER_SECOND;
+        if (0 == _time) return 0;
+
+        struct tm tm;
+        tm = *localtime(&_time);
+
+        return tm.tm_hour * 3600 + tm.tm_min * 60 + tm.tm_sec;
+    }
+
+    u_int32 GetSecondOfToday()
+    {
+        time_t now = time(NULL);
+        struct tm ltm = *localtime(&now);
+        ltm.tm_hour = ltm.tm_min = ltm.tm_sec = 0;
+        now = mktime(&ltm);
+
+        return now;
     }
 
     CStdString CalcTimeDiff(TIME_INTERVAL& _start, TIME_INTERVAL& _end, int _count)

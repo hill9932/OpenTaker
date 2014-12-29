@@ -88,7 +88,7 @@ public:
     * @Function: these function are used by thrift service
     **/
     int startCapture(int _index, const tchar* _filter = NULL);
-    int startCapture(int _index, CaptureConfig_t& _filter);
+    int startCapture(int _index, const CaptureConfig_t& _filter);
 
     int stopCapture(int _index);
     int setFilter(int _index, int _port, const tchar* _filter);
@@ -130,7 +130,7 @@ protected:
     **/
     virtual ICaptureFile* createCaptureFile();
     virtual int  nextFile(bool _next);
-    virtual int  prepareResource(CaptureConfig_t& _config);
+    virtual int  prepareResource(const CaptureConfig_t& _config);
     virtual bool openDevice_(int _index, const char* _devName) { return false;   }
     virtual bool closeDevice_() { return false; }
 
@@ -171,7 +171,6 @@ private:
     ~CBlockCaptureImpl();
 
     int createFileDB(bool _override = true);
-    void constructExtIndices();
     int addPacketRecord(PacketMeta_t* _metaInfo, int _curOutRes);
     int addBlockRecord(DataBlock_t* _block);
     int saveBlock(DataBlock_t* _block);
@@ -179,8 +178,10 @@ private:
     int finalizeBlock(DataBlock_t* _block, bool _ok);
     int finalize();
     int loadResource();
-    void loadAppWars();
     int prepareNextFile();
+
+    void constructExtIndices();
+    void loadPacketRay();
 
     int64 saveData(DataBlock_t* _dataBlock, u_int32 _flag = 0);
 

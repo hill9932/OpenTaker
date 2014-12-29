@@ -34,7 +34,7 @@ public:
     CBlockCapture();
     ~CBlockCapture();
 
-    virtual int  startCapture(CaptureConfig_t& _config);
+    virtual int  startCapture(const CaptureConfig_t& _config);
     virtual int  stopCapture();
     virtual bool openDevice(int _index, const char* _devName);
     virtual int  closeDevice();
@@ -54,7 +54,7 @@ protected:
 
     virtual int handlePacket(int _captureId, int _portIndex, packet_header_t* _header, const byte* _data, bool _rmon);
     virtual int handleBlock(DataBlock_t* _block, int _blockCount = 1);
-    virtual int prepareResource(CaptureConfig_t& _config);
+    virtual int prepareResource(const CaptureConfig_t& _config);
     virtual int releaseResource();
     virtual int setCaptureFilter_(const Filter_t& _filter, int _port, const char* _rawFilter);
     virtual int startCapture_(void* _arg);

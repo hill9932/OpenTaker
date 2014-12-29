@@ -133,7 +133,7 @@ public:
      * @Memo:
      *  When no packet captured, will timeout which is set at pcap_open_live()
      **/
-    virtual int  startCapture(CaptureConfig_t& _config) = 0;
+    virtual int  startCapture(const CaptureConfig_t& _config) = 0;
     virtual int  stopCapture() = 0;
     virtual int  setSlice(int _sliceCount, int _port) { return -1; };
 

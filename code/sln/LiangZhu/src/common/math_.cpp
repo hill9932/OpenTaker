@@ -1,4 +1,5 @@
 #include "math_.h"
+#include "string_.h"
 
 namespace LiangZhu
 {
@@ -53,4 +54,23 @@ namespace LiangZhu
         v.Format("%.2f %s%s", dd, unit[i], _suffix);
         return v;
     }
+
+    u_int64 XtoI(const char* _value)
+    {
+        if (!_value ||
+            strlen(_value) <= 2 ||
+            _value[0] != '0' ||
+            (_value[1] != 'F' && _value[1] != 'f'))
+            return 0;
+
+        u_int64 value = 0;
+        for (int i = 2; i < strlen(_value); ++i)
+        {
+            value <<= 4;
+            value |= GetXValue(_value[i]);
+        }
+
+        return value;
+    }
+
 }

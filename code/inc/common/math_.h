@@ -27,6 +27,8 @@ namespace LiangZhu
      * _value1 is the start value, _value2 is the stop value
      **/
     u_int32 Distance(u_int32 _value1, u_int32 _value2, u_int32 _total);
+
+    u_int64 XtoI(const char* _value);
 }
 
 #endif

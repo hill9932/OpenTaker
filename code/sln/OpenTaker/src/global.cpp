@@ -1,6 +1,7 @@
 #include "global.h"
 #include "file_system.h"
 #include "packet_ring.h"
+#include "packet_ray.h"
 #include "string_.h"
 #include "system_.h"
 #include "code_convert.h"
@@ -73,7 +74,12 @@ bool Enviroment::init(int _argc, char** _argv, const char* _projectName)
     bool ret = false;
     ret = InitLog(LiangZhu::GetAppDir() + "config/log4cplus.properties", _projectName);
     if (!ret)   return false;
+
+    //
+    // set the share lib use my logger
+    //
     SetRingLogger(g_logger);
+    SetRayLogger(g_logger);
 
     char* pcapFile = NULL;
     char* confFileName = NULL;

@@ -41,7 +41,7 @@ bool CBlockCapture::openDevice(int _index, const char* _devName)
 
 //bool CBlockCapture::openDevice_(int _index, const char* _devName) = 0;
 
-int CBlockCapture::startCapture(CaptureConfig_t& _config)
+int CBlockCapture::startCapture(const CaptureConfig_t& _config)
 {
     RM_LOG_INFO("Prepare to start capture: " << m_device.name);
 
@@ -122,7 +122,7 @@ int CBlockCapture::stopCapture()
     return 0;
 }
 
-int CBlockCapture::prepareResource(CaptureConfig_t& _config)
+int CBlockCapture::prepareResource(const CaptureConfig_t& _config)
 {
     return 0;
 }

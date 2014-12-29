@@ -87,6 +87,9 @@
     <ClCompile Include="src\common\code_convert.cpp">
       <Filter>common</Filter>
     </ClCompile>
+    <ClCompile Include="src\common\var.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\inc\common\common.h">
@@ -189,6 +192,12 @@
       <Filter>header file</Filter>
     </ClInclude>
     <ClInclude Include="..\..\inc\common\code_convert.h">
+      <Filter>header file</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\common\err_code.h">
+      <Filter>header file</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\common\var.h">
       <Filter>header file</Filter>
     </ClInclude>
   </ItemGroup>

@@ -48,39 +48,9 @@ int main(int _argc, char** _argv)
         RM_LOG_ERROR("The selected NIC is invalid.");
         return -1;
     }
-    --index;
 
-    //
-    // open the device and prepare to start capture
-    //
-    vector<DeviceST> NICs;
-    manager->getLocalNICs(NICs);
-    CNetCapture * devCapture = NULL;
-    switch (NICs[index].type)
-    {
-    case DEVICE_TYPE_LIBPCAP:
-        devCapture = new CPcapCapture;
-        break;
-    case DEVICE_TYPE_VIRTUAL:
-        devCapture = new CVirtualCapture;
-        break;
-    default:
-        break;
-    }
-    assert(devCapture);
-    if (!devCapture)   return -1;
-
-    if (0 != devCapture->openDevice(index))
-    {
-        RM_LOG_ERROR("Fail to open the device: " << index + 1);
-        return -1;
-    }
-
-    CaptureConfig_t _config;
-    if (0 == devCapture->startCapture(_config))
-    {
-        CBlockCaptureImpl::GetInstance()->m_captureState = CAPTURE_STARTING;
-    }
+    CaptureConfig_t config;
+    manager->startCapture(--index, config);
 
     while (g_env->enable())
         SleepSec(1);

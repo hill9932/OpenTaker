@@ -128,7 +128,7 @@ bool CVirtualCapture::closeDevice_()
     return 0 == m_pcapFile.close();
 }
 
-int CVirtualCapture::prepareResource(CaptureConfig_t& _config)
+int CVirtualCapture::prepareResource(const CaptureConfig_t& _config)
 {
     return 0;
 }

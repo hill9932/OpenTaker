@@ -23,7 +23,7 @@
     <ClInclude Include="src\app_base.h">
       <Filter>header file</Filter>
     </ClInclude>
-    <ClInclude Include="src\packet_ray.h">
+    <ClInclude Include="..\..\inc\share\packet_ray.h">
       <Filter>header file</Filter>
     </ClInclude>
   </ItemGroup>

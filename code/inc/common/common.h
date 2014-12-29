@@ -13,6 +13,23 @@
 #include "stdString.h"
 #include "util.hxx"
 #include "auto_ptr.hxx"
+#include "err_code.h"
+
+#ifdef SHARED_EXPORTS
+#ifdef WIN32
+#define SHARED_API __declspec(dllexport)
+#elif defined(LINUX)
+#define SHARED_API
+#endif
+
+#else
+
+#ifdef WIN32
+#define SHARED_API __declspec(dllimport)
+#elif defined(LINUX)
+#define SHARED_API
+#endif
+#endif
 
 namespace LiangZhu
 {
@@ -29,7 +46,7 @@ namespace LiangZhu
     CStdString  GetLastSysErrorMessage(u_int32 _errCode = 0, bool _herror = false);
     u_int32     GetLastSysError(bool _herror = false);
     void        SetLastSysError(u_int32 _errCode);
-
+    const char* GetErrorMessage(u_int32 _errCode);
 
     struct ICallable
     {

@@ -26,8 +26,16 @@ namespace LiangZhu
     * @Function:¡¡Caculate the time different in ms
     **/
     u_int64 GetCurrentNsTime();
-    u_int64 GetNextBoundaryTime(u_int64 ts, int interval);
 
+    /**
+    * @Function: get the seconds since the 00:00:00 of the day
+    **/
+    u_int32 GetSecondSinceToday(time_t _time);
+
+    /**
+    * @Function: get the seconds from 00:00:00 of today to EPOC
+    **/
+    u_int32 GetSecondOfToday();
 
     /**
     * @Function: This class will print the current time when it is created and destroyed

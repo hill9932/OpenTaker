@@ -15,7 +15,7 @@ const u_int32 DEF_METABLOCK_CAPACITY = 10000;
  * change in future).
  *
  */
-class VPAGENT_API CPacketRing
+class SHARED_API CPacketRing
 {
 public:
     CPacketRing();
@@ -90,7 +90,7 @@ protected:
  *  7) releases packet block. (by S2D, FreeFullPktBlk())
  *
  */
-class VPAGENT_API CProducerRing : public CPacketRing
+class SHARED_API CProducerRing : public CPacketRing
 {
 public:
     CProducerRing();

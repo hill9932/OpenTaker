@@ -25,6 +25,16 @@ namespace ChangQian
         virtual ~CSocketBase();
 
         /**
+         * @Function: Initialize the Winsock library (WSAStartup).
+         **/
+        static int Startup();
+
+        /**
+         * @Function: Shut down the Winsock library (WSACleanup).
+         **/
+        static int Cleanup();
+
+        /**
          * @Function: create a socket according to the input
          * @Return:
          *  0: success

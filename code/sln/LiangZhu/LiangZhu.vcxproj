@@ -333,6 +333,7 @@ if $(ConfigurationType) == Application (copy $(SolutionDir)..\tmp\$(ProjectName)
     <ClCompile Include="src\common\thread.cpp" />
     <ClCompile Include="src\common\thread_pool.cpp" />
     <ClCompile Include="src\common\time_.cpp" />
+    <ClCompile Include="src\common\var.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -342,6 +343,7 @@ if $(ConfigurationType) == Application (copy $(SolutionDir)..\tmp\$(ProjectName)
     <ClInclude Include="..\..\inc\common\common.h" />
     <ClInclude Include="..\..\inc\common\def.h" />
     <ClInclude Include="..\..\inc\common\device.h" />
+    <ClInclude Include="..\..\inc\common\err_code.h" />
     <ClInclude Include="..\..\inc\common\file.h" />
     <ClInclude Include="..\..\inc\common\file_pool.h" />
     <ClInclude Include="..\..\inc\common\file_pool_linux.hxx" />
@@ -368,6 +370,7 @@ if $(ConfigurationType) == Application (copy $(SolutionDir)..\tmp\$(ProjectName)
     <ClInclude Include="..\..\inc\common\thread.h" />
     <ClInclude Include="..\..\inc\common\time_.h" />
     <ClInclude Include="..\..\inc\common\util.hxx" />
+    <ClInclude Include="..\..\inc\common\var.h" />
     <ClInclude Include="..\..\inc\network\change_qian.h" />
     <ClInclude Include="src\common\version.h" />
   </ItemGroup>

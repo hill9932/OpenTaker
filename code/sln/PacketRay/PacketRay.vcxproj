@@ -327,8 +327,8 @@ if $(ConfigurationType) == Application (copy $(SolutionDir)..\tmp\$(ProjectName)
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\inc\share\packet_ray.h" />
     <ClInclude Include="src\app_base.h" />
-    <ClInclude Include="src\packet_ray.h" />
     <ClInclude Include="src\pipeline_manager.h" />
     <ClInclude Include="src\pipeline_task.h" />
     <ClInclude Include="src\version.h" />

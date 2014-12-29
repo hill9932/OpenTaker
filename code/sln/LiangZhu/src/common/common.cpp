@@ -3,9 +3,11 @@
 
 namespace LiangZhu
 {
+    const char** ErrorCode::errDesc_t = NULL;
+
     int GetProgramBits()
     {
-        return sizeof(int*)* 8;
+        return sizeof(int*) * 8;
     }
 
     CStdString GetLibVersion()
@@ -18,6 +20,11 @@ namespace LiangZhu
 #endif
         version += HILUO_PACKAGE_VERSION;
         return version;
+    }
+
+    const char* GetErrorMessage(u_int32 _errCode)
+    {
+        return NULL;
     }
 
     /**

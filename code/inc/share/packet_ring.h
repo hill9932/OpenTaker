@@ -15,27 +15,6 @@
 #include <list>
 
 
-
-#ifdef VPAGENT_EXPORTS
-
-#ifdef WIN32
-#define VPAGENT_API __declspec(dllexport)
-
-#elif defined(LINUX)
-#define VPAGENT_API
-#endif
-
-#else
-
-#ifdef WIN32
-#define VPAGENT_API __declspec(dllimport)
-
-#elif defined(LINUX)
-#define VPAGENT_API
-#endif
-#endif
-
-
 typedef u_int32     ModuleID;
 typedef void *      PktRingHandle_t;
 
@@ -89,7 +68,7 @@ struct ModuleIndex_t
 extern   "C"{
 #endif
 
-VPAGENT_API
+SHARED_API
 void SetRingLogger(log4cplus::Logger* _logger);
 
 /**
@@ -105,14 +84,14 @@ void SetRingLogger(log4cplus::Logger* _logger);
 *  -1: error
 *  module id
 **/
-VPAGENT_API
+SHARED_API
 ModuleID InitPacketRing(PktRingHandle_t *_handler,
                         const tchar* _globalName,
                         const tchar* _moduleName,
                         u_int64 _blockSize,
                         u_int32 _metaBlkCapacity = 10000);
 
-VPAGENT_API
+SHARED_API
 ModuleID GetMyID(const PktRingHandle_t _handler, const char* _name);
 
 /**
@@ -131,7 +110,7 @@ ModuleID GetMyID(const PktRingHandle_t _handler, const char* _name);
 *  If the module crash and restart, make sure the register values are not change,
 *  since you will get the original offset which may corrupt the memory.
 **/
-VPAGENT_API
+SHARED_API
 ModuleID RegMySelf(const char* _name,
                    const int   _colNum,
                    const char* _colName[],
@@ -148,13 +127,13 @@ ModuleID RegMySelf(const char* _name,
 *  PacketMeta_t*: the space to keep all the packet inforamtion
 *  NULL
 **/
-VPAGENT_API
+SHARED_API
 struct PacketMeta_t* GetNextPacket(PktRingHandle_t _handler, ModuleID _id);
 
-VPAGENT_API
+SHARED_API
 struct PktMetaBlk_t* GetNextMetaBlk(PktRingHandle_t _handler, ModuleID _id);
 
-VPAGENT_API
+SHARED_API
 struct PacketMeta_t* GetMetaInBlk(PktRingHandle_t _handler, 
                                   ModuleID _id,
                                   const PktMetaBlk_t *_metaBlk, 
@@ -167,28 +146,28 @@ struct PacketMeta_t* GetMetaInBlk(PktRingHandle_t _handler,
 * @Return:
 *  The current packet pointer
 */
-VPAGENT_API
+SHARED_API
 int MoveToNextPacket(PktRingHandle_t _handler, ModuleID _id, int _count);
 
-VPAGENT_API
+SHARED_API
 int Move2NextMetaBlk(PktRingHandle_t _handler, ModuleID _id, int _count);
 
-VPAGENT_API
+SHARED_API
 struct packet_header_t* GetPacketHeader(PacketType_e type,
                                         struct PacketMeta_t* _metaInfo,
                                         PktRingHandle_t _handler,
                                         ModuleID _modID,
                                         packet_header_t* _pktHeader);
-VPAGENT_API
+SHARED_API
 byte* GetPacketData(PacketType_e type, 
                     struct PacketMeta_t* _metaInfo,
                     PktRingHandle_t _handler, 
                     ModuleID _modID);
 
-VPAGENT_API
+SHARED_API
 ModuleInfo_t* GetModuleInfo(PktRingHandle_t _handler, ModuleID _id);
 
-VPAGENT_API
+SHARED_API
 bool IsPacketRingStop(const PktRingHandle_t _handler);
 
 #ifdef __cplusplus
@@ -197,7 +176,7 @@ bool IsPacketRingStop(const PktRingHandle_t _handler);
 
 
 
-VPAGENT_API
+SHARED_API
 ModuleID RegMySelf(const char* _name,
                    vector<string>& _colName,
                    vector<string>& _colType,
@@ -205,7 +184,7 @@ ModuleID RegMySelf(const char* _name,
                    PktRingHandle_t _handler,
                    int*        _offset);
 
-VPAGENT_API
+SHARED_API
 void StopPacketRing(PktRingHandle_t _handler);
 
 /************************************************************************
@@ -213,40 +192,40 @@ void StopPacketRing(PktRingHandle_t _handler);
  * These functions should not be called by 3rd module.
  *
  ************************************************************************/
-VPAGENT_API
+SHARED_API
 bool ReleasePacketRing(PktRingHandle_t _handler, ModuleID _moduleId, const char* _globalName);
 
 /**
  * @Function: Called by VPEyes to start work.
  * @Memo: after it is called, engine will reject following register.
  **/
-VPAGENT_API
+SHARED_API
 int StartWork(PktRingHandle_t _handler);
 
 /**
  * @Function: Get all the index registered by 3rd modules
  * @Return: the size of _vec
  **/
-VPAGENT_API
+SHARED_API
 int GetModuleIndex(PktRingHandle_t _handler, vector<ModuleIndex_t>& _vec);
 
 /**
  * @Function: Get all the registered module information
  * @Return: the size of _vec
  **/
-VPAGENT_API
+SHARED_API
 int GetAllModuleInfo(PktRingHandle_t _handler, vector<int>& _vec);
 
 /**
  * @Function: After the manager call the StartWork(), it will be become ready.
  **/
-VPAGENT_API
+SHARED_API
 bool IsAgentReady(PktRingHandle_t _handler);
 
-VPAGENT_API
+SHARED_API
 bool IsAgentEmpty(PktRingHandle_t _handler);
 
-VPAGENT_API
+SHARED_API
 int GetModuleCount(PktRingHandle_t _handler);
 
 /**
@@ -254,10 +233,10 @@ int GetModuleCount(PktRingHandle_t _handler);
  * @Memo: IO finished routine will call this to get the PacketMeta and do some
  *        operation like add a record
  **/
-VPAGENT_API
+SHARED_API
 PacketMeta_t* GetOnePacket(PktRingHandle_t _handler, ModuleID _id, int _index);
 
-VPAGENT_API
+SHARED_API
 PktMetaBlk_t* GetOneMetaBlk(PktRingHandle_t _handler, ModuleID _id, int _index);
 
 /**
@@ -265,32 +244,32 @@ PktMetaBlk_t* GetOneMetaBlk(PktRingHandle_t _handler, ModuleID _id, int _index);
  * @Memo: Only this function will update the _G->g_tailPacket
  *  Multiple thread can call this
  **/
-VPAGENT_API
+SHARED_API
 PacketMeta_t* GetNextMetaSpace(PktRingHandle_t _handler,
                                u_int32* _pos, bool _wait = true);  // only should be called by module 0
 
 // Only called by module 0
-VPAGENT_API
+SHARED_API
 PktMetaBlk_t* GetEmptyMetaBlk(PktRingHandle_t _handler, u_int32* _pos, bool _wait = true);
 
-VPAGENT_API
+SHARED_API
 bool IsMetaBlkFull(PktRingHandle_t _handler, PktMetaBlk_t* _metaBlk);
 
-VPAGENT_API
+SHARED_API
 u_int32 GetMetaBlkCapacity(PktRingHandle_t _handler, PktMetaBlk_t* _metaBlk);
 
-VPAGENT_API
+SHARED_API
 int GetNextPacket(PktRingHandle_t _handler,
                   ModuleID _id, int& _index, vector<PacketMeta_t*>& _packets);
 
-VPAGENT_API
+SHARED_API
 int GetNextMetaBlks(PktRingHandle_t _handler, ModuleID _id,
                     int& _index, list<PktMetaBlk_t*>& _metaBlks);
 
-VPAGENT_API
+SHARED_API
 u_int32 GetMetaCount(PktRingHandle_t _handler);
 
-VPAGENT_API
+SHARED_API
 u_int32 GetMetaBlkCount(PktRingHandle_t _handler);
 
 
