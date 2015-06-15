@@ -59,6 +59,7 @@ typedef void*               HMODULE;
 #define INFINITE                    -1
 #define net_errno                   errno
 #define CRITICAL_SECTION            pthread_mutex_t
+#define CS_ATTRIBUTE                pthread_mutexattr_t
 #define TRUE                        true
 #define FALSE                       false
 #define AF_NETBIOS                  17              // NetBios-style addresses

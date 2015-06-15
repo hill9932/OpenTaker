@@ -17,7 +17,7 @@ protected:
     {
         m_makePacketThread   = new LiangZhu::CSimpleThread(MakePacketFunc, &m_conf);
         m_handlePacketThread = new LiangZhu::CSimpleThread(HandlePacketFunc, &m_conf);
-        SetRingLogger(g_logger);
+        SetLogger(g_logger);
     }
 
     virtual void TearDown()
@@ -87,6 +87,8 @@ int CPacketRingTest::HandlePacketFunc(void* _context)
 
 TEST_F(CPacketRingTest, WorkRound)
 {
+    m_conf.ready = true;
+    m_conf.enable = false;
     m_makePacketThread->join();
     m_handlePacketThread->join();
 }

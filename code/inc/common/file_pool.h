@@ -60,7 +60,7 @@ namespace LiangZhu
         inline PPER_FILEIO_INFO_t getBlock()
         {
             //        return m_IOContextPool.getBlock();      
-            return m_IOContextPool.getObject();
+            return m_IOContextPool.getBlock();
         }
 
         inline void release(PPER_FILEIO_INFO_t _block)
@@ -70,7 +70,7 @@ namespace LiangZhu
 
         inline PPER_FILEIO_INFO_t tryGetBlock()
         {
-            return m_IOContextPool.getObject();
+            return m_IOContextPool.getBlock();
             //        return m_IOContextPool.tryGetBlock();   
         }
 

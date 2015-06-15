@@ -21,7 +21,7 @@ namespace LiangZhu
     /**
      * @Function: get the x value of 2^x = value
      **/
-    int  Sqrt2(u_int64 _value);
+    int  Log2(u_int64 _value);
 
     /**
      * _value1 is the start value, _value2 is the stop value

@@ -315,6 +315,7 @@ if $(ConfigurationType) == Application (copy $(SolutionDir)..\tmp\$(ProjectName)
   <ItemGroup>
     <ClCompile Include="src\global.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\test\collection_ut.cpp" />
     <ClCompile Include="src\test\file_system_ut.cpp" />
     <ClCompile Include="src\test\file_ut.cpp" />
     <ClCompile Include="src\test\lua_ut.cpp" />
@@ -322,6 +323,7 @@ if $(ConfigurationType) == Application (copy $(SolutionDir)..\tmp\$(ProjectName)
     <ClCompile Include="src\test\packet_ring_ut.cpp" />
     <ClCompile Include="src\test\string_ut.cpp" />
     <ClCompile Include="src\test\system_ut.cpp" />
+    <ClCompile Include="src\test\variant_ut.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\global.h" />

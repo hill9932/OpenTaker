@@ -10,17 +10,22 @@ namespace LiangZhu
             if (!errDesc_t)
                 errDesc_t = new const char*[STATUS_LAST + 1];
 
-            errDesc_t[STATUS_OK] = "Success";
-            errDesc_t[STATUS_LAST] = NULL;
+            errDesc_t[STATUS_OK]    = "Success";
+            errDesc_t[STATUS_ERROR] = "Unknown error";
+            errDesc_t[STATUS_ERROR_PARAMETER] = "Invalid parameter";
+            errDesc_t[STATUS_LAST]  = NULL;
         }
-
-        static const char** errDesc_t;
 
         enum
         {
             STATUS_OK = 0,
+            STATUS_ERROR,
+            STATUS_ERROR_PARAMETER,
             STATUS_LAST
         };
+
+    private:
+        static const char** errDesc_t;
     };
 }
 

@@ -110,7 +110,7 @@ void* CCollectPacketTask::operator()(void* item)
 		if (pMetaBlk)
 		{
             assert((ringPos++ % m_packetRing.GetMetaBlockCount()) == pMetaBlk->blkPos);
-			BlockToken* curToken = g_tokenPool.getObject();
+			BlockToken* curToken = g_tokenPool.getBlock();
 			assert(curToken);
 
 			curToken->pMetaBlk = pMetaBlk;

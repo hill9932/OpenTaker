@@ -23,6 +23,7 @@ typedef void *      PktRingHandle_t;
 #define MAX_MODULE_NAME     20      // the name size of module name shouldn't exceed
 #define MAX_COLUMN_COUNT    20      // the maximum number of columns one module can register
 #define MAX_COLUMN_NAME     21      // the name size of column name that module shouldn't exceed
+const u_int32 DEF_METABLOCK_CAPACITY = 10000;
 
 
 #pragma pack(push, 8)
@@ -69,7 +70,7 @@ extern   "C"{
 #endif
 
 SHARED_API
-void SetRingLogger(log4cplus::Logger* _logger);
+void SetLogger(log4cplus::Logger* _logger);
 
 /**
 * @Function: Every process should call this function first to create the
@@ -85,11 +86,15 @@ void SetRingLogger(log4cplus::Logger* _logger);
 *  module id
 **/
 SHARED_API
-ModuleID InitPacketRing(PktRingHandle_t *_handler,
+ModuleID InitRing(PktRingHandle_t *_handler,
                         const tchar* _globalName,
                         const tchar* _moduleName,
                         u_int64 _blockSize,
-                        u_int32 _metaBlkCapacity = 10000);
+                        u_int32 _metaBlkCapacity = 10000,
+                        bool _reset = false);
+
+SHARED_API
+bool UninitRing(PktRingHandle_t _handler, ModuleID _moduleId, const char* _globalName);
 
 SHARED_API
 ModuleID GetMyID(const PktRingHandle_t _handler, const char* _name);
@@ -167,8 +172,17 @@ byte* GetPacketData(PacketType_e type,
 SHARED_API
 ModuleInfo_t* GetModuleInfo(PktRingHandle_t _handler, ModuleID _id);
 
+/**
+ * @Function: After the manager call the StartWork(), it will be become ready.
+ **/
 SHARED_API
-bool IsPacketRingStop(const PktRingHandle_t _handler);
+bool IsRingReady(PktRingHandle_t _handler);
+
+SHARED_API
+bool IsRingEmpty(PktRingHandle_t _handler);
+
+SHARED_API
+bool IsRingStop(PktRingHandle_t _handler);
 
 #ifdef __cplusplus
 }
@@ -185,15 +199,7 @@ ModuleID RegMySelf(const char* _name,
                    int*        _offset);
 
 SHARED_API
-void StopPacketRing(PktRingHandle_t _handler);
-
-/************************************************************************
- *
- * These functions should not be called by 3rd module.
- *
- ************************************************************************/
-SHARED_API
-bool ReleasePacketRing(PktRingHandle_t _handler, ModuleID _moduleId, const char* _globalName);
+void StopRing(PktRingHandle_t _handler);
 
 /**
  * @Function: Called by VPEyes to start work.
@@ -215,15 +221,6 @@ int GetModuleIndex(PktRingHandle_t _handler, vector<ModuleIndex_t>& _vec);
  **/
 SHARED_API
 int GetAllModuleInfo(PktRingHandle_t _handler, vector<int>& _vec);
-
-/**
- * @Function: After the manager call the StartWork(), it will be become ready.
- **/
-SHARED_API
-bool IsAgentReady(PktRingHandle_t _handler);
-
-SHARED_API
-bool IsAgentEmpty(PktRingHandle_t _handler);
 
 SHARED_API
 int GetModuleCount(PktRingHandle_t _handler);
@@ -272,5 +269,7 @@ u_int32 GetMetaCount(PktRingHandle_t _handler);
 SHARED_API
 u_int32 GetMetaBlkCount(PktRingHandle_t _handler);
 
+SHARED_API
+void ResetTheRing(PktRingHandle_t _handler);
 
 #endif

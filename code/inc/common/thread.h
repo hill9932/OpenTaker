@@ -17,7 +17,61 @@
 
 namespace LiangZhu
 {
-    class CSimpleThread;
+#if defined(PTHREADS)
+    typedef pthread_key_t ThreadSpecificKey;
+
+    static int CreateThreadKey(ThreadSpecificKey* _key, void(*destructor)(void *))
+    {
+        int err = pthread_key_create(_key, destructor);
+        ON_ERROR_LOG_LAST_ERROR(err, !=, 0);
+        return err;
+    }
+
+    static int DeleteThreadKey(ThreadSpecificKey _key)
+    {
+        int err = pthread_key_delete(_key);
+        ON_ERROR_LOG_LAST_ERROR(err, !=, 0);
+        return err;
+    }
+
+    static void SetThreadValueWithKey(ThreadSpecificKey _key, void* _value)
+    {
+        pthread_setspecific(_key, _value);
+    }
+
+    static void* GetThreadValueWithKey(ThreadSpecificKey _key)
+    {
+        return pthread_getspecific(_key);
+    }
+
+#else
+    typedef int ThreadSpecificKey;
+
+    static int CreateThreadKey(ThreadSpecificKey* _key, void(*destructor)(void *))
+    {
+        *_key = TlsAlloc();
+        return 0;
+    }
+
+    static int DeleteThreadKey(ThreadSpecificKey _key)
+    {
+        TlsFree(_key);
+        return 0;
+    }
+
+    static void SetThreadValueWithKey(ThreadSpecificKey _key, void* _value)
+    {
+        TlsSetValue(_key, _value);
+    }
+
+    static void* GetThreadValueWithKey(ThreadSpecificKey _key)
+    {
+        return TlsGetValue(_key);
+    }
+
+#endif
+    
+
     typedef int(*Thread_Main)(void*);
 
     class CSimpleThread : public boost::thread

@@ -7,21 +7,24 @@ namespace LiangZhu
         init();
     }
 
+
     Mutex::~Mutex()
     {
-#ifdef WIN32
-        DeleteCriticalSection(&mId);
-#else
+#ifndef WIN32
         int  rc = pthread_mutex_destroy(&mId);
         (void)rc;
         assert( rc != EBUSY );  // currently locked 
         assert( rc == 0 );
+        pthread_mutexattr_destroy(&m_attr);
+
+#else
+        DeleteCriticalSection(&mId);
 #endif
     }
 
     void Mutex::init()
     {
-        InitCriticalSec(mId);
+        InitCriticalSec(mId, &m_attr);
     }
 
 
@@ -71,15 +74,21 @@ namespace LiangZhu
     }
 
 
-    void InitCriticalSec(CRITICAL_SECTION& _cs)
+    void InitCriticalSec(CRITICAL_SECTION& _cs, CS_ATTRIBUTE* _attr)
     {
 #ifdef WIN32
         InitializeCriticalSection(&_cs);
 #else
-        int  rc = pthread_mutex_init(&_cs,0);
+        if (_attr)
+        {
+            pthread_mutexattr_init(_attr);
+            pthread_mutexattr_settype(_attr, PTHREAD_MUTEX_RECURSIVE);
+        }
+
+        int  rc = pthread_mutex_init(&_cs, _attr);
         (void)rc;
         assert( rc == 0 );
 #endif
     }
-
 }
+

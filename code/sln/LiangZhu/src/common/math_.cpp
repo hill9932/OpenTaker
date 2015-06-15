@@ -17,7 +17,7 @@ namespace LiangZhu
         return((unaligned + SECTOR_ALIGNMENT - 1) & CHUNK_ALIGNMENT_MASK);
     }
 
-    int Sqrt2(u_int64 _value)
+    int Log2(u_int64 _value)
     {
         int count = 0;
         u_int64 remain = _value;

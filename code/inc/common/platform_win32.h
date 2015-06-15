@@ -81,6 +81,7 @@ typedef HANDLE              handle_t;
 #define mkdir                       CreateDirectory
 #define atoi64                      _atoi64
 #define lseek64                     _lseeki64
+#define CS_ATTRIBUTE                int
 
 int     fcntl(int _fd, int _cmd, ... /* arg */);
 int     gettimeofday(struct timeval* _tp);
@@ -91,7 +92,7 @@ void    bcopy(const void *_src, void *_dest, size_t _n);
 
 
 //
-// these sturctures are not defined by windows
+// these structures are not defined by windows
 //
 struct timezone
 {

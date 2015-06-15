@@ -2,8 +2,7 @@
 
 namespace LiangZhu
 {
-    CBlockFile::CBlockFile()
-        : CHFile(false)
+    CBlockFile::CBlockFile() : CHFile(false)
     {
         m_blockSize = 0;
     }

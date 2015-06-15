@@ -47,22 +47,22 @@ TEST(Math_TestCase, ChangeUnit_Test)
  **/
 TEST(Math_TestCase, Sqrt2_Test)
 {
-    ASSERT_EQ(Sqrt2(0), 0);
-    ASSERT_EQ(Sqrt2(1), 0);
-    ASSERT_EQ(Sqrt2(2), 1);
-    ASSERT_EQ(Sqrt2(3), 1);
-    ASSERT_EQ(Sqrt2(4), 2);
-    ASSERT_EQ(Sqrt2(5), 2);
-    ASSERT_EQ(Sqrt2(6), 2);
-    ASSERT_EQ(Sqrt2(7), 2);
-    ASSERT_EQ(Sqrt2(8), 3);
-    ASSERT_EQ(Sqrt2(9), 3);
-    ASSERT_EQ(Sqrt2(29), 4);
-    ASSERT_EQ(Sqrt2(32), 5);
-    ASSERT_EQ(Sqrt2(63), 5);
-    ASSERT_EQ(Sqrt2(64), 6);
-    ASSERT_EQ(Sqrt2(1024), 10);
-    ASSERT_EQ(Sqrt2(1025), 10);
+    ASSERT_EQ(Log2(0), 0);
+    ASSERT_EQ(Log2(1), 0);
+    ASSERT_EQ(Log2(2), 1);
+    ASSERT_EQ(Log2(3), 1);
+    ASSERT_EQ(Log2(4), 2);
+    ASSERT_EQ(Log2(5), 2);
+    ASSERT_EQ(Log2(6), 2);
+    ASSERT_EQ(Log2(7), 2);
+    ASSERT_EQ(Log2(8), 3);
+    ASSERT_EQ(Log2(9), 3);
+    ASSERT_EQ(Log2(29), 4);
+    ASSERT_EQ(Log2(32), 5);
+    ASSERT_EQ(Log2(63), 5);
+    ASSERT_EQ(Log2(64), 6);
+    ASSERT_EQ(Log2(1024), 10);
+    ASSERT_EQ(Log2(1025), 10);
 }
 
 /**

@@ -14,6 +14,7 @@
 #include "util.hxx"
 #include "auto_ptr.hxx"
 #include "err_code.h"
+#include "mutex.h"
 
 #ifdef SHARED_EXPORTS
 #ifdef WIN32
@@ -37,8 +38,8 @@ namespace LiangZhu
     CStdString GetFileName(const tchar* _path);
     CStdString GetLibVersion();
 
-    int     GetProgramBits();
-
+    int GetProgramBits();
+        
     /**
      * @Function: Get the error description specified by error code
      *  typically, error code would be errno in Linux and GetLastError() in Windows
@@ -61,6 +62,9 @@ namespace LiangZhu
         ~CallTracer();
     };
 }
+
+#define SCOPE_LOCK(lock)    LiangZhu::MutexWrap  locker(lock);
+#define SCOPE_LOCK_(lock)   LiangZhu::MutexWrap_ locker(lock);
 
 #define LOG_ERROR_MSG(errCode)          RM_LOG_ERROR(LiangZhu::GetLastSysErrorMessage(errCode).c_str());
 #define LOG_ERROR_MSG_S(errCode, msg)   RM_LOG_ERROR(msg << ": " << LiangZhu::GetLastSysErrorMessage(errCode).c_str());

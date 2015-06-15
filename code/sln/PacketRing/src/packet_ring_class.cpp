@@ -23,9 +23,9 @@ void CPacketRing::Init(const std::string& ringName,
         m_ringName = ringName;
     }
 
-    m_moduleId = InitPacketRing(&m_ringHandler, name, moduleName.c_str(), pktBlkSize, metaBlkCapacity);
+    m_moduleId = InitRing(&m_ringHandler, name, moduleName.c_str(), pktBlkSize, metaBlkCapacity);
     if ((int)m_moduleId < 0) {
-        THROW_EXCEPTION(InitPacketRing, "Get an invalid module ID");
+        THROW_EXCEPTION(InitRing, "Get an invalid module ID");
     }
 }
 
@@ -40,10 +40,7 @@ ModuleID CPacketRing::RegisterModMetaIdx(const std::string& moduleName,
                                          const std::vector<u_int32>& colSizes,
                                          u_int32* metaOffset)
 {
-    /**
-     * XXX Should module id be checked ?
-     */
-    return RegMySelf(moduleName.c_str(),
+    return ::RegMySelf(moduleName.c_str(),
                      (std::vector<string>&)colNames,
                      (std::vector<string>&)colTypes,
                      (std::vector<int>&)colSizes,
@@ -58,7 +55,7 @@ u_int32 CPacketRing::GetModuleIndex(std::vector<ModuleIndex_t>& indices)
 
 u_int32 CPacketRing::GetAllModulePosInfo(std::vector<u_int32>& ringPosList)
 {
-    return GetAllModuleInfo(m_ringHandler, (std::vector<int> &)ringPosList);
+    return ::GetAllModuleInfo(m_ringHandler, (std::vector<int> &)ringPosList);
 }
 
 u_int32 CPacketRing::GetModuleCount()
@@ -69,7 +66,7 @@ u_int32 CPacketRing::GetModuleCount()
 PktMetaBlk_t* CPacketRing::GetNextFullMetaBlk()
 {
     if (m_metaBlks.size() == 0) {
-        int sz = GetNextMetaBlks(m_ringHandler, m_moduleId, (int&)m_metaBlkPickPos, m_metaBlks);
+        int sz = ::GetNextMetaBlks(m_ringHandler, m_moduleId, (int&)m_metaBlkPickPos, m_metaBlks);
         if (sz == 0) {
             return NULL;
         }
@@ -84,7 +81,7 @@ PktMetaBlk_t* CPacketRing::GetNextFullMetaBlk()
 
 PacketMeta_t* CPacketRing::GetPktMetaInBlk(const PktMetaBlk_t *metaBlk, u_int32 index)
 {
-    return GetMetaInBlk(m_ringHandler, m_moduleId, metaBlk, index);
+    return ::GetMetaInBlk(m_ringHandler, m_moduleId, metaBlk, index);
 }
 
 u_int32 CPacketRing::Move2NextMetaBlk(u_int32 blkCount/* = 1*/)
@@ -94,7 +91,7 @@ u_int32 CPacketRing::Move2NextMetaBlk(u_int32 blkCount/* = 1*/)
 
 PktMetaBlk_t* CPacketRing::GetMetaBlkByIdx(u_int32 index)
 {
-    return GetOneMetaBlk(m_ringHandler, m_moduleId, index);
+    return ::GetOneMetaBlk(m_ringHandler, m_moduleId, index);
 }
 
 packet_header_t* CPacketRing::GetPacketHeader(PacketType_e type, PacketMeta_t *metaInfo, packet_header_t* pktHeader)
@@ -109,38 +106,38 @@ byte* CPacketRing::GetPacketData(PacketType_e type, PacketMeta_t* metaInfo)
 
 bool CPacketRing::IsStopped()
 {
-    return IsPacketRingStop(m_ringHandler);
+    return ::IsRingStop(m_ringHandler);
 }
 
 bool CPacketRing::IsReady()
 {
-    return IsAgentReady(m_ringHandler);
+    return ::IsRingReady(m_ringHandler);
 }
 
 bool CPacketRing::IsEmpty()
 {
-    return IsAgentEmpty(m_ringHandler);
+    return ::IsRingEmpty(m_ringHandler);
 }
 
 void CPacketRing::Start()
 {
-    StartWork(m_ringHandler);
+    ::StartWork(m_ringHandler);
 }
 
 void CPacketRing::Stop()
 {
-    StopPacketRing(m_ringHandler);
+    ::StopRing(m_ringHandler);
 }
 
 bool CPacketRing::Release()
 {
-    return ReleasePacketRing(m_ringHandler, m_moduleId,
+    return ::UninitRing(m_ringHandler, m_moduleId,
                              m_ringName.empty() ? NULL : m_ringName.c_str());
 }
 
 bool CPacketRing::Clear(const std::string& ringName)
 {
-    return ReleasePacketRing(NULL, m_moduleId, ringName.empty() ? NULL : ringName.c_str());
+    return ::UninitRing(NULL, m_moduleId, ringName.empty() ? NULL : ringName.c_str());
 }
 
 u_int32 CPacketRing::GetMetaCount()
@@ -155,7 +152,8 @@ u_int32 CPacketRing::GetMetaBlockCount()
 
 bool CPacketRing::IsStopSignal(const PktMetaBlk_t *metaBlock)
 {
-    if (metaBlock && metaBlock->dataBlk == NULL && metaBlock->isFinal && metaBlock->size == 1) {
+    if (metaBlock && metaBlock->dataBlk == NULL && metaBlock->isFinal && metaBlock->size == 1) 
+    {
         PacketMeta_t *metaInfo = GetPktMetaInBlk(metaBlock, 0);
         assert(metaInfo);
         return (metaInfo->basicAttr.ts == 0 && metaInfo->basicAttr.pktLen == 0);
@@ -166,7 +164,8 @@ bool CPacketRing::IsStopSignal(const PktMetaBlk_t *metaBlock)
 
 bool CPacketRing::IsTimeoutSignal(const PktMetaBlk_t *metaBlock)
 {
-    if (metaBlock && metaBlock->dataBlk == NULL && metaBlock->isFinal && metaBlock->size == 1) {
+    if (metaBlock && metaBlock->dataBlk == NULL && metaBlock->isFinal && metaBlock->size == 1)
+    {
         PacketMeta_t *metaInfo = GetPktMetaInBlk(metaBlock, 0);
         assert(metaInfo);
         return (metaInfo->basicAttr.ts != 0 && metaInfo->basicAttr.pktLen == 0);
@@ -226,7 +225,8 @@ void CProducerRing::PreparePktBlkPool(u_int32 maxPrdcrNum, u_int32 poolSize)
 
     m_pktBlkPoolNum = maxPrdcrNum;
     m_pktBlockPool = new PacketBlockPool[m_pktBlkPoolNum];
-    if (m_pktBlockPool == NULL) {
+    if (m_pktBlockPool == NULL) 
+    {
         RM_LOG_ERROR("OOM, failed to prepare " << maxPrdcrNum << " packet block pool(s)");
         THROW_EXCEPTION(OutOfMemory, "Prepare packet block pool failed");
     }
@@ -236,21 +236,22 @@ void CProducerRing::PreparePktBlkPool(u_int32 maxPrdcrNum, u_int32 poolSize)
      */
     ModuleInfo_t* modInfo = GetModuleInfo();
     u_int32 blockCount = poolSize / sizeof(DataBlock_t);
-    for (u_int32 i = 0; i < m_pktBlkPoolNum; ++i) {
+    for (u_int32 i = 0; i < m_pktBlkPoolNum; ++i) 
+    {
         byte* startAddr = modInfo->blockViewStart + i * poolSize;
         m_pktBlockPool[i].resetMem((DataBlock_t*)startAddr, blockCount);
     }
 }
 
-// Only shoule be called by producer module
+// Only should be called by producer module
 PktMetaBlk_t* CProducerRing::GetNextEmptyMetaBlk(u_int32 *pos)
 {
-    return GetEmptyMetaBlk(m_ringHandler, pos, false);
+    return ::GetEmptyMetaBlk(m_ringHandler, pos, false);
 }
 
 PktMetaBlk_t* CProducerRing::WaitNextEmptyMetaBlk(u_int32 *pos)
 {
-    return GetEmptyMetaBlk(m_ringHandler, pos);
+    return ::GetEmptyMetaBlk(m_ringHandler, pos);
 }
 
 void CProducerRing::FreeFullMetaBlk(PktMetaBlk_t *metaBlk)
@@ -270,7 +271,8 @@ void CProducerRing::FreeFullMetaBlk(PktMetaBlk_t *metaBlk)
 DataBlock_t* CProducerRing::GetNextEmptyPktBlk(u_int32 _captureId)
 {
     DataBlock_t* block = m_pktBlockPool[_captureId].tryGetBlock();
-    if (block != NULL) {
+    if (block != NULL) 
+    {
         bzero(&block->dataDesc, sizeof(DataBlockDesc_t));
         block->dataDesc.id = INTERLOCKED_INCREMENT(&m_pktBlkID);
         block->dataDesc.captureId = _captureId;
@@ -298,14 +300,14 @@ void CProducerRing::FreeFullPktBlk(u_int32 _captureId, DataBlock_t *pktBlk)
 
 bool CProducerRing::IsMetaBlkFull(u_int32 captureId)
 {
-    return m_usedMetaInBlk[captureId] >=
-        GetMetaBlkCapacity(m_ringHandler, m_curMetaBlock[captureId]);
+    return m_usedMetaInBlk[captureId] >= GetMetaBlkCapacity(m_ringHandler, m_curMetaBlock[captureId]);
 }
 
 PacketMeta_t* CProducerRing::GetMeta4PktBlk(u_int32 captureId,
                                             DataBlock_t *dataBlk)
 {
-    if (m_curMetaBlock[captureId] == NULL || IsMetaBlkFull(captureId)) {
+    if (m_curMetaBlock[captureId] == NULL || IsMetaBlkFull(captureId)) 
+    {
         // Give current meta block back to ring
         DoneMetaBlk(captureId);
 

@@ -327,7 +327,9 @@ if $(ConfigurationType) == Application (copy $(SolutionDir)..\tmp\$(ProjectName)
     <ClInclude Include="..\..\inc\network\net_util.h" />
     <ClInclude Include="..\..\inc\network\protocol.h" />
     <ClInclude Include="..\..\inc\network\protocol_header_l4.h" />
+    <ClInclude Include="..\..\inc\network\snmp\snmp_v3.h" />
     <ClInclude Include="..\..\inc\network\socket_base.h" />
+    <ClInclude Include="src\snmp\pdu.h" />
     <ClInclude Include="src\version.h" />
   </ItemGroup>
   <ItemGroup>
@@ -340,6 +342,7 @@ if $(ConfigurationType) == Application (copy $(SolutionDir)..\tmp\$(ProjectName)
     <ClCompile Include="src\network\socket_base.cpp" />
     <ClCompile Include="src\network\socket_tcp.cpp" />
     <ClCompile Include="src\network\socket_udp.cpp" />
+    <ClCompile Include="src\snmp\pdu.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,5 +1,6 @@
 #include "common.h"
 #include "version.h"
+#include "string_.h"
 
 namespace LiangZhu
 {
@@ -9,7 +10,7 @@ namespace LiangZhu
     {
         return sizeof(int*) * 8;
     }
-
+    
     CStdString GetLibVersion()
     {
         CStdString version = PROJECT_NAME;

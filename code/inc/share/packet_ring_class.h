@@ -6,8 +6,6 @@
 #include "boost/shared_ptr.hpp"
 #include <list>
 
-const u_int32 DEF_METABLOCK_CAPACITY = 10000;
-
 /**
  * CPacketRing, interfaces for indexing modules
  *
@@ -60,7 +58,7 @@ public:
     virtual bool IsTimeoutSignal(const PktMetaBlk_t *metaBlock);
 
 protected:
-    DEFINE_EXCEPTION(InitPacketRing);
+    DEFINE_EXCEPTION(InitRing);
 
     PktRingHandle_t m_ringHandler;
     std::string m_ringName;

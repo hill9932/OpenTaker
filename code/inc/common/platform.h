@@ -44,19 +44,20 @@ typedef volatile long   atomic_t;
 #if defined(UNICODE) || defined(_UNICODE)
 typedef wchar_t		    tchar;
 
+#define isspace_t       iswspace
 #define strcpy_t        wcscpy
 #define strtok_t        wcstok
-#define isspace_t       iswspace
 #define strlen_t        wcslen      
+#define strcmp_t        wcscmp
 
 #else
-
 typedef char            tchar;
 
+#define isspace_t       isspace
 #define strcpy_t        strcpy
 #define strtok_t        strtok
-#define isspace_t       isspace
 #define strlen_t        strlen          
+#define strcmp_t        strcmp
 
 #endif
 

@@ -1,9 +1,22 @@
 #include "packet_ring.h"
+#include "decode_basic.h"
 #include "system_.h"
 #include "string_.h"
 #include "file_system.h"
 #include "math_.h"
-#include "mutex.h"
+
+#include <boost/interprocess/detail/atomic.hpp>
+#include <fstream>
+
+#ifdef ENABLE_DPDK
+#include <rte_mbuf.h>
+#include <rte_eal.h>
+#include <rte_memory.h>
+#include <rte_mempool.h>
+#include <rte_errno.h>
+#endif
+
+using namespace LiangZhu;
 
 #define SHARE_MEM_GLOBAL_NAME   "VP_Global_SM"          // the share memory to keep the _G
 RM_LOG_DEFINE("PacketRing");
@@ -39,22 +52,22 @@ bool  CheckModValid(const Global_t *_G, ModuleID _id);
 bool  CheckColumnType(const char* _colType);
 int   FindModule(const Global_t *_G, const char* _name);
 
-
 extern "C"
 {
-    void SetRingLogger(log4cplus::Logger* _logger)
+    void SetLogger(log4cplus::Logger* _logger)
     {
         g_logger = _logger;
     }
 
-    ModuleID InitPacketRing(PktRingHandle_t *_handler,
-                            const tchar* _globalName,
-                            const tchar* _moduleName,
-                            u_int64 _blockSize,
-                            u_int32 _metaBlkCapacity)
+    ModuleID InitRing(PktRingHandle_t *_handler,
+                       const tchar* _globalName,
+                       const tchar* _moduleName,
+                       u_int64 _blockSize,
+                       u_int32 _metaBlkCapacity,
+                       bool reset)
     {
         if (!_globalName)   _globalName = SHARE_MEM_GLOBAL_NAME;
-        RM_LOG_INFO("New PacketRing is created: " << _globalName);
+        InitLog(GetAppDir() + "config/log4cplus.properties", _moduleName);
 
         byte* buf = (byte*)CreateBlockMemory(_globalName, sizeof(Global_t));
         if (!buf)   return -1;
@@ -62,24 +75,24 @@ extern "C"
         Global_t* _G = (Global_t*)buf;
         assert(_handler);
         *_handler = (PktRingHandle_t)_G;
+        if (reset) ResetTheRing(*_handler);
 
-        if (_G->g_index == 0 && _blockSize != 0)    //_G->g_blockSize == 0)   // only the first process need to do this
+        if (_G->g_index == 0 && _blockSize != 0)//_G->g_blockSize == 0)   // only the first process need to do this
         {
             bzero(buf, sizeof(Global_t));
             _G->g_blockSize = _blockSize;
-            int size2 = LiangZhu::Sqrt2(_blockSize / 80);   // 80 is the minimum packet size 64 B + packet header 16 B
+            const int AVERAGE_PACKET_SIZE = 100;
+            int size2 = LiangZhu::Log2(_blockSize / AVERAGE_PACKET_SIZE);
 
-            _G->g_metaPoolSize = (2 << size2) * sizeof(PacketMeta_t);
+            u_int64 metaCount = (u_int64)(2 << size2); // MyMin(MAX_META_COUNT, (u_int64)(2 << size2));
+            _G->g_metaPoolSize = metaCount * sizeof(PacketMeta_t);
             _G->g_stopped = false;
 
-            // FIXME Use hard-code number as default value, should be
-            // a read-able definition
-            _G->g_metaBlkCapacity = 10000;
-            if (_metaBlkCapacity != 0) 
-            {
+            _G->g_metaBlkCapacity = DEF_METABLOCK_CAPACITY;
+            if (_metaBlkCapacity != 0) {
                 _G->g_metaBlkCapacity = _metaBlkCapacity;
             }
-            _G->g_metaBlkCount = ((2 << size2) - 1) / _G->g_metaBlkCapacity + 1;
+            _G->g_metaBlkCount = (metaCount-1) / _G->g_metaBlkCapacity + 1;
 
             LiangZhu::InitCriticalSec(_G->g_mutex);
         }
@@ -141,7 +154,7 @@ extern "C"
                        PktRingHandle_t _handler,
                        int*        _offset)
     {
-        if (IsAgentReady(_handler) && _colNum > 0)  return -1;  // StartWork() has been called
+        if (IsRingReady(_handler) && _colNum > 0)  return -1;  // StartWork() has been called
 
         Global_t *_G = (Global_t *)_handler;
 
@@ -170,14 +183,10 @@ extern "C"
 
             strncpy(_G->g_moduleIndex[index].colName[i],
                     _colName[i],
-                    MyMin((size_t)MAX_COLUMN_NAME - 1, 
-                    (size_t)strlen(_colName[i])));
-
+                    MyMin((size_t)MAX_COLUMN_NAME - 1, (size_t)strlen(_colName[i])));
             strncpy(_G->g_moduleIndex[index].colType[i],
                     _colType[i],
-                    MyMin((size_t)MAX_COLUMN_NAME - 1, 
-                    (size_t)strlen(_colType[i])));
-
+                    MyMin((size_t)MAX_COLUMN_NAME - 1, (size_t)strlen(_colType[i])));
             _G->g_moduleIndex[index].colSize[i] = _colSize[i];
             _G->g_offset += _colSize[i];
         }
@@ -196,12 +205,6 @@ extern "C"
         Global_t *_G = (Global_t *)_handler;
         if (!CheckModValid(_G, _id)) return NULL;
         return &_G->g_moduleInfo[_id];
-    }
-
-    bool IsPacketRingStop(const PktRingHandle_t _handler)
-    {
-        if (!_handler) return true;
-        return ((const Global_t *)_handler)->g_stopped;
     }
 
     PacketMeta_t* GetNextPacket(PktRingHandle_t _handler, ModuleID _id)
@@ -225,7 +228,8 @@ extern "C"
                                 : _G->g_moduleInfo[depModId].packetPtr;
             if (curPtr != limPtr)
             {
-                PacketMeta_t* packet = (PacketMeta_t*)(modInfo->metaViewStart + _G->g_metaSize * curPtr);
+                PacketMeta_t* packet =
+                    (PacketMeta_t*)(modInfo->metaViewStart + _G->g_metaSize * curPtr);
                 //assert(packet->ringPos == curPtr);
 
                 if (packet->basicAttr.pktLen == 0)     // packet is not ready
@@ -234,7 +238,7 @@ extern "C"
                 return packet;
             }
 
-            LiangZhu::YieldCurThread();
+            YieldCurThread();
         }
 
         return NULL;
@@ -302,7 +306,7 @@ extern "C"
                 return metaBlk;
             }
 
-            LiangZhu::YieldCurThread();
+            YieldCurThread();
         }
 
         return NULL;
@@ -332,8 +336,8 @@ extern "C"
 
         if (curPtr + _count <= limPtr)
         {
-            curPtr += _count;
-            curPtr %= _G->g_metaBlkCount;
+            int tmpCur = (curPtr + _count) % _G->g_metaBlkCount;
+            curPtr = tmpCur;
             return curPtr;
         }
 
@@ -342,7 +346,7 @@ extern "C"
 
     PacketMeta_t* GetMetaInBlk(PktRingHandle_t _handler, ModuleID _id,
                                const PktMetaBlk_t *_metaBlk, u_int32 _idx)
-    {        
+    {
         if (_metaBlk == NULL) return NULL;
         if (_metaBlk->size > 0 && _idx >= _metaBlk->size) return NULL;
         Global_t *_G = (Global_t *)_handler;
@@ -360,16 +364,26 @@ extern "C"
         return metaInfo;
     }
 
-    packet_header_t* GetPacketHeader(PacketType_e type, 
-                                     PacketMeta_t* _metaInfo,
-                                     PktRingHandle_t _handler, 
-                                     ModuleID _modID, 
-                                     packet_header_t* _pktHeader)
+    packet_header_t* GetPacketHeader(PacketType_e type, PacketMeta_t* _metaInfo,
+                                     PktRingHandle_t _handler, ModuleID _modID, packet_header_t* _pktHeader)
     {
         if (!_metaInfo || _metaInfo->headerAddr == (u_int64)-1) return NULL;
         packet_header_t* pktHeader = NULL;
 
-        if (type == PACKET_PCAP)    // napatech packet
+        if (type == PACKET_NAPATECH)    // napatech packet
+        {
+            pktHeader = (packet_header_t*)_metaInfo->headerAddr;
+        }
+#ifdef ENABLE_DPDK
+        else if (type == PACKET_DPDK)
+        {
+            // if packets are allocated by DPDK, they are saved one by one
+            // rather than in block
+            rte_mbuf* mbuf = (rte_mbuf*)_metaInfo->headerAddr;
+            pktHeader = rte_pktmbuf_mtod(mbuf, packet_header_t*);
+        }
+#endif
+        else
         {
             ModuleInfo_t* modInfo = GetModuleInfo(_handler, _modID);
             if (!modInfo)   return NULL;
@@ -378,21 +392,34 @@ extern "C"
         }
 
 #ifdef LINUX
-        assert(_metaInfo->basicAttr.ts == (u_int64)pktHeader->ts.tv_sec * NS_PER_SECOND + pktHeader->ts.tv_nsec);
+        assert(_metaInfo->indexValue.ts == (u_int64)pktHeader->ts.tv_sec * NS_PER_SECOND + pktHeader->ts.tv_nsec);
 #endif
 
         return pktHeader;
     }
 
-    byte* GetPacketData(PacketType_e type, 
-                        PacketMeta_t* _metaInfo,
-                        PktRingHandle_t _handler, 
-                        ModuleID _modID)
+    byte* GetPacketData(PacketType_e type, PacketMeta_t* _metaInfo,
+                        PktRingHandle_t _handler, ModuleID _modID)
     {
         if (!_metaInfo || _metaInfo->headerAddr == (u_int64)-1) return NULL;
         byte* data = NULL;
 
-        if (type == PACKET_PCAP)
+        if (type == PACKET_NAPATECH)    // napatech packet
+        {
+            byte* pktHeader = (byte*)_metaInfo->headerAddr;
+            data = pktHeader + sizeof(packet_header_t);
+        }
+#ifdef ENABLE_DPDK
+        else if (type == PACKET_DPDK)
+        {
+            // if packets are allocated by DPDK, they are saved one by one
+            // rather than in block
+            rte_mbuf* mbuf = (rte_mbuf*)_metaInfo->headerAddr;
+            byte* pktHeader = rte_pktmbuf_mtod(mbuf, byte*);
+            data = pktHeader + sizeof(packet_header_t);
+        }
+#endif
+        else
         {
             ModuleInfo_t* modInfo = GetModuleInfo(_handler, _modID);
             if (!modInfo)   return NULL;
@@ -406,6 +433,49 @@ extern "C"
 
         return data;
     }
+
+#ifdef ENABLE_DPDK
+    bool InitDPDK(const char* _cmdLine)
+    {
+        int z = 0;
+        int argc = 20;
+        char* argv[20] = { 0 };
+        char* buf = Str2Argv(_cmdLine, &argv[0], argc);
+
+        z = rte_eal_init(argc, argv);
+
+        free(buf);
+        return z >= 0;
+    }
+#endif
+
+    bool IsRingReady(PktRingHandle_t _handler)
+    {
+        Global_t *_G = (Global_t *)_handler;
+        if (!_G)    return false;
+        return _G->g_metaCount != 0;
+    }
+
+    bool IsRingEmpty(PktRingHandle_t _handler)
+    {
+        Global_t *_G = (Global_t *)_handler;
+        if (!_G)    return true;
+        ModuleInfo_t*  modInfo = (ModuleInfo_t*)GetModuleInfo(_handler, 0);
+        if (!modInfo)   return true;
+
+        return (_G->g_tailMetaBlk % _G->g_metaBlkCount) == modInfo->blkPtr;
+    }
+
+    bool IsRingStop(PktRingHandle_t _handler)
+    {
+        if (!_handler) return true;
+        return ((const Global_t *)_handler)->g_stopped;
+    }
+
+    bool InitPackage(const char* _cmdLine)
+    {
+        return true;
+    }
 }
 
 /**
@@ -417,30 +487,13 @@ int StartWork(PktRingHandle_t _handler)
     assert(_G);
 
     if (_G->g_blockSize <= 0 || _G->g_index <= 0)   return -1;
-    _G->g_metaSize = sizeof(PacketMeta_t) + _G->g_offset;
+    _G->g_metaSize = sizeof(PacketMeta_t)+_G->g_offset;
     assert(_G->g_offset == 0);   // don't support extension currently
 
     _G->g_metaCount = (_G->g_metaPoolSize / _G->g_metaSize) - 1;
     assert((_G->g_metaCount + 1) % (2 ^ 10) == 0);  // should be 2 ^ xx
 
     return 0;
-}
-
-bool IsAgentReady(PktRingHandle_t _handler)
-{
-    Global_t *_G = (Global_t *)_handler;
-    if (!_G)    return false;
-    return _G->g_metaCount != 0;
-}
-
-bool IsAgentEmpty(PktRingHandle_t _handler)
-{
-    Global_t *_G = (Global_t *)_handler;
-    if (!_G)    return true;
-    ModuleInfo_t*  modInfo = (ModuleInfo_t*)GetModuleInfo(_handler, 0);
-    if (!modInfo)   return true;
-
-    return (_G->g_tailMetaBlk % _G->g_metaBlkCount) == modInfo->blkPtr;
 }
 
 int GetModuleCount(PktRingHandle_t _handler)
@@ -453,23 +506,27 @@ int GetModuleCount(PktRingHandle_t _handler)
 u_int32 GetMetaCount(PktRingHandle_t _handler)
 {
     Global_t *_G = (Global_t *)_handler;
-    if (!_G)    return 0;
-
+    assert(_G);
     return _G->g_metaCount + 1;
 }
 
 u_int32 GetMetaBlkCount(PktRingHandle_t _handler)
 {
     Global_t *_G = (Global_t *)_handler;
-    if (!_G)    return 0;
-
+    assert(_G);
     return _G->g_metaBlkCount;
 }
 
-void StopPacketRing(PktRingHandle_t _handler)
+void StopRing(PktRingHandle_t _handler)
 {
     Global_t *_G = (Global_t *)_handler;
     if (_G) _G->g_stopped = true;
+}
+
+void ResetTheRing(PktRingHandle_t _handler)
+{
+    Global_t *_G = (Global_t *)_handler;
+    if (_G) bzero(_G, sizeof(Global_t));
 }
 
 ModuleID RegMySelf( const char* _name,
@@ -494,14 +551,14 @@ ModuleID RegMySelf( const char* _name,
         colSize[i] = _colSize[i];
     }
 
-    ModuleID ID = RegMySelf(_name, colNum, colName, colType, colSize, _handler, _offset);
+    ModuleID ID =
+        RegMySelf(_name, colNum, colName, colType, colSize, _handler, _offset);
     delete[] colName;
     delete[] colType;
     delete[] colSize;
 
     return ID;
 }
-
 
 int GetModuleIndex(PktRingHandle_t _handler, vector<ModuleIndex_t>& _vec)
 
@@ -585,7 +642,9 @@ PacketMeta_t* GetOnePacket(PktRingHandle_t _handler, ModuleID _id, int _index)
 
     _index &= _G->g_metaCount;
 
-    PacketMeta_t* packet = (PacketMeta_t*)(modInfo->metaViewStart + _G->g_metaSize * _index);
+    PacketMeta_t* packet =
+        (PacketMeta_t*)(modInfo->metaViewStart + _G->g_metaSize * _index);
+    //assert(packet->indexValue.pktLen);
     return packet;
 }
 
@@ -598,16 +657,17 @@ PktMetaBlk_t* GetOneMetaBlk(PktRingHandle_t _handler, ModuleID _id, int _index)
         return NULL;
 
     _index %= _G->g_metaBlkCount;
-    PktMetaBlk_t* metaBlk = (PktMetaBlk_t*)(modInfo->metaBlkViewStart + sizeof(PktMetaBlk_t)*_index);
+    PktMetaBlk_t* metaBlk =
+        (PktMetaBlk_t*)(modInfo->metaBlkViewStart + sizeof(PktMetaBlk_t)*_index);
     return metaBlk;
 }
 
 PacketMeta_t* GetNextMetaSpace(PktRingHandle_t _handler, u_int32* _pos, bool _wait)
 {
     ModuleInfo_t* modInfo = (ModuleInfo_t*)GetModuleInfo(_handler, 0);
+
     Global_t *_G = (Global_t *)_handler;
     assert(_G);
-
 retry:
     u_int32 tailPos = _G->g_tailPacket & _G->g_metaCount;
     u_int32 nextPos = (tailPos + 1) & _G->g_metaCount;
@@ -616,7 +676,7 @@ retry:
     if (nextPos == limitPtr)  // round trip, may drop packets
     {
         if (!_wait) return NULL;
-        LiangZhu::YieldCurThread();
+        YieldCurThread();
         goto retry;
     }
 
@@ -626,7 +686,7 @@ retry:
     PacketMeta_t* metaInfo = (PacketMeta_t*)(modInfo->metaViewStart + _G->g_metaSize * tailPos);
     while (metaInfo->basicAttr.pktLen != 0)
     {
-        LiangZhu::YieldCurThread();
+        YieldCurThread();
         if (!_wait) return NULL;
     }
 
@@ -634,38 +694,49 @@ retry:
     return metaInfo;
 }
 
+#define SAFE_DISTANCE   2
+
 PktMetaBlk_t* GetEmptyMetaBlk(PktRingHandle_t _handler, u_int32* _pos, bool _wait)
 {
     ModuleInfo_t* modInfo = (ModuleInfo_t*)GetModuleInfo(_handler, 0);
+    if (!modInfo || !modInfo->blockViewStart || !modInfo->metaViewStart)
+        return NULL;
+
     Global_t *_G = (Global_t *)_handler;
     assert(_G);
 
 retry:
-    u_int32 tailPos = _G->g_tailMetaBlk % _G->g_metaBlkCount;
-    u_int32 nextPos = (tailPos + 1) % _G->g_metaBlkCount;
+    u_int32 tailPos  = _G->g_tailMetaBlk % _G->g_metaBlkCount;
+    u_int32 nextPos  = (tailPos + 1) % _G->g_metaBlkCount;
+    u_int32 checkPos = (tailPos + SAFE_DISTANCE) % _G->g_metaBlkCount;
     u_int32 limitPtr = modInfo->blkPtr;
 
-    if (nextPos == limitPtr)  // round trip
+    if (checkPos == limitPtr)  // round trip
     {
         if (!_wait) return NULL;
-        LiangZhu::YieldCurThread();
+        YieldCurThread();
         goto retry;
     }
 
-    PktMetaBlk_t *metaBlk = (PktMetaBlk_t*)(modInfo->metaBlkViewStart + sizeof(PktMetaBlk_t) * tailPos);
-    while (metaBlk->size != 0)
+    PktMetaBlk_t *metaBlk =
+        (PktMetaBlk_t*)(modInfo->metaBlkViewStart + sizeof(PktMetaBlk_t) * tailPos);
+    if (metaBlk->size != 0)
     {
-        LiangZhu::YieldCurThread();
         if (!_wait) return NULL;
+        YieldCurThread();
+        goto retry;
     }
 
-    INTERLOCKED_INCREMENT(&_G->g_tailMetaBlk);
+    //INTERLOCKED_INCREMENT(&_G->g_tailMetaBlk);
+    if (tailPos != boost::interprocess::ipcdetail::atomic_cas32(&_G->g_tailMetaBlk, nextPos, tailPos))   // move to the next
+        goto retry;
 
     assert(metaBlk->blkPos == 0 || metaBlk->blkPos == tailPos);
     metaBlk->blkPos = tailPos;
 
-    assert(metaBlk->offset == 0
-           || metaBlk->offset == tailPos * _G->g_metaBlkCapacity);
+    assert(metaBlk->offset == 0 || 
+           metaBlk->offset == tailPos * _G->g_metaBlkCapacity);
+
     metaBlk->offset = tailPos * _G->g_metaBlkCapacity;
     if (_pos)   *_pos = tailPos;
     return metaBlk;
@@ -716,7 +787,8 @@ int GetNextPacket(PktRingHandle_t _handler,
 
     while (distance > 0)
     {
-        PacketMeta_t* packet = (PacketMeta_t*)(modInfo->metaViewStart + _G->g_metaSize * curPtr);
+        PacketMeta_t* packet =
+            (PacketMeta_t*)(modInfo->metaViewStart + _G->g_metaSize * curPtr);
         if (packet->basicAttr.pktLen == 0)     // this packet is not ready
             break;
 
@@ -734,7 +806,7 @@ int GetNextMetaBlks(PktRingHandle_t _handler, ModuleID _id,
     Global_t *_G = (Global_t *)_handler;
     assert(_G);
     ModuleInfo_t* modInfo = &_G->g_moduleInfo[_id];
-    if (!modInfo->blockViewStart || !modInfo->metaViewStart)
+    if (!modInfo || !modInfo->blockViewStart || !modInfo->metaViewStart)
         return 0;
 
     int& curPtr = _index;
@@ -754,12 +826,14 @@ int GetNextMetaBlks(PktRingHandle_t _handler, ModuleID _id,
 
     while (distance > 0)
     {
-        PktMetaBlk_t *metaBlk = (PktMetaBlk_t*)(modInfo->metaBlkViewStart + sizeof(PktMetaBlk_t) * curPtr);
+        PktMetaBlk_t *metaBlk =
+            (PktMetaBlk_t*)(modInfo->metaBlkViewStart + sizeof(PktMetaBlk_t) * curPtr);
         if (metaBlk->size == 0)     // this meta block is not ready
             break;
 
         _metaBlks.push_back(metaBlk);
-        ++curPtr %= _G->g_metaBlkCount;
+        int tmpPtr = (curPtr + 1) % _G->g_metaBlkCount;
+        curPtr = tmpPtr;
         --distance;
     }
 

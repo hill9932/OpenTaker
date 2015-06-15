@@ -7,19 +7,21 @@
 #ifndef __HILUO_MUTEX_I_INCLUDE_H__
 #define __HILUO_MUTEX_I_INCLUDE_H__
 
-class ILockable
+namespace LiangZhu
 {
-protected:
-    ILockable() {};
+    class ILockable
+    {
+    protected:
+        ILockable() {};
 
-public:
-    virtual ~ILockable() {};
-    virtual void lock() = 0;
-    virtual void unlock() = 0;
-    virtual void readlock() { lock(); }
-    virtual void writelock() { lock() ; }
-    virtual void init() {}
-};
-
+    public:
+        virtual ~ILockable() {};
+        virtual void lock() = 0;
+        virtual void unlock() = 0;
+        virtual void readlock() { lock(); }
+        virtual void writelock() { lock(); }
+        virtual void init() {}
+    };
+}
 
 #endif

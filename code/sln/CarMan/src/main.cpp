@@ -1,10 +1,10 @@
 #include "common.h"
-#include "version.h"
 #include "system_.h"
+#include "global.h"
+#include "version.h"
 
 RM_LOG_DEFINE(PROJECT_NAME);
 
-using namespace LiangZhu;
 
 void ShowConfig()
 {
@@ -12,6 +12,7 @@ void ShowConfig()
 #if defined(DEBUG) || defined(_DEBUG)
     version = "DEBUG  ";
 #endif
+
     version += HILUO_PACKAGE_VERSION;
 
     RM_LOG_INFO_S("Success to initialize the environment (" << version << ", " << \
@@ -21,8 +22,11 @@ void ShowConfig()
 
 int main(int _argc, char** _argv)
 {
+    if (!SetupEnviroment(_argc, _argv, PROJECT_NAME))
+        return -1;
+
     ShowConfig();
 
-    RM_LOG_INFO("I'm going to exit.");
+
     return 0;
 }

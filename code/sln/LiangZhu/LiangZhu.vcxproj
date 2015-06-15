@@ -334,14 +334,16 @@ if $(ConfigurationType) == Application (copy $(SolutionDir)..\tmp\$(ProjectName)
     <ClCompile Include="src\common\thread_pool.cpp" />
     <ClCompile Include="src\common\time_.cpp" />
     <ClCompile Include="src\common\var.cpp" />
-    <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\inc\common\auth.h" />
     <ClInclude Include="..\..\inc\common\auto_ptr.hxx" />
     <ClInclude Include="..\..\inc\common\block_file.h" />
     <ClInclude Include="..\..\inc\common\code_convert.h" />
+    <ClInclude Include="..\..\inc\common\collection.h" />
     <ClInclude Include="..\..\inc\common\common.h" />
     <ClInclude Include="..\..\inc\common\def.h" />
+    <ClInclude Include="..\..\inc\common\design.h" />
     <ClInclude Include="..\..\inc\common\device.h" />
     <ClInclude Include="..\..\inc\common\err_code.h" />
     <ClInclude Include="..\..\inc\common\file.h" />
@@ -371,7 +373,7 @@ if $(ConfigurationType) == Application (copy $(SolutionDir)..\tmp\$(ProjectName)
     <ClInclude Include="..\..\inc\common\time_.h" />
     <ClInclude Include="..\..\inc\common\util.hxx" />
     <ClInclude Include="..\..\inc\common\var.h" />
-    <ClInclude Include="..\..\inc\network\change_qian.h" />
+    <ClInclude Include="src\common\auth_context.h" />
     <ClInclude Include="src\common\version.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

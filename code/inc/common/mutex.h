@@ -1,11 +1,8 @@
-#ifndef __HILUO_MUTEX_INCLUDE_H__
-#define __HILUO_MUTEX_INCLUDE_H__
+#ifndef __VP_MUTEX_INCLUDE_H__
+#define __VP_MUTEX_INCLUDE_H__
 
 #include "common.h"
 #include "mutex_i.h"
-
-#define SCOPE_LOCK(lock)    LiangZhu::MutexWrap  locker(lock);
-#define SCOPE_LOCK_(lock)   LiangZhu::MutexWrap_ locker(lock);
 
 namespace LiangZhu
 {
@@ -19,11 +16,12 @@ namespace LiangZhu
         virtual void init();
 
     private:
-        Mutex(const Mutex&);
-        Mutex& operator= (const Mutex&);
+        //    Mutex (const Mutex&);
+        //    Mutex& operator= (const Mutex&);
 
     private:
         CRITICAL_SECTION mId;
+        CS_ATTRIBUTE    m_attr;
     };
 
 
@@ -54,7 +52,8 @@ namespace LiangZhu
         CRITICAL_SECTION& m_mutex;
     };
 
-    void InitCriticalSec(CRITICAL_SECTION& _cs);
+    void InitCriticalSec(CRITICAL_SECTION& _cs, CS_ATTRIBUTE* _attr = NULL);
 }
+
 
 #endif

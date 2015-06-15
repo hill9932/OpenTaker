@@ -33,11 +33,11 @@ namespace LiangZhu
 
 #if defined(DEBUG) || defined(_DEBUG)
 #define RM_LOG_TRACE(str)       {   \
-    LOG4CPLUS_TRACE(*g_logger, " " << LiangZhu::GetFileName(__FILE__) << ":" << __FUNCTION__ << "():" << __LINE__ << " " << str); \
-    }
+    if (g_logger) { LOG4CPLUS_TRACE(*g_logger, " " << LiangZhu::GetFileName(__FILE__) << ":" << __FUNCTION__ << "():" << __LINE__ << " " << str); \
+    }}
 #define RM_LOG_TRACE_S(str)        {   \
-    LOG4CPLUS_TRACE(*g_logger, " " << str);  \
-    }
+    if (g_logger) { LOG4CPLUS_TRACE(*g_logger, " " << str);  \
+    }}
 #define RM_LOG_TRACE_E(mylogger, str)       {   \
     LOG4CPLUS_TRACE(mylogger, " " << LiangZhu::GetFileName(__FILE__) << ":" << __FUNCTION__ << "():" << __LINE__ << " " << str); \
     }
@@ -46,11 +46,11 @@ namespace LiangZhu
     }
 
 #define RM_LOG_DEBUG(str)       {   \
-    LOG4CPLUS_DEBUG(*g_logger, " " << LiangZhu::GetFileName(__FILE__) << ":" << __FUNCTION__ << "():" << __LINE__ << " " << str); \
-    }
+    if (g_logger) { LOG4CPLUS_DEBUG(*g_logger, " " << LiangZhu::GetFileName(__FILE__) << ":" << __FUNCTION__ << "():" << __LINE__ << " " << str); \
+    }}
 #define RM_LOG_DEBUG_S(str)        {   \
-    LOG4CPLUS_DEBUG(*g_logger, " " << str);  \
-    }
+    if (g_logger) { LOG4CPLUS_DEBUG(*g_logger, " " << str);  \
+    }}
 #define RM_LOG_DEBUG_E(mylogger, str)       {   \
     LOG4CPLUS_DEBUG(mylogger, " " << LiangZhu::GetFileName(__FILE__) << ":" << __FUNCTION__ << "():" << __LINE__ << " " << str); \
     }
@@ -59,11 +59,11 @@ namespace LiangZhu
     }
 
 #define RM_LOG_INFO(str)        {   \
-    LOG4CPLUS_INFO(*g_logger, " " << LiangZhu::GetFileName(__FILE__) << ":" << __FUNCTION__ << "():" << __LINE__ << " " << str);  \
-    }
+    if (g_logger) { LOG4CPLUS_INFO(*g_logger, " " << LiangZhu::GetFileName(__FILE__) << ":" << __FUNCTION__ << "():" << __LINE__ << " " << str);  \
+    }}
 #define RM_LOG_INFO_S(str)        {   \
-    LOG4CPLUS_INFO(*g_logger, " " << str);  \
-    }
+    if (g_logger) { LOG4CPLUS_INFO(*g_logger, " " << str);  \
+    }}
 #define RM_LOG_INFO_E(mylogger, str)        {   \
     LOG4CPLUS_INFO(mylogger, " " << LiangZhu::GetFileName(__FILE__) << ":" << __FUNCTION__ << "():" << __LINE__ << " " << str);  \
     }
@@ -72,11 +72,11 @@ namespace LiangZhu
     }
 
 #define RM_LOG_WARNING(str)     {   \
-    LOG4CPLUS_WARN(*g_logger, " " << LiangZhu::GetFileName(__FILE__) << ":" << __FUNCTION__ << "():" << __LINE__ << " " << str);  \
-    }
+    if (g_logger) { LOG4CPLUS_WARN(*g_logger, " " << LiangZhu::GetFileName(__FILE__) << ":" << __FUNCTION__ << "():" << __LINE__ << " " << str);  \
+    }}
 #define RM_LOG_WARNING_S(str)        {   \
-    LOG4CPLUS_WARN(*g_logger, " " << str);  \
-    }
+    if (g_logger) { LOG4CPLUS_WARN(*g_logger, " " << str);  \
+    }}
 #define RM_LOG_WARNING_E(mylogger, str)        {   \
     LOG4CPLUS_WARN(mylogger, " " << LiangZhu::GetFileName(__FILE__) << ":" << __FUNCTION__ << "():" << __LINE__ << " " << str);  \
     }
@@ -85,11 +85,11 @@ namespace LiangZhu
     }
 
 #define RM_LOG_ERROR(str)       {   \
-    LOG4CPLUS_ERROR(*g_logger, " " << LiangZhu::GetFileName(__FILE__) << ":" << __FUNCTION__ << "():" << __LINE__ << " " << str); \
-    }
+    if (g_logger) { LOG4CPLUS_ERROR(*g_logger, " " << LiangZhu::GetFileName(__FILE__) << ":" << __FUNCTION__ << "():" << __LINE__ << " " << str); \
+    }}
 #define RM_LOG_ERROR_S(str)        {   \
-    LOG4CPLUS_ERROR(*g_logger, " " << str);  \
-    }
+    if (g_logger) { LOG4CPLUS_ERROR(*g_logger, " " << str);  \
+    }}
 #define RM_LOG_ERROR_E(myloger, str)       {   \
     LOG4CPLUS_ERROR(myloger, " " << LiangZhu::GetFileName(__FILE__) << ":" << __FUNCTION__ << "():" << __LINE__ << " " << str); \
     }
@@ -99,11 +99,11 @@ namespace LiangZhu
 
 #else
 #define RM_LOG_DEBUG(str)       {   \
-    LOG4CPLUS_DEBUG(*g_logger, " " << LiangZhu::GetFileName(__FILE__) << ":" << __LINE__ << " " << str); \
-    }
+    if (g_logger) { LOG4CPLUS_DEBUG(*g_logger, " " << LiangZhu::GetFileName(__FILE__) << ":" << __LINE__ << " " << str); \
+    }}
 #define RM_LOG_DEBUG_S(str)        {   \
-    LOG4CPLUS_DEBUG(*g_logger,  " " << str);  \
-    }
+    if (g_logger) { LOG4CPLUS_DEBUG(*g_logger,  " " << str);  \
+    }}
 #define RM_LOG_DEBUG_E(mylogger, str)       {   \
     LOG4CPLUS_DEBUG(mylogger, " " << LiangZhu::GetFileName(__FILE__) << ":" << __LINE__ << " " << str); \
     }
@@ -112,11 +112,11 @@ namespace LiangZhu
     }
 
 #define RM_LOG_TRACE(str)       {   \
-    LOG4CPLUS_TRACE(*g_logger, " " << LiangZhu::GetFileName(__FILE__) << ": " << __LINE__ << " " << str); \
-    }
+    if (g_logger) { LOG4CPLUS_TRACE(*g_logger, " " << LiangZhu::GetFileName(__FILE__) << ": " << __LINE__ << " " << str); \
+    }}
 #define RM_LOG_TRACE_S(str)        {   \
-    LOG4CPLUS_TRACE(*g_logger, " " << str);  \
-    }
+    if (g_logger) { LOG4CPLUS_TRACE(*g_logger, " " << str);  \
+    }}
 #define RM_LOG_TRACE_E(mylogger, str)       {   \
     LOG4CPLUS_TRACE(mylogger, " " << LiangZhu::GetFileName(__FILE__) << ": " << __LINE__ << " " << str); \
     }
@@ -125,11 +125,11 @@ namespace LiangZhu
     }
 
 #define RM_LOG_INFO(str)        {   \
-    LOG4CPLUS_INFO(*g_logger, " " << LiangZhu::GetFileName(__FILE__) << ": " << __LINE__ << " " << str);  \
-    }
+    if (g_logger) { LOG4CPLUS_INFO(*g_logger, " " << LiangZhu::GetFileName(__FILE__) << ": " << __LINE__ << " " << str);  \
+    }}
 #define RM_LOG_INFO_S(str)        {   \
-    LOG4CPLUS_INFO(*g_logger, " " << str);  \
-    }
+    if (g_logger) { LOG4CPLUS_INFO(*g_logger, " " << str);  \
+    }}
 #define RM_LOG_INFO_E(mylogger, str)        {   \
     LOG4CPLUS_INFO(mylogger, " " << LiangZhu::GetFileName(__FILE__) << ": " << __LINE__ << " " << str);  \
     }
@@ -138,11 +138,11 @@ namespace LiangZhu
     }
 
 #define RM_LOG_WARNING(str)     {   \
-    LOG4CPLUS_WARN(*g_logger, " " << LiangZhu::GetFileName(__FILE__) << ": " << __LINE__ << " " << str);  \
-    }
+    if (g_logger) { LOG4CPLUS_WARN(*g_logger, " " << LiangZhu::GetFileName(__FILE__) << ": " << __LINE__ << " " << str);  \
+    }}
 #define RM_LOG_WARNING_S(str)        {   \
-    LOG4CPLUS_WARN(*g_logger,  " " << str);  \
-    }
+    if (g_logger) { LOG4CPLUS_WARN(*g_logger,  " " << str);  \
+    }}
 #define RM_LOG_WARNING_E(mylogger, str)        {   \
     LOG4CPLUS_WARN(mylogger, " " << LiangZhu::GetFileName(__FILE__) << ": " << __LINE__ << " " << str);  \
     }
@@ -151,11 +151,11 @@ namespace LiangZhu
     }
 
 #define RM_LOG_ERROR(str)       {   \
-    LOG4CPLUS_ERROR(*g_logger, " " << LiangZhu::GetFileName(__FILE__) << ": " << __LINE__ << " " << str); \
-    }
+    if (g_logger) { LOG4CPLUS_ERROR(*g_logger, " " << LiangZhu::GetFileName(__FILE__) << ": " << __LINE__ << " " << str); \
+    }}
 #define RM_LOG_ERROR_S(str)        {   \
-    LOG4CPLUS_ERROR(*g_logger, " " << str);  \
-    }
+    if (g_logger) { LOG4CPLUS_ERROR(*g_logger, " " << str);  \
+    }}
 #define RM_LOG_ERROR_E(myloger, str)       {   \
     LOG4CPLUS_ERROR(myloger, " " << LiangZhu::GetFileName(__FILE__) << ": " << __LINE__ << " " << str); \
     }
